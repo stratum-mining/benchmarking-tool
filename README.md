@@ -33,7 +33,7 @@ To promote the adoption of Stratum V2, a comprehensive benchmarking tool is need
 - **Detailed Reporting**: Create detailed reports comparing protocol performance, with easy-to-understand metrics and visualizations.
 - **Integrated Bug Reporting**: Facilitate bug reporting and feedback collection directly within the tool.
 
-📚 To dig more into tool's features. or understand how it is built, please have a look at *docs/* and read [requirements-document.md](./docs/requirements-document.md) or visualize [system design](./docs/system-design.png) diagram.
+📚 To dig more into tool's features. or understand how it is built, please have a look at *docs/* and read the [requirements-document](./docs/requirements-document.md) or visualize the [system design](./docs/system-design.png) diagram.
 
 
 ## 🐳 Prerequisites
@@ -52,7 +52,7 @@ To promote the adoption of Stratum V2, a comprehensive benchmarking tool is need
    - **Configuration A**: it runs **every** role, selecting txs and mining on custom jobs
    - **Configuration C**: it doesn't run [Job Declaration Protocol](https://github.com/stratum-mining/sv2-spec/blob/main/06-Job-Declaration-Protocol.md), so it will mine on Pool's block template
   
-    Please have a look at https://stratumprotocol.org to better understand the Stratum V2 configuration aforementioned and decide which one to benchmark.
+    Please have a look at https://stratumprotocol.org to better understand the Stratum V2 configurations and decide which one to benchmark.
 
 3. Run the tool using Docker Compose
 - To run Configuration A:
