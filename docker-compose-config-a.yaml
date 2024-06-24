@@ -20,8 +20,8 @@ services:
 
   sv2-roles-builder:
     build:
-      context: ../../
-      dockerfile: benches/benchmarking-tool/sri-roles.dockerfile
+      #context: ../../
+      dockerfile: ./sri-roles.dockerfile
     container_name: sv2-roles-builder
     image: sv2-roles-builder-image  
     command: echo "SRI build completed"  
