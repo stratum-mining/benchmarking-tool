@@ -2,7 +2,7 @@
   <br>
   <a href="https://stratumprotocol.org"><img src="https://github.com/stratum-mining/stratumprotocol.org/blob/660ecc6ccd2eca82d0895cef939f4670adc6d1f4/src/.vuepress/public/assets/stratum-logo%402x.png" alt="SRI" width="200"></a>
   <br>
-Stratum V2 Benchmarking Tool 📏
+Stratum V2 - Benchmarking Tool 📏
   <br>
 </h1>
 
