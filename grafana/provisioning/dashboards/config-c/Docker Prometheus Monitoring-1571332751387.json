@@ -390,7 +390,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (irate(ntm_bytes_total{src=\"10.5.0.7\"}[10s]))\n",
+          "expr": "sum by (id, name) (irate(ntm_bytes_total{src=\"10.5.0.7\", dst=\"10.5.0.4\"}[10s]))\n",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
@@ -513,7 +513,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (irate(ntm_bytes_total{dst=\"10.5.0.7\"}[10s]))\n",
+          "expr": "sum by (id, name) (irate(ntm_bytes_total{dst=\"10.5.0.7\", src=\"10.5.0.4\"}[10s]))",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
@@ -648,7 +648,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (irate(ntm_bytes_total{src=\"10.5.0.7\"}[10s]))\n",
+          "expr": "sum by (id, name) (irate(ntm_bytes_total{src=\"10.5.0.7\", dst=\"10.5.0.4\"}[10s]))\n",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
@@ -667,6 +667,10 @@
             "alias": "Delta",
             "mode": "reduceRow",
             "reduce": {
+              "include": [
+                "SV1 (farm net interface)",
+                "SV2 (translator)"
+              ],
               "reducer": "diff"
             }
           }
@@ -783,7 +787,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (irate(ntm_bytes_total{dst=\"10.5.0.7\"}[10s]))\n",
+          "expr": "sum by (id, name) (irate(ntm_bytes_total{dst=\"10.5.0.7\", src=\"10.5.0.4\"}[10s]))",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
@@ -802,6 +806,10 @@
             "alias": "Delta",
             "mode": "reduceRow",
             "reduce": {
+              "include": [
+                "SV1 (farm net interface)",
+                "SV2 (translator)"
+              ],
               "reducer": "diff"
             }
           }
@@ -1496,7 +1504,9 @@
           "options": {
             "alias": "Delta",
             "binary": {
-              "left": "SV1 (pool + bitcoin node)"
+              "left": "SV1 (pool + bitcoin node)",
+              "operator": "-",
+              "right": "SV2 (pool + template provider)"
             },
             "index": {
               "asPercentile": true
@@ -2737,8 +2747,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -2853,8 +2862,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -2969,8 +2977,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -3085,8 +3092,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -3200,8 +3206,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -3278,8 +3283,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -3354,8 +3358,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "#299c46",
-                "value": null
+                "color": "#299c46"
               },
               {
                 "color": "rgba(237, 129, 40, 0.89)",
@@ -3436,8 +3439,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "#d44a3a",
-                "value": null
+                "color": "#d44a3a"
               },
               {
                 "color": "rgba(237, 129, 40, 0.89)",
@@ -3519,8 +3521,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "#d44a3a",
-                "value": null
+                "color": "#d44a3a"
               },
               {
                 "color": "rgba(237, 129, 40, 0.89)",
@@ -3601,8 +3602,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -3679,8 +3679,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "rgba(50, 172, 45, 0.97)",
-                "value": null
+                "color": "rgba(50, 172, 45, 0.97)"
               },
               {
                 "color": "rgba(237, 129, 40, 0.89)",
@@ -3765,8 +3764,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "rgba(50, 172, 45, 0.97)",
-                "value": null
+                "color": "rgba(50, 172, 45, 0.97)"
               },
               {
                 "color": "rgba(237, 129, 40, 0.89)",
@@ -3852,8 +3850,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "rgba(50, 172, 45, 0.97)",
-                "value": null
+                "color": "rgba(50, 172, 45, 0.97)"
               },
               {
                 "color": "rgba(237, 129, 40, 0.89)",
@@ -3958,8 +3955,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -4115,8 +4111,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -4257,8 +4252,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -4397,7 +4391,7 @@
     "list": []
   },
   "time": {
-    "from": "now-5m",
+    "from": "now-15m",
     "to": "now"
   },
   "timeRangeUpdatedDuringEditOrView": false,
@@ -4429,6 +4423,6 @@
   "timezone": "browser",
   "title": "Docker Prometheus Monitoring",
   "uid": "64nrElFmk",
-  "version": 4,
+  "version": 1,
   "weekStart": ""
 }
