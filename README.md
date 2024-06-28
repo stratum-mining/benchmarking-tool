@@ -33,16 +33,16 @@ To promote the adoption of Stratum V2, a comprehensive benchmarking tool is need
 - **Detailed Reporting**: Create detailed reports comparing protocol performance, with easy-to-understand metrics and visualizations.
 - **Integrated Bug Reporting**: Facilitate bug reporting and feedback collection directly within the tool.
 
-📚 To dig more into tool's features. or understand how it is built, please have a look at *docs/* and read the [requirements-document](./docs/requirements-document.md) or visualize the [system design](./docs/system-design.png) diagram.
+📚 To dig more into tool's features. or understand how it is built, please have a look at *docs/* and read the [requirements document](./docs/requirements-document.md) or visualize the [system design](./docs/system-design.png) diagram.
 
 
 ## 🐳 Prerequisites
 
 1. Install Docker on your system: https://docs.docker.com/engine/install/
 
-## Installation
+## ⛏️ Getting started
 
-1. Clone the repository:
+1. Clone the repository
     ```bash
     git clone https://github.com/stratum-mining/benchmarking-tool.git
     cd benchmarking-tool
@@ -63,6 +63,32 @@ To promote the adoption of Stratum V2, a comprehensive benchmarking tool is need
      ```bash
      docker compose -f docker-compose-config-c.yaml up -d
      ```
+
+4. Point miners to the following endpoints
+   - Stratum V1:
+   ```bash
+      stratum+tcp://<host-ip-address>:3333
+   ```
+   - Stratum V2:
+   ```bash
+      stratum+tcp://<host-ip-address>:34255
+   ```
+   If you don't have a physical miner, you can do tests with CPUMiner.
+  Setup the correct CPUMiner for your OS:
+    - You can download the binary directly from [here](https://sourceforge.net/projects/cpuminer/files/);
+    - Or compile it from [https://github.com/pooler/cpuminer](https://github.com/pooler/cpuminer)
+
+    On the CPUMiner directory:
+    
+    `./minerd -a sha256d -o stratum+tcp://<host-ip-address>:34255 -q -D -P`
+
+5. Open your browser and navigate to http://localhost:3000/
+6. Click on dashboard, selecting the one called "Docker Prometheus Monitoring"
+   
+<img src="./docs/images/grafana-dashboard.png" alt="grafana-dashboard">
+   
+7. Explore data, and click on **Report** button (placed in the upper right corner) to download a PDF containing plots and data for the desired timeframe selected.
+
 
 ## 🛣 Roadmap 
 
