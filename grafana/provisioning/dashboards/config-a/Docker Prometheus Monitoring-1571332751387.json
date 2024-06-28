@@ -572,12 +572,292 @@
       "type": "timeseries"
     },
     {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "left",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "opacity",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "smooth",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 1,
+            "pointSize": 3,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "fieldMinMax": false,
+          "links": [],
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "binBps"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 0,
+        "y": 21
+      },
+      "id": 67,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "lastNotNull"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "maxHeight": 600,
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "10.4.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "sum by (id, name) (irate(ntm_bytes_total{dst=\"10.5.0.8\", src!=\"10.5.0.16\", src!=\"192.168.65.7\", src!=\"192.168.65.254\"}[10s]))\n",
+          "hide": false,
+          "instant": false,
+          "legendFormat": "SV1 (farm net interface)",
+          "range": true,
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "sum by (id, name) (irate(ntm_bytes_total{src=\"10.5.0.3\", dst!=\"192.168.65.1\", dst!=\"10.5.0.6\"}[10s])) + sum by (id, name) (irate(ntm_bytes_total{src=\"10.5.0.6\", dst=~\"10.5.0.4|10.5.0.5\"}[10s]))\n",
+          "hide": false,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "SV2 (template provider + jdc)",
+          "metric": "container_network_receive_bytes_total",
+          "range": true,
+          "refId": "B",
+          "step": 10
+        }
+      ],
+      "title": "SV1 vs SV2 - Network Tx ",
+      "transformations": [
+        {
+          "id": "calculateField",
+          "options": {
+            "alias": "Delta",
+            "mode": "reduceRow",
+            "reduce": {
+              "include": [
+                "SV1 (farm net interface)",
+                "SV2 (template provider + jdc)"
+              ],
+              "reducer": "diff"
+            },
+            "replaceFields": false
+          }
+        }
+      ],
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "left",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "opacity",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "smooth",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 1,
+            "pointSize": 3,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "fieldMinMax": false,
+          "links": [],
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "binBps"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 12,
+        "y": 21
+      },
+      "id": 68,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "lastNotNull"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "maxHeight": 600,
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "10.4.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "sum by (id, name) (irate(ntm_bytes_total{src=\"10.5.0.8\", dst!=\"10.5.0.16\", dst!=\"192.168.65.7\", dst!=\"192.168.65.254\"}[10s]))\n",
+          "hide": false,
+          "instant": false,
+          "legendFormat": "SV1 (farm net interface)",
+          "range": true,
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "sum by (id, name) (irate(ntm_bytes_total{dst=\"10.5.0.3\", src!=\"192.168.65.1\", src!=\"10.5.0.6\"}[10s])) + sum by (id, name) (irate(ntm_bytes_total{dst=\"10.5.0.6\", src=~\"10.5.0.4|10.5.0.5\"}[10s]))\n",
+          "hide": false,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "SV2 (template provider + jdc)",
+          "metric": "container_network_receive_bytes_total",
+          "range": true,
+          "refId": "B",
+          "step": 10
+        }
+      ],
+      "title": "SV1 vs SV2 - Network Rx ",
+      "transformations": [
+        {
+          "id": "calculateField",
+          "options": {
+            "alias": "Delta",
+            "mode": "reduceRow",
+            "reduce": {
+              "include": [
+                "SV1 (farm net interface)",
+                "SV2 (template provider + jdc)"
+              ],
+              "reducer": "diff"
+            },
+            "replaceFields": false
+          }
+        }
+      ],
+      "type": "timeseries"
+    },
+    {
       "collapsed": false,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 21
+        "y": 31
       },
       "id": 55,
       "panels": [],
@@ -653,7 +933,7 @@
         "h": 10,
         "w": 12,
         "x": 0,
-        "y": 22
+        "y": 32
       },
       "id": 63,
       "options": {
@@ -789,7 +1069,7 @@
         "h": 10,
         "w": 12,
         "x": 12,
-        "y": 22
+        "y": 32
       },
       "id": 66,
       "options": {
@@ -924,7 +1204,7 @@
         "h": 10,
         "w": 12,
         "x": 0,
-        "y": 32
+        "y": 42
       },
       "id": 57,
       "options": {
@@ -1078,7 +1358,7 @@
         "h": 10,
         "w": 12,
         "x": 12,
-        "y": 32
+        "y": 42
       },
       "id": 62,
       "options": {
@@ -1164,12 +1444,298 @@
       "type": "timeseries"
     },
     {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "left",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "opacity",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "smooth",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 1,
+            "pointSize": 3,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "fieldMinMax": false,
+          "links": [],
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "binBps"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 0,
+        "y": 52
+      },
+      "id": 69,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "lastNotNull"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "maxHeight": 600,
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "sum by (id, name) (irate(ntm_bytes_total{src=\"10.5.0.8\", dst!=\"10.5.0.16\", dst!=\"192.168.65.7\", dst!=\"192.168.65.254\"}[10s])) + sum by (id, name) (irate(ntm_bytes_total{src=\"10.5.0.16\", dst!=\"192.168.65.1\", dst!=\"10.5.0.8\"}[10s]))\n",
+          "hide": false,
+          "instant": false,
+          "legendFormat": "SV1 (pool + bitcoin node)",
+          "range": true,
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "sum by (id, name) (irate(ntm_bytes_total{src=\"10.5.0.4\", dst=\"10.5.0.6\"}[10s])) + sum by (id, name) (irate(ntm_bytes_total{src=\"10.5.0.2\", dst!=\"192.168.65.1\", dst!=\"10.5.0.4\", dst!=\"10.5.0.5\"}[10s])) + sum by (id, name) (irate(ntm_bytes_total{src=\"10.5.0.5\", dst=\"10.5.0.6\"}[10s]))\n",
+          "hide": false,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "SV2 (pool + template provider + jds)",
+          "metric": "container_network_receive_bytes_total",
+          "range": true,
+          "refId": "B",
+          "step": 10
+        }
+      ],
+      "title": "SV1 vs SV2 - Network Tx ",
+      "transformations": [
+        {
+          "filter": {
+            "id": "byRefId",
+            "options": ""
+          },
+          "id": "calculateField",
+          "options": {
+            "alias": "Delta",
+            "index": {
+              "asPercentile": true
+            },
+            "mode": "reduceRow",
+            "reduce": {
+              "include": [
+                "SV1 (pool + bitcoin node)",
+                "SV2 (pool + template provider + jds)"
+              ],
+              "reducer": "diff"
+            },
+            "replaceFields": false
+          }
+        }
+      ],
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "left",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "opacity",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "smooth",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 1,
+            "pointSize": 3,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "fieldMinMax": false,
+          "links": [],
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "binBps"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 12,
+        "y": 52
+      },
+      "id": 70,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "lastNotNull"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "maxHeight": 600,
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "10.4.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "sum by (id, name) (irate(ntm_bytes_total{dst=\"10.5.0.8\", src!=\"10.5.0.16\", src!=\"192.168.65.7\", src!=\"192.168.65.254\"}[10s])) + sum by (id, name) (irate(ntm_bytes_total{dst=\"10.5.0.16\", src!=\"192.168.65.1\", src!=\"10.5.0.8\"}[10s]))\n",
+          "hide": false,
+          "instant": false,
+          "legendFormat": "SV1 (pool + bitcoin node)",
+          "range": true,
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "sum by (id, name) (irate(ntm_bytes_total{dst=\"10.5.0.4\", src=\"10.5.0.6\"}[10s])) + sum by (id, name) (irate(ntm_bytes_total{dst=\"10.5.0.2\", src!=\"192.168.65.1\", src!=\"10.5.0.4\", src!=\"10.5.0.5\"}[10s])) + sum by (id, name) (irate(ntm_bytes_total{dst=\"10.5.0.5\", src=\"10.5.0.6\"}[10s]))\n",
+          "hide": false,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "SV2 (pool + template provider + jds)",
+          "metric": "container_network_receive_bytes_total",
+          "range": true,
+          "refId": "B",
+          "step": 10
+        }
+      ],
+      "title": "SV1 vs SV2 - Network Tx ",
+      "transformations": [
+        {
+          "id": "calculateField",
+          "options": {
+            "alias": "Delta",
+            "mode": "reduceRow",
+            "reduce": {
+              "include": [
+                "SV2 (pool + template provider + jds)",
+                "SV1 (pool + bitcoin node)"
+              ],
+              "reducer": "diff"
+            }
+          }
+        }
+      ],
+      "type": "timeseries"
+    },
+    {
       "collapsed": false,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 42
+        "y": 62
       },
       "id": 50,
       "panels": [],
@@ -1245,7 +1811,7 @@
         "h": 10,
         "w": 6,
         "x": 0,
-        "y": 43
+        "y": 63
       },
       "id": 51,
       "options": {
@@ -1377,7 +1943,7 @@
         "h": 10,
         "w": 6,
         "x": 6,
-        "y": 43
+        "y": 63
       },
       "id": 52,
       "options": {
@@ -1509,7 +2075,7 @@
         "h": 10,
         "w": 6,
         "x": 12,
-        "y": 43
+        "y": 63
       },
       "id": 53,
       "options": {
@@ -1641,7 +2207,7 @@
         "h": 10,
         "w": 6,
         "x": 18,
-        "y": 43
+        "y": 63
       },
       "id": 8,
       "options": {
@@ -1714,7 +2280,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 53
+        "y": 73
       },
       "id": 19,
       "panels": [],
@@ -1799,7 +2365,7 @@
         "h": 10,
         "w": 6,
         "x": 0,
-        "y": 54
+        "y": 74
       },
       "id": 45,
       "options": {
@@ -1915,7 +2481,7 @@
         "h": 10,
         "w": 6,
         "x": 6,
-        "y": 54
+        "y": 74
       },
       "id": 44,
       "options": {
@@ -2031,7 +2597,7 @@
         "h": 10,
         "w": 6,
         "x": 12,
-        "y": 54
+        "y": 74
       },
       "id": 43,
       "options": {
@@ -2147,7 +2713,7 @@
         "h": 10,
         "w": 6,
         "x": 18,
-        "y": 54
+        "y": 74
       },
       "id": 58,
       "options": {
@@ -2263,7 +2829,7 @@
         "h": 10,
         "w": 6,
         "x": 0,
-        "y": 64
+        "y": 84
       },
       "id": 46,
       "options": {
@@ -2379,7 +2945,7 @@
         "h": 10,
         "w": 6,
         "x": 6,
-        "y": 64
+        "y": 84
       },
       "id": 47,
       "options": {
@@ -2495,7 +3061,7 @@
         "h": 10,
         "w": 6,
         "x": 12,
-        "y": 64
+        "y": 84
       },
       "id": 48,
       "options": {
@@ -2611,7 +3177,7 @@
         "h": 10,
         "w": 6,
         "x": 18,
-        "y": 64
+        "y": 84
       },
       "id": 49,
       "options": {
@@ -2668,7 +3234,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 74
+        "y": 94
       },
       "id": 17,
       "panels": [],
@@ -2726,7 +3292,7 @@
         "h": 7,
         "w": 3,
         "x": 0,
-        "y": 75
+        "y": 95
       },
       "id": 15,
       "maxDataPoints": 100,
@@ -2804,7 +3370,7 @@
         "h": 4,
         "w": 3,
         "x": 3,
-        "y": 75
+        "y": 95
       },
       "id": 35,
       "maxDataPoints": 100,
@@ -2884,7 +3450,7 @@
         "h": 7,
         "w": 5,
         "x": 6,
-        "y": 75
+        "y": 95
       },
       "id": 13,
       "maxDataPoints": 100,
@@ -2966,7 +3532,7 @@
         "h": 7,
         "w": 4,
         "x": 11,
-        "y": 75
+        "y": 95
       },
       "id": 11,
       "maxDataPoints": 100,
@@ -3049,7 +3615,7 @@
         "h": 7,
         "w": 4,
         "x": 15,
-        "y": 75
+        "y": 95
       },
       "id": 31,
       "maxDataPoints": 100,
@@ -3127,7 +3693,7 @@
         "h": 3,
         "w": 3,
         "x": 3,
-        "y": 79
+        "y": 99
       },
       "id": 37,
       "maxDataPoints": 100,
@@ -3209,7 +3775,7 @@
         "h": 6,
         "w": 6,
         "x": 0,
-        "y": 82
+        "y": 102
       },
       "id": 4,
       "maxDataPoints": 100,
@@ -3295,7 +3861,7 @@
         "h": 6,
         "w": 6,
         "x": 6,
-        "y": 82
+        "y": 102
       },
       "id": 6,
       "maxDataPoints": 100,
@@ -3382,7 +3948,7 @@
         "h": 6,
         "w": 7,
         "x": 12,
-        "y": 82
+        "y": 102
       },
       "id": 7,
       "maxDataPoints": 100,
@@ -3530,7 +4096,7 @@
         "h": 9,
         "w": 6,
         "x": 0,
-        "y": 88
+        "y": 108
       },
       "id": 25,
       "options": {
@@ -3672,7 +4238,7 @@
         "h": 9,
         "w": 6,
         "x": 6,
-        "y": 88
+        "y": 108
       },
       "id": 27,
       "options": {
@@ -3859,7 +4425,7 @@
         "h": 9,
         "w": 7,
         "x": 12,
-        "y": 88
+        "y": 108
       },
       "id": 28,
       "options": {
@@ -3906,7 +4472,7 @@
     "list": []
   },
   "time": {
-    "from": "now-5m",
+    "from": "now-15m",
     "to": "now"
   },
   "timeRangeUpdatedDuringEditOrView": false,
@@ -3938,6 +4504,6 @@
   "timezone": "browser",
   "title": "Docker Prometheus Monitoring",
   "uid": "64nrElFmk",
-  "version": 1,
+  "version": 5,
   "weekStart": ""
 }
