@@ -19,7 +19,6 @@ services:
 
   sv2-roles-builder:
     build:
-      #context: ../../
       dockerfile: ./sri-roles.dockerfile
     container_name: sv2-roles-builder
     image: sv2-roles-builder-image  
@@ -49,7 +48,6 @@ services:
       - "8442:8442"
       - "18333:48333"
       - "8332:8332"
-      #- "18332:18332"
       - "48332:48332"
     container_name: sv2-tp-pool-side
     volumes:
@@ -66,10 +64,7 @@ services:
     image: sv2-template-provider
     command: ["/bitcoin/src/bitcoind", "-testnet4"]   
     ports:
-      #- "8443:8443"
       - "38333:18333"
-      #- "18332:8332"
-      #- "18332:18332"
       - "48333:48332"
     container_name: sv1-node-pool-side
     volumes:
@@ -133,8 +128,6 @@ services:
     build:
       context: .
       dockerfile: ./sv1-public-pool.dockerfile
-    #extra_hosts:
-      #- "host.docker.internal:host-gateway"
     ports:
       - "3333:3333"
       - "3334:3334"

@@ -20,7 +20,6 @@ services:
 
   sv2-roles-builder:
     build:
-      #context: ../../
       dockerfile: ./sri-roles.dockerfile
     container_name: sv2-roles-builder
     image: sv2-roles-builder-image  
@@ -50,7 +49,6 @@ services:
       - "8442:8442"
       - "18333:48333"
       - "8332:8332"
-      #- "18332:18332"
       - "48332:48332"
     container_name: sv2-tp-pool-side
     volumes:
@@ -69,8 +67,6 @@ services:
     ports:
       - "8443:8443"
       - "28333:18333"
-      #- "18332:8332"
-      #- "18332:18332"
     container_name: sv2-tp-miner-side
     volumes:
       - bitcoin_miner_side_data:/root/.bitcoin
@@ -86,10 +82,7 @@ services:
     image: sv2-template-provider
     command: ["/bitcoin/src/bitcoind", "-testnet4"]   
     ports:
-      #- "8443:8443"
       - "38333:18333"
-      #- "18332:8332"
-      #- "18332:18332"
       - "48333:48332"
     container_name: sv1-node-pool-side
     volumes:
@@ -186,8 +179,6 @@ services:
     build:
       context: .
       dockerfile: ./sv1-public-pool.dockerfile
-    #extra_hosts:
-      #- "host.docker.internal:host-gateway"
     ports:
       - "3333:3333"
       - "3334:3334"
@@ -259,27 +250,7 @@ services:
     deploy:
       mode: global
       restart_policy:
-          condition: on-failure
-
-  alertmanager:
-    image: prom/alertmanager
-    ports:
-      - 9093:9093
-    container_name: alertmanager
-    volumes:
-      - "./alertmanager/:/etc/alertmanager/"
-    networks:
-      sv2-net:
-        ipv4_address: 10.5.0.11
-    command:
-      - '--config.file=/etc/alertmanager/config.yml'
-      - '--storage.path=/alertmanager'
-    deploy:
-      placement:
-        constraints:
-           - node.role==manager
-      restart_policy:
-        condition: on-failure    
+          condition: on-failure    
 
   cadvisor:
     image: gcr.io/cadvisor/cadvisor
@@ -344,7 +315,6 @@ services:
     networks:
       sv2-net:
         ipv4_address: 10.5.0.14
-
 
   renderer:
     image: grafana/grafana-image-renderer:latest

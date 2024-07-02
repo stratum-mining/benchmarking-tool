@@ -73,8 +73,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -92,7 +91,7 @@
         "x": 0,
         "y": 1
       },
-      "id": 72,
+      "id": 74,
       "maxDataPoints": 100,
       "options": {
         "colorMode": "none",
@@ -193,8 +192,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -316,8 +314,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -438,8 +435,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -482,30 +478,14 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.3\", dst!=\"192.168.65.1\", dst!=\"10.5.0.6\"}[20s]))\n",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.7\", dst=\"10.5.0.4\"}[20s]))\n",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
-          "legendFormat": "Template Provider",
+          "legendFormat": "Translator",
           "metric": "container_network_receive_bytes_total",
           "range": true,
           "refId": "A",
-          "step": 10
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.6\", dst=~\"10.5.0.4|10.5.0.5\"}[20s]))\n",
-          "hide": false,
-          "interval": "",
-          "intervalFactor": 1,
-          "legendFormat": "Job Declarator Client (JDC)",
-          "metric": "container_network_receive_bytes_total",
-          "range": true,
-          "refId": "B",
           "step": 10
         }
       ],
@@ -577,8 +557,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -621,30 +600,14 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.3\", src!=\"192.168.65.1\", src!=\"10.5.0.6\"}[20s]))\n",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.7\", src=\"10.5.0.4\"}[20s]))",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
-          "legendFormat": "Template Provider",
+          "legendFormat": "Translator",
           "metric": "container_network_receive_bytes_total",
           "range": true,
           "refId": "A",
-          "step": 10
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.6\", src=~\"10.5.0.4|10.5.0.5\"}[20s]))\n",
-          "hide": false,
-          "interval": "",
-          "intervalFactor": 1,
-          "legendFormat": "Job Declarator Client (JDC)",
-          "metric": "container_network_receive_bytes_total",
-          "range": true,
-          "refId": "B",
           "step": 10
         }
       ],
@@ -715,8 +678,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -734,7 +696,7 @@
         "x": 0,
         "y": 29
       },
-      "id": 67,
+      "id": 69,
       "options": {
         "legend": {
           "calcs": [
@@ -772,11 +734,11 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.3\", dst!=\"192.168.65.1\", dst!=\"10.5.0.6\"}[20s])) + sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.6\", dst=~\"10.5.0.4|10.5.0.5\"}[20s]))",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.7\", dst=\"10.5.0.4\"}[20s]))\n",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
-          "legendFormat": "SV2 (template provider + jdc)",
+          "legendFormat": "SV2 (translator)",
           "metric": "container_network_receive_bytes_total",
           "range": true,
           "refId": "B",
@@ -793,11 +755,10 @@
             "reduce": {
               "include": [
                 "SV1 (farm net interface)",
-                "SV2 (template provider + jdc)"
+                "SV2 (translator)"
               ],
               "reducer": "diff"
-            },
-            "replaceFields": false
+            }
           }
         }
       ],
@@ -855,8 +816,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -874,7 +834,7 @@
         "x": 12,
         "y": 29
       },
-      "id": 68,
+      "id": 70,
       "options": {
         "legend": {
           "calcs": [
@@ -912,11 +872,11 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.3\", src!=\"192.168.65.1\", src!=\"10.5.0.6\"}[20s])) + sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.6\", src=~\"10.5.0.4|10.5.0.5\"}[20s]))\n",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.7\", src=\"10.5.0.4\"}[20s]))",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
-          "legendFormat": "SV2 (template provider + jdc)",
+          "legendFormat": "SV2 (translator)",
           "metric": "container_network_receive_bytes_total",
           "range": true,
           "refId": "B",
@@ -933,11 +893,10 @@
             "reduce": {
               "include": [
                 "SV1 (farm net interface)",
-                "SV2 (template provider + jdc)"
+                "SV2 (translator)"
               ],
               "reducer": "diff"
-            },
-            "replaceFields": false
+            }
           }
         }
       ],
@@ -1008,8 +967,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1071,7 +1029,7 @@
           "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.16\", dst!=\"192.168.65.1\", dst!=\"10.5.0.8\"}[20s]))",
           "hide": false,
           "instant": false,
-          "legendFormat": "bitcoin-node",
+          "legendFormat": "Bitcoin Node",
           "range": true,
           "refId": "B"
         }
@@ -1144,8 +1102,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1207,7 +1164,7 @@
           "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.16\", src!=\"192.168.65.1\", src!=\"10.5.0.8\"}[20s]))\n",
           "hide": false,
           "instant": false,
-          "legendFormat": "bitcoin-node",
+          "legendFormat": "Bitcoin Node",
           "range": true,
           "refId": "B"
         }
@@ -1279,8 +1236,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1323,11 +1279,11 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.2\", dst!=\"192.168.65.1\", dst!=\"10.5.0.4\", dst!=\"10.5.0.5\"}[20s]))\n",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.4\", dst=\"10.5.0.7\"}[20s]))\n",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
-          "legendFormat": "Template Provider",
+          "legendFormat": "Pool",
           "metric": "container_network_receive_bytes_total",
           "range": true,
           "refId": "A",
@@ -1339,30 +1295,14 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.4\", dst=\"10.5.0.6\"}[20s]))\n",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.2\", dst!=\"192.168.65.1\", dst!=\"10.5.0.4\", dst!=\"10.5.0.5\"}[20s]))\n",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
-          "legendFormat": "Pool",
+          "legendFormat": "Template Provider",
           "metric": "container_network_receive_bytes_total",
           "range": true,
           "refId": "B",
-          "step": 10
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.5\", dst=\"10.5.0.6\"}[20s]))\n",
-          "hide": false,
-          "interval": "",
-          "intervalFactor": 1,
-          "legendFormat": "Job Declarator Server (JDS)",
-          "metric": "container_network_receive_bytes_total",
-          "range": true,
-          "refId": "C",
           "step": 10
         }
       ],
@@ -1433,8 +1373,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1477,11 +1416,11 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.2\", src!=\"192.168.65.1\", src!=\"10.5.0.4\", src!=\"10.5.0.5\"}[20s]))\n",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.4\", src=\"10.5.0.7\"}[20s]))\n",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
-          "legendFormat": "Template Provider",
+          "legendFormat": "Pool",
           "metric": "container_network_receive_bytes_total",
           "range": true,
           "refId": "A",
@@ -1493,30 +1432,14 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.4\", src=\"10.5.0.6\"}[20s]))\n",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.2\", src!=\"192.168.65.1\", src!=\"10.5.0.4\", src!=\"10.5.0.5\"}[20s]))\n",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
-          "legendFormat": "Pool",
+          "legendFormat": "Template Provider",
           "metric": "container_network_receive_bytes_total",
           "range": true,
           "refId": "B",
-          "step": 10
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.5\", src=\"10.5.0.6\"}[20s]))\n",
-          "hide": false,
-          "interval": "",
-          "intervalFactor": 1,
-          "legendFormat": "Job Declarator Server (JDS)",
-          "metric": "container_network_receive_bytes_total",
-          "range": true,
-          "refId": "C",
           "step": 10
         }
       ],
@@ -1587,8 +1510,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1606,7 +1528,7 @@
         "x": 0,
         "y": 60
       },
-      "id": 69,
+      "id": 67,
       "options": {
         "legend": {
           "calcs": [
@@ -1623,7 +1545,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "11.0.0",
+      "pluginVersion": "10.4.1",
       "targets": [
         {
           "datasource": {
@@ -1644,11 +1566,11 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.4\", dst=\"10.5.0.6\"}[20s])) + sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.2\", dst!=\"192.168.65.1\", dst!=\"10.5.0.4\", dst!=\"10.5.0.5\"}[20s])) + sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.5\", dst=\"10.5.0.6\"}[20s]))\n",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.4\", dst=\"10.5.0.7\"}[20s])) + sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.2\", dst!=\"192.168.65.1\", dst!=\"10.5.0.4\", dst!=\"10.5.0.5\"}[20s]))\n",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
-          "legendFormat": "SV2 (pool + template provider + jds)",
+          "legendFormat": "SV2 (pool + template provider)",
           "metric": "container_network_receive_bytes_total",
           "range": true,
           "refId": "B",
@@ -1658,13 +1580,14 @@
       "title": "SV1 vs SV2 - Network Tx ",
       "transformations": [
         {
-          "filter": {
-            "id": "byRefId",
-            "options": ""
-          },
           "id": "calculateField",
           "options": {
             "alias": "Delta",
+            "binary": {
+              "left": "SV1 (pool + bitcoin node)",
+              "operator": "-",
+              "right": "SV2 (pool + template provider)"
+            },
             "index": {
               "asPercentile": true
             },
@@ -1672,7 +1595,7 @@
             "reduce": {
               "include": [
                 "SV1 (pool + bitcoin node)",
-                "SV2 (pool + template provider + jds)"
+                "SV2 (pool + template provider)"
               ],
               "reducer": "diff"
             },
@@ -1734,8 +1657,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1753,7 +1675,7 @@
         "x": 12,
         "y": 60
       },
-      "id": 70,
+      "id": 68,
       "options": {
         "legend": {
           "calcs": [
@@ -1778,7 +1700,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.8\", src!=\"10.5.0.16\", src!=\"192.168.65.7\", src!=\"192.168.65.254\"}[20s])) + sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.16\", src!=\"192.168.65.1\", src!=\"10.5.0.8\"}[20s]))\n",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.8\", src!=\"10.5.0.16\", src!=\"192.168.65.7\", src!=\"192.168.65.254\"}[20s])) + sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.16\", src!=\"192.168.65.1\", src!=\"10.5.0.8\"}[20s]))\n\n",
           "hide": false,
           "instant": false,
           "legendFormat": "SV1 (pool + bitcoin node)",
@@ -1791,18 +1713,18 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.4\", src=\"10.5.0.6\"}[20s])) + sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.2\", src!=\"192.168.65.1\", src!=\"10.5.0.4\", src!=\"10.5.0.5\"}[20s])) + sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.5\", src=\"10.5.0.6\"}[20s]))\n",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.4\", src=\"10.5.0.7\"}[20s])) + sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.2\", src!=\"192.168.65.1\", src!=\"10.5.0.4\", src!=\"10.5.0.5\"}[20s]))\n",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
-          "legendFormat": "SV2 (pool + template provider + jds)",
+          "legendFormat": "SV2 (pool + template provider)",
           "metric": "container_network_receive_bytes_total",
           "range": true,
           "refId": "B",
           "step": 10
         }
       ],
-      "title": "SV1 vs SV2 - Network Tx ",
+      "title": "SV1 vs SV2 - Network Rx ",
       "transformations": [
         {
           "id": "calculateField",
@@ -1811,8 +1733,8 @@
             "mode": "reduceRow",
             "reduce": {
               "include": [
-                "SV2 (pool + template provider + jds)",
-                "SV1 (pool + bitcoin node)"
+                "SV1 (pool + bitcoin node)",
+                "SV2 (pool + template provider)"
               ],
               "reducer": "diff"
             }
@@ -1886,8 +1808,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -2018,8 +1939,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -2150,8 +2070,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -2282,8 +2201,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -3459,7 +3377,7 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 4,
+        "h": 7,
         "w": 3,
         "x": 3,
         "y": 103
@@ -3489,7 +3407,8 @@
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
-          "expr": "count(count(node_cpu_seconds_total{instance=~\"$node\", mode='system'}) by (cpu))",
+          "editorMode": "code",
+          "expr": "count(count(node_cpu_seconds_total{mode=\"idle\"}) by (cpu))",
           "instant": true,
           "refId": "A"
         }
@@ -3507,131 +3426,52 @@
           "color": {
             "mode": "thresholds"
           },
+          "decimals": 2,
           "mappings": [
             {
               "options": {
-                "0": {
+                "match": "null",
+                "result": {
                   "text": "N/A"
                 }
               },
-              "type": "value"
+              "type": "special"
             }
           ],
+          "max": 100,
+          "min": 0,
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "#299c46",
+                "color": "rgba(50, 172, 45, 0.97)",
                 "value": null
               },
               {
                 "color": "rgba(237, 129, 40, 0.89)",
-                "value": 0
+                "value": 65
               },
               {
-                "color": "#d44a3a",
-                "value": 1
+                "color": "rgba(245, 54, 54, 0.9)",
+                "value": 90
               }
             ]
           },
-          "unit": "none"
+          "unit": "percent"
         },
         "overrides": []
       },
       "gridPos": {
         "h": 7,
-        "w": 5,
+        "w": 3,
         "x": 6,
         "y": 103
       },
-      "id": 13,
+      "id": 6,
       "maxDataPoints": 100,
       "options": {
-        "colorMode": "background",
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "orientation": "horizontal",
-        "reduceOptions": {
-          "calcs": [
-            "mean"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "showPercentChange": false,
-        "textMode": "auto",
-        "wideLayout": true
-      },
-      "pluginVersion": "11.0.0",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "expr": "sum(ALERTS)",
-          "format": "time_series",
-          "intervalFactor": 1,
-          "refId": "A"
-        }
-      ],
-      "title": "Alerts",
-      "type": "stat"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [
-            {
-              "options": {
-                "match": "null",
-                "result": {
-                  "text": "N/A"
-                }
-              },
-              "type": "special"
-            }
-          ],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "#d44a3a",
-                "value": null
-              },
-              {
-                "color": "rgba(237, 129, 40, 0.89)",
-                "value": 0
-              },
-              {
-                "color": "#299c46",
-                "value": 1
-              }
-            ]
-          },
-          "unit": "none"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 7,
-        "w": 4,
-        "x": 11,
-        "y": 103
-      },
-      "id": 11,
-      "maxDataPoints": 100,
-      "options": {
-        "colorMode": "background",
-        "graphMode": "none",
-        "justifyMode": "auto",
+        "minVizHeight": 75,
+        "minVizWidth": 75,
         "orientation": "horizontal",
         "reduceOptions": {
           "calcs": [
@@ -3640,9 +3480,9 @@
           "fields": "",
           "values": false
         },
-        "showPercentChange": false,
-        "textMode": "auto",
-        "wideLayout": true
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "sizing": "auto"
       },
       "pluginVersion": "11.0.0",
       "targets": [
@@ -3651,97 +3491,19 @@
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
-          "expr": "sum(up)",
+          "editorMode": "code",
+          "expr": "100 - (avg(irate(node_cpu_seconds_total{mode=\"idle\"}[5m])) * 100)",
           "format": "time_series",
+          "interval": "1m",
           "intervalFactor": 1,
-          "refId": "A"
+          "legendFormat": "",
+          "range": true,
+          "refId": "A",
+          "step": 10
         }
       ],
-      "title": "Targets Online",
-      "type": "stat"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "fixedColor": "rgb(31, 120, 193)",
-            "mode": "fixed"
-          },
-          "mappings": [
-            {
-              "options": {
-                "match": "null",
-                "result": {
-                  "text": "N/A"
-                }
-              },
-              "type": "special"
-            }
-          ],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "#d44a3a",
-                "value": null
-              },
-              {
-                "color": "rgba(237, 129, 40, 0.89)",
-                "value": 0
-              },
-              {
-                "color": "#299c46",
-                "value": 1
-              }
-            ]
-          },
-          "unit": "none"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 7,
-        "w": 4,
-        "x": 15,
-        "y": 103
-      },
-      "id": 31,
-      "maxDataPoints": 100,
-      "options": {
-        "colorMode": "none",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "horizontal",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "showPercentChange": false,
-        "textMode": "auto",
-        "wideLayout": true
-      },
-      "pluginVersion": "11.0.0",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "expr": "count(rate(container_last_seen{job=\"cadvisor\", name!=\"\"}[5m]))",
-          "format": "time_series",
-          "intervalFactor": 1,
-          "refId": "A"
-        }
-      ],
-      "title": "Running Containers",
-      "type": "stat"
+      "title": "CPU usage",
+      "type": "gauge"
     },
     {
       "datasource": {
@@ -3782,10 +3544,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 3,
+        "h": 7,
         "w": 3,
-        "x": 3,
-        "y": 107
+        "x": 9,
+        "y": 103
       },
       "id": 37,
       "maxDataPoints": 100,
@@ -3812,7 +3574,9 @@
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
-          "expr": "node_memory_MemTotal_bytes{instance=~\"$node\"}",
+          "editorMode": "code",
+          "expr": "node_memory_MemTotal_bytes",
+          "range": true,
           "refId": "A"
         }
       ],
@@ -3864,10 +3628,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 6,
-        "w": 6,
-        "x": 0,
-        "y": 110
+        "h": 7,
+        "w": 3,
+        "x": 12,
+        "y": 103
       },
       "id": 4,
       "maxDataPoints": 100,
@@ -3950,97 +3714,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 6,
-        "w": 6,
-        "x": 6,
-        "y": 110
-      },
-      "id": 6,
-      "maxDataPoints": 100,
-      "options": {
-        "minVizHeight": 75,
-        "minVizWidth": 75,
-        "orientation": "horizontal",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "showThresholdLabels": false,
-        "showThresholdMarkers": true,
-        "sizing": "auto"
-      },
-      "pluginVersion": "11.0.0",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "expr": "100 - (avg(irate(node_cpu_seconds_total{instance=~\"$node\",mode=\"idle\"}[5m])) * 100)",
-          "format": "time_series",
-          "interval": "1m",
-          "intervalFactor": 1,
-          "legendFormat": "",
-          "refId": "A",
-          "step": 10
-        }
-      ],
-      "title": "CPU usage",
-      "type": "gauge"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "decimals": 2,
-          "mappings": [
-            {
-              "options": {
-                "match": "null",
-                "result": {
-                  "text": "N/A"
-                }
-              },
-              "type": "special"
-            }
-          ],
-          "max": 100,
-          "min": 0,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "rgba(50, 172, 45, 0.97)",
-                "value": null
-              },
-              {
-                "color": "rgba(237, 129, 40, 0.89)",
-                "value": 65
-              },
-              {
-                "color": "rgba(245, 54, 54, 0.9)",
-                "value": 90
-              }
-            ]
-          },
-          "unit": "percent"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 6,
-        "w": 7,
-        "x": 12,
-        "y": 110
+        "h": 7,
+        "w": 3,
+        "x": 15,
+        "y": 103
       },
       "id": 7,
       "maxDataPoints": 100,
@@ -4095,163 +3772,6 @@
             "axisPlacement": "auto",
             "barAlignment": 0,
             "drawStyle": "line",
-            "fillOpacity": 40,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "links": [],
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "Bps"
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "RECEIVE"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "#ea6460",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "SENT"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "#1f78c1",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "TRANSMIT"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "#1f78c1",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 9,
-        "w": 6,
-        "x": 0,
-        "y": 116
-      },
-      "id": 25,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "maxHeight": 600,
-          "mode": "multi",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "10.3.3",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "expr": "sum(rate(container_network_receive_bytes_total{id=\"/\"}[$interval])) by (id)",
-          "format": "time_series",
-          "interval": "2m",
-          "intervalFactor": 2,
-          "legendFormat": "RECEIVE",
-          "refId": "A"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "expr": "- sum(rate(container_network_transmit_bytes_total{id=\"/\"}[$interval])) by (id)",
-          "format": "time_series",
-          "interval": "2m",
-          "intervalFactor": 2,
-          "legendFormat": "TRANSMIT",
-          "refId": "B"
-        }
-      ],
-      "title": "Node Network Traffic",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
             "fillOpacity": 30,
             "gradientMode": "none",
             "hideFrom": {
@@ -4327,10 +3847,10 @@
         ]
       },
       "gridPos": {
-        "h": 9,
+        "h": 7,
         "w": 6,
-        "x": 6,
-        "y": 116
+        "x": 18,
+        "y": 103
       },
       "id": 27,
       "options": {
@@ -4375,181 +3895,6 @@
       ],
       "title": "Node Mermory",
       "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 30,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "normal"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "links": [],
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "decbytes"
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Available Memory"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "#508642",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Free Storage"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "#447ebc",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Total Storage Available"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "#508642",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Used Memory"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "#bf1b00",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Used Storage"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "#bf1b00",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 9,
-        "w": 7,
-        "x": 12,
-        "y": 116
-      },
-      "id": 28,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "maxHeight": 600,
-          "mode": "multi",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "10.3.3",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "expr": "sum(node_filesystem_free_bytes {job=\"node-exporter\", instance=~\".*9100\", device=~\"/dev/.*\", mountpoint!=\"/var/lib/docker/aufs\"}) ",
-          "format": "time_series",
-          "interval": "2m",
-          "intervalFactor": 2,
-          "legendFormat": "Free Storage",
-          "refId": "A"
-        }
-      ],
-      "title": "Filesystem Available",
-      "type": "timeseries"
     }
   ],
   "refresh": "5s",
@@ -4564,7 +3909,7 @@
     "list": []
   },
   "time": {
-    "from": "now-5m",
+    "from": "now-15m",
     "to": "now"
   },
   "timeRangeUpdatedDuringEditOrView": false,
@@ -4596,6 +3941,6 @@
   "timezone": "browser",
   "title": "SRI benchmarking tool",
   "uid": "64nrElFmk",
-  "version": 4,
+  "version": 6,
   "weekStart": ""
 }
