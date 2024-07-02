@@ -15,7 +15,7 @@
       }
     ]
   },
-  "description": "Docker Monitoring Template",
+  "description": "Benchmarking tool to measure Stratum V2 and Stratum (V1) protocol performances in different contexts ",
   "editable": true,
   "fiscalYearStartMonth": 0,
   "gnetId": 179,
@@ -37,12 +37,104 @@
   "liveNow": false,
   "panels": [
     {
-      "collapsed": false,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
         "y": 0
+      },
+      "id": 71,
+      "title": "Latency",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 6,
+          "mappings": [
+            {
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "N/A"
+                }
+              },
+              "type": "special"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "ms"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 1
+      },
+      "id": 74,
+      "maxDataPoints": 100,
+      "options": {
+        "colorMode": "none",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "average_pool_subscription_latency_milliseconds",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Average latency with pools",
+      "type": "stat"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 8
       },
       "id": 56,
       "panels": [],
@@ -118,7 +210,7 @@
         "h": 10,
         "w": 12,
         "x": 0,
-        "y": 1
+        "y": 9
       },
       "id": 65,
       "options": {
@@ -145,7 +237,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (irate(ntm_bytes_total{dst=\"10.5.0.8\", src!=\"10.5.0.16\", src!=\"192.168.65.7\", src!=\"192.168.65.254\"}[10s]))\n",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.8\", src!=\"10.5.0.16\", src!=\"192.168.65.7\", src!=\"192.168.65.254\"}[20s]))\n",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
@@ -241,7 +333,7 @@
         "h": 10,
         "w": 12,
         "x": 12,
-        "y": 1
+        "y": 9
       },
       "id": 64,
       "options": {
@@ -268,7 +360,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (irate(ntm_bytes_total{src=\"10.5.0.8\", dst!=\"10.5.0.16\", dst!=\"192.168.65.7\", dst!=\"192.168.65.254\"}[10s]))\n",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.8\", dst!=\"10.5.0.16\", dst!=\"192.168.65.7\", dst!=\"192.168.65.254\"}[20s]))\n",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
@@ -363,7 +455,7 @@
         "h": 10,
         "w": 12,
         "x": 0,
-        "y": 11
+        "y": 19
       },
       "id": 60,
       "options": {
@@ -390,7 +482,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (irate(ntm_bytes_total{src=\"10.5.0.7\", dst=\"10.5.0.4\"}[10s]))\n",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.7\", dst=\"10.5.0.4\"}[20s]))\n",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
@@ -486,7 +578,7 @@
         "h": 10,
         "w": 12,
         "x": 12,
-        "y": 11
+        "y": 19
       },
       "id": 59,
       "options": {
@@ -513,7 +605,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (irate(ntm_bytes_total{dst=\"10.5.0.7\", src=\"10.5.0.4\"}[10s]))",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.7\", src=\"10.5.0.4\"}[20s]))",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
@@ -608,7 +700,7 @@
         "h": 10,
         "w": 12,
         "x": 0,
-        "y": 21
+        "y": 29
       },
       "id": 69,
       "options": {
@@ -635,7 +727,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (irate(ntm_bytes_total{dst=\"10.5.0.8\", src!=\"10.5.0.16\", src!=\"192.168.65.7\", src!=\"192.168.65.254\"}[10s]))\n",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.8\", src!=\"10.5.0.16\", src!=\"192.168.65.7\", src!=\"192.168.65.254\"}[20s]))\n",
           "hide": false,
           "instant": false,
           "legendFormat": "SV1 (farm net interface)",
@@ -648,7 +740,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (irate(ntm_bytes_total{src=\"10.5.0.7\", dst=\"10.5.0.4\"}[10s]))\n",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.7\", dst=\"10.5.0.4\"}[20s]))\n",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
@@ -747,7 +839,7 @@
         "h": 10,
         "w": 12,
         "x": 12,
-        "y": 21
+        "y": 29
       },
       "id": 70,
       "options": {
@@ -774,7 +866,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (irate(ntm_bytes_total{src=\"10.5.0.8\", dst!=\"10.5.0.16\", dst!=\"192.168.65.7\", dst!=\"192.168.65.254\"}[10s]))\n",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.8\", dst!=\"10.5.0.16\", dst!=\"192.168.65.7\", dst!=\"192.168.65.254\"}[20s]))\n",
           "hide": false,
           "instant": false,
           "legendFormat": "SV1 (farm net interface)",
@@ -787,7 +879,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (irate(ntm_bytes_total{dst=\"10.5.0.7\", src=\"10.5.0.4\"}[10s]))",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.7\", src=\"10.5.0.4\"}[20s]))",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
@@ -823,7 +915,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 31
+        "y": 39
       },
       "id": 55,
       "panels": [],
@@ -899,7 +991,7 @@
         "h": 10,
         "w": 12,
         "x": 0,
-        "y": 32
+        "y": 40
       },
       "id": 63,
       "options": {
@@ -926,7 +1018,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (irate(ntm_bytes_total{src=\"10.5.0.8\", dst!=\"10.5.0.16\", dst!=\"192.168.65.7\", dst!=\"192.168.65.254\"}[10s]))\n",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.8\", dst!=\"10.5.0.16\", dst!=\"192.168.65.7\", dst!=\"192.168.65.254\"}[20s]))\n",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
@@ -942,7 +1034,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (irate(ntm_bytes_total{src=\"10.5.0.16\", dst!=\"192.168.65.1\", dst!=\"10.5.0.8\"}[10s]))",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.16\", dst!=\"192.168.65.1\", dst!=\"10.5.0.8\"}[20s]))",
           "hide": false,
           "instant": false,
           "legendFormat": "Bitcoin Node",
@@ -1035,7 +1127,7 @@
         "h": 10,
         "w": 12,
         "x": 12,
-        "y": 32
+        "y": 40
       },
       "id": 66,
       "options": {
@@ -1062,7 +1154,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (irate(ntm_bytes_total{dst=\"10.5.0.8\", src!=\"10.5.0.16\", src!=\"192.168.65.7\", src!=\"192.168.65.254\"}[10s]))\n",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.8\", src!=\"10.5.0.16\", src!=\"192.168.65.7\", src!=\"192.168.65.254\"}[20s]))\n",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
@@ -1078,7 +1170,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (irate(ntm_bytes_total{dst=\"10.5.0.16\", src!=\"192.168.65.1\", src!=\"10.5.0.8\"}[10s]))\n",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.16\", src!=\"192.168.65.1\", src!=\"10.5.0.8\"}[20s]))\n",
           "hide": false,
           "instant": false,
           "legendFormat": "Bitcoin Node",
@@ -1170,7 +1262,7 @@
         "h": 10,
         "w": 12,
         "x": 0,
-        "y": 42
+        "y": 50
       },
       "id": 57,
       "options": {
@@ -1197,7 +1289,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (irate(ntm_bytes_total{src=\"10.5.0.4\", dst=\"10.5.0.7\"}[10s]))\n",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.4\", dst=\"10.5.0.7\"}[20s]))\n",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
@@ -1213,7 +1305,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (irate(ntm_bytes_total{src=\"10.5.0.2\", dst!=\"192.168.65.1\", dst!=\"10.5.0.4\", dst!=\"10.5.0.5\"}[10s]))\n",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.2\", dst!=\"192.168.65.1\", dst!=\"10.5.0.4\", dst!=\"10.5.0.5\"}[20s]))\n",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
@@ -1308,7 +1400,7 @@
         "h": 10,
         "w": 12,
         "x": 12,
-        "y": 42
+        "y": 50
       },
       "id": 62,
       "options": {
@@ -1335,7 +1427,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (irate(ntm_bytes_total{dst=\"10.5.0.4\", src=\"10.5.0.7\"}[10s]))\n",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.4\", src=\"10.5.0.7\"}[20s]))\n",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
@@ -1351,7 +1443,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (irate(ntm_bytes_total{dst=\"10.5.0.2\", src!=\"192.168.65.1\", src!=\"10.5.0.4\", src!=\"10.5.0.5\"}[10s]))\n",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.2\", src!=\"192.168.65.1\", src!=\"10.5.0.4\", src!=\"10.5.0.5\"}[20s]))\n",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
@@ -1446,7 +1538,7 @@
         "h": 10,
         "w": 12,
         "x": 0,
-        "y": 52
+        "y": 60
       },
       "id": 67,
       "options": {
@@ -1473,7 +1565,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (irate(ntm_bytes_total{src=\"10.5.0.8\", dst!=\"10.5.0.16\", dst!=\"192.168.65.7\", dst!=\"192.168.65.254\"}[10s])) + sum by (id, name) (irate(ntm_bytes_total{src=\"10.5.0.16\", dst!=\"192.168.65.1\", dst!=\"10.5.0.8\"}[10s]))\n",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.8\", dst!=\"10.5.0.16\", dst!=\"192.168.65.7\", dst!=\"192.168.65.254\"}[20s])) + sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.16\", dst!=\"192.168.65.1\", dst!=\"10.5.0.8\"}[20s]))\n",
           "hide": false,
           "instant": false,
           "legendFormat": "SV1 (pool + bitcoin node)",
@@ -1486,7 +1578,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (irate(ntm_bytes_total{src=\"10.5.0.4\", dst=\"10.5.0.7\"}[10s])) + sum by (id, name) (irate(ntm_bytes_total{src=\"10.5.0.2\", dst!=\"192.168.65.1\", dst!=\"10.5.0.4\", dst!=\"10.5.0.5\"}[10s]))\n",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.4\", dst=\"10.5.0.7\"}[20s])) + sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.2\", dst!=\"192.168.65.1\", dst!=\"10.5.0.4\", dst!=\"10.5.0.5\"}[20s]))\n",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
@@ -1594,7 +1686,7 @@
         "h": 10,
         "w": 12,
         "x": 12,
-        "y": 52
+        "y": 60
       },
       "id": 68,
       "options": {
@@ -1621,7 +1713,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (irate(ntm_bytes_total{dst=\"10.5.0.8\", src!=\"10.5.0.16\", src!=\"192.168.65.7\", src!=\"192.168.65.254\"}[10s])) + sum by (id, name) (irate(ntm_bytes_total{dst=\"10.5.0.16\", src!=\"192.168.65.1\", src!=\"10.5.0.8\"}[10s]))\n",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.8\", src!=\"10.5.0.16\", src!=\"192.168.65.7\", src!=\"192.168.65.254\"}[20s])) + sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.16\", src!=\"192.168.65.1\", src!=\"10.5.0.8\"}[20s]))\n\n",
           "hide": false,
           "instant": false,
           "legendFormat": "SV1 (pool + bitcoin node)",
@@ -1634,7 +1726,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (irate(ntm_bytes_total{dst=\"10.5.0.4\", src=\"10.5.0.7\"}[10s])) + sum by (id, name) (irate(ntm_bytes_total{dst=\"10.5.0.2\", src!=\"192.168.65.1\", src!=\"10.5.0.4\", src!=\"10.5.0.5\"}[10s]))\n",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.4\", src=\"10.5.0.7\"}[20s])) + sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.2\", src!=\"192.168.65.1\", src!=\"10.5.0.4\", src!=\"10.5.0.5\"}[20s]))\n",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
@@ -1670,7 +1762,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 62
+        "y": 70
       },
       "id": 50,
       "panels": [],
@@ -1746,7 +1838,7 @@
         "h": 10,
         "w": 6,
         "x": 0,
-        "y": 63
+        "y": 71
       },
       "id": 51,
       "options": {
@@ -1878,7 +1970,7 @@
         "h": 10,
         "w": 6,
         "x": 6,
-        "y": 63
+        "y": 71
       },
       "id": 52,
       "options": {
@@ -2010,7 +2102,7 @@
         "h": 10,
         "w": 6,
         "x": 12,
-        "y": 63
+        "y": 71
       },
       "id": 53,
       "options": {
@@ -2142,7 +2234,7 @@
         "h": 10,
         "w": 6,
         "x": 18,
-        "y": 63
+        "y": 71
       },
       "id": 8,
       "options": {
@@ -2215,7 +2307,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 73
+        "y": 81
       },
       "id": 19,
       "panels": [],
@@ -2300,7 +2392,7 @@
         "h": 10,
         "w": 6,
         "x": 0,
-        "y": 74
+        "y": 82
       },
       "id": 45,
       "options": {
@@ -2416,7 +2508,7 @@
         "h": 10,
         "w": 6,
         "x": 6,
-        "y": 74
+        "y": 82
       },
       "id": 44,
       "options": {
@@ -2532,7 +2624,7 @@
         "h": 10,
         "w": 6,
         "x": 12,
-        "y": 74
+        "y": 82
       },
       "id": 43,
       "options": {
@@ -2648,7 +2740,7 @@
         "h": 10,
         "w": 6,
         "x": 18,
-        "y": 74
+        "y": 82
       },
       "id": 58,
       "options": {
@@ -2747,7 +2839,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -2763,7 +2856,7 @@
         "h": 10,
         "w": 6,
         "x": 0,
-        "y": 84
+        "y": 92
       },
       "id": 46,
       "options": {
@@ -2862,7 +2955,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -2878,7 +2972,7 @@
         "h": 10,
         "w": 6,
         "x": 6,
-        "y": 84
+        "y": 92
       },
       "id": 47,
       "options": {
@@ -2977,7 +3071,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -2993,7 +3088,7 @@
         "h": 10,
         "w": 6,
         "x": 12,
-        "y": 84
+        "y": 92
       },
       "id": 48,
       "options": {
@@ -3092,7 +3187,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -3108,7 +3204,7 @@
         "h": 10,
         "w": 6,
         "x": 18,
-        "y": 84
+        "y": 92
       },
       "id": 49,
       "options": {
@@ -3165,7 +3261,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 94
+        "y": 102
       },
       "id": 17,
       "panels": [],
@@ -3206,7 +3302,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -3222,7 +3319,7 @@
         "h": 7,
         "w": 3,
         "x": 0,
-        "y": 95
+        "y": 103
       },
       "id": 15,
       "maxDataPoints": 100,
@@ -3283,7 +3380,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -3299,7 +3397,7 @@
         "h": 4,
         "w": 3,
         "x": 3,
-        "y": 95
+        "y": 103
       },
       "id": 35,
       "maxDataPoints": 100,
@@ -3358,7 +3456,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "#299c46"
+                "color": "#299c46",
+                "value": null
               },
               {
                 "color": "rgba(237, 129, 40, 0.89)",
@@ -3378,7 +3477,7 @@
         "h": 7,
         "w": 5,
         "x": 6,
-        "y": 95
+        "y": 103
       },
       "id": 13,
       "maxDataPoints": 100,
@@ -3439,7 +3538,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "#d44a3a"
+                "color": "#d44a3a",
+                "value": null
               },
               {
                 "color": "rgba(237, 129, 40, 0.89)",
@@ -3459,7 +3559,7 @@
         "h": 7,
         "w": 4,
         "x": 11,
-        "y": 95
+        "y": 103
       },
       "id": 11,
       "maxDataPoints": 100,
@@ -3521,7 +3621,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "#d44a3a"
+                "color": "#d44a3a",
+                "value": null
               },
               {
                 "color": "rgba(237, 129, 40, 0.89)",
@@ -3541,7 +3642,7 @@
         "h": 7,
         "w": 4,
         "x": 15,
-        "y": 95
+        "y": 103
       },
       "id": 31,
       "maxDataPoints": 100,
@@ -3602,7 +3703,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -3618,7 +3720,7 @@
         "h": 3,
         "w": 3,
         "x": 3,
-        "y": 99
+        "y": 107
       },
       "id": 37,
       "maxDataPoints": 100,
@@ -3679,7 +3781,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "rgba(50, 172, 45, 0.97)"
+                "color": "rgba(50, 172, 45, 0.97)",
+                "value": null
               },
               {
                 "color": "rgba(237, 129, 40, 0.89)",
@@ -3699,7 +3802,7 @@
         "h": 6,
         "w": 6,
         "x": 0,
-        "y": 102
+        "y": 110
       },
       "id": 4,
       "maxDataPoints": 100,
@@ -3764,7 +3867,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "rgba(50, 172, 45, 0.97)"
+                "color": "rgba(50, 172, 45, 0.97)",
+                "value": null
               },
               {
                 "color": "rgba(237, 129, 40, 0.89)",
@@ -3784,7 +3888,7 @@
         "h": 6,
         "w": 6,
         "x": 6,
-        "y": 102
+        "y": 110
       },
       "id": 6,
       "maxDataPoints": 100,
@@ -3850,7 +3954,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "rgba(50, 172, 45, 0.97)"
+                "color": "rgba(50, 172, 45, 0.97)",
+                "value": null
               },
               {
                 "color": "rgba(237, 129, 40, 0.89)",
@@ -3870,7 +3975,7 @@
         "h": 6,
         "w": 7,
         "x": 12,
-        "y": 102
+        "y": 110
       },
       "id": 7,
       "maxDataPoints": 100,
@@ -3955,7 +4060,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -4017,7 +4123,7 @@
         "h": 9,
         "w": 6,
         "x": 0,
-        "y": 108
+        "y": 116
       },
       "id": 25,
       "options": {
@@ -4111,7 +4217,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -4158,7 +4265,7 @@
         "h": 9,
         "w": 6,
         "x": 6,
-        "y": 108
+        "y": 116
       },
       "id": 27,
       "options": {
@@ -4252,7 +4359,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -4344,7 +4452,7 @@
         "h": 9,
         "w": 7,
         "x": 12,
-        "y": 108
+        "y": 116
       },
       "id": 28,
       "options": {
@@ -4391,7 +4499,7 @@
     "list": []
   },
   "time": {
-    "from": "now-15m",
+    "from": "now-5m",
     "to": "now"
   },
   "timeRangeUpdatedDuringEditOrView": false,
@@ -4421,8 +4529,8 @@
     ]
   },
   "timezone": "browser",
-  "title": "Docker Prometheus Monitoring",
+  "title": "SRI benchmarking tool",
   "uid": "64nrElFmk",
-  "version": 1,
+  "version": 12,
   "weekStart": ""
 }

@@ -83,7 +83,7 @@ To promote the adoption of Stratum V2, a comprehensive benchmarking tool is need
     `./minerd -a sha256d -o stratum+tcp://<host-ip-address>:34255 -q -D -P`
 
 5. Open your browser and navigate to http://localhost:3000/
-6. Click on dashboard, selecting the one called "Docker Prometheus Monitoring"
+6. Click on dashboard, selecting the one called "SRI benchmarking tool"
    
 <img src="./docs/images/grafana-dashboard.png" alt="grafana-dashboard">
    
