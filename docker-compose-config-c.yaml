@@ -33,6 +33,13 @@ services:
     #image: custom-proxies-builder-image  
     #command: echo "Custom proxies build completed"
 
+  pools-latency-calculator-builder:
+    build:
+      dockerfile: pools-latency-calculator.dockerfile
+    container_name: pools-latency-calculator-builder
+    image: pools-latency-calculator-builder-image 
+    command: echo "pools-latency-calculator build completed"
+
   template-provider-pool-side:
     build:
       dockerfile: ./template-provider.dockerfile
@@ -276,3 +283,14 @@ services:
     networks:
       sv2-net:
         ipv4_address: 10.5.0.15
+
+  pools-latency-calculator:
+    image: pools-latency-calculator-builder-image  
+    command: ["./target/release/pools-latency-calculator"]
+    ports:
+      - "1234:1234" 
+    container_name: pools-latency-calculator
+    restart: unless-stopped
+    networks:
+      sv2-net:
+          ipv4_address: 10.5.0.18
