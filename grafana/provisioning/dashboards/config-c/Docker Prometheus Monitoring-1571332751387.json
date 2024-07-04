@@ -55,20 +55,46 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "thresholds"
+            "mode": "palette-classic"
           },
-          "decimals": 6,
-          "mappings": [
-            {
-              "options": {
-                "match": "null",
-                "result": {
-                  "text": "N/A"
-                }
-              },
-              "type": "special"
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "left",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "opacity",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "smooth",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 1,
+            "pointSize": 1,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
             }
-          ],
+          },
+          "fieldMinMax": false,
+          "links": [],
+          "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -87,30 +113,29 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 7,
+        "h": 6,
         "w": 12,
         "x": 0,
         "y": 1
       },
-      "id": 74,
-      "maxDataPoints": 100,
+      "id": 75,
       "options": {
-        "colorMode": "none",
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "orientation": "horizontal",
-        "reduceOptions": {
+        "legend": {
           "calcs": [
+            "mean",
             "lastNotNull"
           ],
-          "fields": "",
-          "values": false
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
         },
-        "showPercentChange": false,
-        "textMode": "auto",
-        "wideLayout": true
+        "tooltip": {
+          "maxHeight": 600,
+          "mode": "multi",
+          "sort": "none"
+        }
       },
-      "pluginVersion": "11.0.0",
+      "pluginVersion": "10.4.1",
       "targets": [
         {
           "datasource": {
@@ -118,15 +143,19 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "average_pool_subscription_latency_milliseconds",
-          "format": "time_series",
+          "expr": "average_pool_subscription_latency_milliseconds\n",
+          "hide": false,
+          "interval": "",
           "intervalFactor": 1,
+          "legendFormat": "Average latency with major pools (RTT)",
+          "metric": "container_network_receive_bytes_total",
           "range": true,
-          "refId": "A"
+          "refId": "A",
+          "step": 10
         }
       ],
-      "title": "Average latency with pools",
-      "type": "stat"
+      "title": "Average latency with major pools (RTT)",
+      "type": "timeseries"
     },
     {
       "collapsed": false,
@@ -134,7 +163,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 8
+        "y": 7
       },
       "id": 56,
       "panels": [],
@@ -210,7 +239,7 @@
         "h": 10,
         "w": 12,
         "x": 0,
-        "y": 9
+        "y": 8
       },
       "id": 65,
       "options": {
@@ -333,7 +362,7 @@
         "h": 10,
         "w": 12,
         "x": 12,
-        "y": 9
+        "y": 8
       },
       "id": 64,
       "options": {
@@ -455,7 +484,7 @@
         "h": 10,
         "w": 12,
         "x": 0,
-        "y": 19
+        "y": 18
       },
       "id": 60,
       "options": {
@@ -578,7 +607,7 @@
         "h": 10,
         "w": 12,
         "x": 12,
-        "y": 19
+        "y": 18
       },
       "id": 59,
       "options": {
@@ -700,7 +729,7 @@
         "h": 10,
         "w": 12,
         "x": 0,
-        "y": 29
+        "y": 28
       },
       "id": 69,
       "options": {
@@ -839,7 +868,7 @@
         "h": 10,
         "w": 12,
         "x": 12,
-        "y": 29
+        "y": 28
       },
       "id": 70,
       "options": {
@@ -915,7 +944,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 39
+        "y": 38
       },
       "id": 55,
       "panels": [],
@@ -991,7 +1020,7 @@
         "h": 10,
         "w": 12,
         "x": 0,
-        "y": 40
+        "y": 39
       },
       "id": 63,
       "options": {
@@ -1127,7 +1156,7 @@
         "h": 10,
         "w": 12,
         "x": 12,
-        "y": 40
+        "y": 39
       },
       "id": 66,
       "options": {
@@ -1245,8 +1274,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1262,7 +1290,7 @@
         "h": 10,
         "w": 12,
         "x": 0,
-        "y": 50
+        "y": 49
       },
       "id": 57,
       "options": {
@@ -1383,8 +1411,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1400,7 +1427,7 @@
         "h": 10,
         "w": 12,
         "x": 12,
-        "y": 50
+        "y": 49
       },
       "id": 62,
       "options": {
@@ -1521,8 +1548,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1538,7 +1564,7 @@
         "h": 10,
         "w": 12,
         "x": 0,
-        "y": 60
+        "y": 59
       },
       "id": 67,
       "options": {
@@ -1669,8 +1695,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1686,7 +1711,7 @@
         "h": 10,
         "w": 12,
         "x": 12,
-        "y": 60
+        "y": 59
       },
       "id": 68,
       "options": {
@@ -1762,7 +1787,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 70
+        "y": 69
       },
       "id": 50,
       "panels": [],
@@ -1821,8 +1846,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1838,7 +1862,7 @@
         "h": 10,
         "w": 6,
         "x": 0,
-        "y": 71
+        "y": 70
       },
       "id": 51,
       "options": {
@@ -1953,8 +1977,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1970,7 +1993,7 @@
         "h": 10,
         "w": 6,
         "x": 6,
-        "y": 71
+        "y": 70
       },
       "id": 52,
       "options": {
@@ -2085,8 +2108,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -2102,7 +2124,7 @@
         "h": 10,
         "w": 6,
         "x": 12,
-        "y": 71
+        "y": 70
       },
       "id": 53,
       "options": {
@@ -2217,8 +2239,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -2234,7 +2255,7 @@
         "h": 10,
         "w": 6,
         "x": 18,
-        "y": 71
+        "y": 70
       },
       "id": 8,
       "options": {
@@ -2307,7 +2328,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 81
+        "y": 80
       },
       "id": 19,
       "panels": [],
@@ -2375,8 +2396,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -2392,7 +2412,7 @@
         "h": 10,
         "w": 6,
         "x": 0,
-        "y": 82
+        "y": 81
       },
       "id": 45,
       "options": {
@@ -2491,8 +2511,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -2508,7 +2527,7 @@
         "h": 10,
         "w": 6,
         "x": 6,
-        "y": 82
+        "y": 81
       },
       "id": 44,
       "options": {
@@ -2607,8 +2626,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -2624,7 +2642,7 @@
         "h": 10,
         "w": 6,
         "x": 12,
-        "y": 82
+        "y": 81
       },
       "id": 43,
       "options": {
@@ -2723,8 +2741,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -2740,7 +2757,7 @@
         "h": 10,
         "w": 6,
         "x": 18,
-        "y": 82
+        "y": 81
       },
       "id": 58,
       "options": {
@@ -2839,8 +2856,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -2856,7 +2872,7 @@
         "h": 10,
         "w": 6,
         "x": 0,
-        "y": 92
+        "y": 91
       },
       "id": 46,
       "options": {
@@ -2955,8 +2971,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -2972,7 +2987,7 @@
         "h": 10,
         "w": 6,
         "x": 6,
-        "y": 92
+        "y": 91
       },
       "id": 47,
       "options": {
@@ -3071,8 +3086,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -3088,7 +3102,7 @@
         "h": 10,
         "w": 6,
         "x": 12,
-        "y": 92
+        "y": 91
       },
       "id": 48,
       "options": {
@@ -3187,8 +3201,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -3204,7 +3217,7 @@
         "h": 10,
         "w": 6,
         "x": 18,
-        "y": 92
+        "y": 91
       },
       "id": 49,
       "options": {
@@ -3261,7 +3274,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 102
+        "y": 101
       },
       "id": 17,
       "panels": [],
@@ -3302,8 +3315,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -3319,7 +3331,7 @@
         "h": 7,
         "w": 3,
         "x": 0,
-        "y": 103
+        "y": 102
       },
       "id": 15,
       "maxDataPoints": 100,
@@ -3380,8 +3392,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -3397,7 +3408,7 @@
         "h": 7,
         "w": 3,
         "x": 3,
-        "y": 103
+        "y": 102
       },
       "id": 35,
       "maxDataPoints": 100,
@@ -3458,8 +3469,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -3475,7 +3485,7 @@
         "h": 7,
         "w": 3,
         "x": 6,
-        "y": 103
+        "y": 102
       },
       "id": 37,
       "maxDataPoints": 100,
@@ -3539,8 +3549,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "rgba(50, 172, 45, 0.97)",
-                "value": null
+                "color": "rgba(50, 172, 45, 0.97)"
               },
               {
                 "color": "rgba(237, 129, 40, 0.89)",
@@ -3560,7 +3569,7 @@
         "h": 7,
         "w": 3,
         "x": 9,
-        "y": 103
+        "y": 102
       },
       "id": 6,
       "maxDataPoints": 100,
@@ -3627,8 +3636,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "rgba(50, 172, 45, 0.97)",
-                "value": null
+                "color": "rgba(50, 172, 45, 0.97)"
               },
               {
                 "color": "rgba(237, 129, 40, 0.89)",
@@ -3648,7 +3656,7 @@
         "h": 7,
         "w": 3,
         "x": 12,
-        "y": 103
+        "y": 102
       },
       "id": 4,
       "maxDataPoints": 100,
@@ -3713,8 +3721,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "rgba(50, 172, 45, 0.97)",
-                "value": null
+                "color": "rgba(50, 172, 45, 0.97)"
               },
               {
                 "color": "rgba(237, 129, 40, 0.89)",
@@ -3734,7 +3741,7 @@
         "h": 7,
         "w": 3,
         "x": 15,
-        "y": 103
+        "y": 102
       },
       "id": 7,
       "maxDataPoints": 100,
@@ -3819,8 +3826,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -3867,7 +3873,7 @@
         "h": 7,
         "w": 6,
         "x": 18,
-        "y": 103
+        "y": 102
       },
       "id": 27,
       "options": {
@@ -3958,6 +3964,6 @@
   "timezone": "browser",
   "title": "SRI benchmarking tool",
   "uid": "64nrElFmk",
-  "version": 13,
+  "version": 14,
   "weekStart": ""
 }
