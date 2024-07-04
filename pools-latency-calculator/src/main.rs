@@ -8,6 +8,7 @@ use std::net::SocketAddr;
 use warp::Filter;
 
 const TIMEOUT_DURATION: Duration = Duration::from_secs(10);
+const SLEEP_DURATION: Duration = Duration::from_secs(60);
 
 async fn connect_to_pool(url: &str) -> Result<TcpStream, std::io::Error> {
     let url_parts: Vec<&str> = url.split(':').collect();
@@ -110,9 +111,12 @@ async fn main() {
         "Average subscription latency to various mining pools in milliseconds"
     ).unwrap();
 
-    // Start the latency measurement
+    // Start the latency measurement in a loop
     tokio::spawn(async move {
-        average_latency(addresses, repetitions, gauge.clone()).await;
+        loop {
+            average_latency(addresses.clone(), repetitions, gauge.clone()).await;
+            sleep(SLEEP_DURATION).await;
+        }
     });
 
     // Start the Prometheus metrics server
