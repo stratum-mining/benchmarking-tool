@@ -24,13 +24,20 @@ services:
     image: sv2-roles-builder-image  
     command: echo "SRI build completed"  
   
-  #custom-proxies-builder:
+  #sv2-custom-proxies-builder:
     #build:
       #context: ../../
       #dockerfile: benches/benchmarking-tool/custom-proxies.dockerfile
     #container_name: custom-proxies-builder
     #image: custom-proxies-builder-image  
     #command: echo "Custom proxies build completed"
+
+  sv1-custom-proxy-builder:
+    build:
+      dockerfile: ./sv1-custom-proxy/Dockerfile
+    container_name: sv1-custom-proxy-builder
+    image: sv1-custom-proxy-builder-image  
+    command: echo "sv1-custom-proxy build completed"
 
   pools-latency-calculator-builder:
     build:
@@ -123,24 +130,41 @@ services:
       #sv2-net:
           #ipv4_address: 10.5.0.17
 
-  sv1-public-pool:
-    container_name: sv1-public-pool
+  sv1-pool:
+    container_name: sv1-pool
     build:
       context: .
-      dockerfile: ./sv1-public-pool.dockerfile
+      dockerfile: ./sv1-pool.dockerfile
     ports:
-      - "3333:3333"
+      - "3332:3332"
       - "3334:3334"
     volumes:
       - "./testnet-DB:/public-pool/DB"
-      - "./custom-configs/sv1-public-pool/.env:/public-pool/.env:ro"
-      - "./custom-configs/sv1-public-pool/rpc.js:/public-pool/node_modules/rpc-bitcoin/build/src/rpc.js" # to fix rpc-version field issue 
+      - "./custom-configs/sv1-pool/.env:/public-pool/.env:ro"
+      - "./custom-configs/sv1-pool/rpc.js:/public-pool/node_modules/rpc-bitcoin/build/src/rpc.js" # to fix rpc-version field issue 
     restart: unless-stopped
     environment:
       - NODE_ENV=production
     networks:
       sv2-net:
         ipv4_address: 10.5.0.8
+    cap_add:
+    - NET_ADMIN
+
+  sv1-custom-proxy:
+    image: sv1-custom-proxy-builder-image  
+    command: ["./target/release/proxy-miner-sv1-pool"]
+    ports:
+      - "3333:3333"
+      - "2345:2345"
+    container_name: sv1-custom-proxy
+    depends_on:
+      - sv1-custom-proxy-builder
+      - sv1-pool
+    restart: unless-stopped
+    networks:
+      sv2-net:
+          ipv4_address: 10.5.0.19
 
   monitor-traffic-tcpdump:
     image: inzania/network-traffic-metrics:latest

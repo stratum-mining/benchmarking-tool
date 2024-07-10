@@ -1,0 +1,14 @@
+[package]
+name = "proxy-miner-sv1-pool"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+tokio = { version = "1", features = ["full"] }
+log = "0.4"
+serde = { version = "1.0.89", features = ["derive", "alloc"], default-features = false }
+serde_json = { version = "1.0", default-features = false, features = ["alloc"] }
+tracing = "0.1"
+tracing-subscriber = "0.3"
+prometheus = "0.13"
+warp = "0.3"

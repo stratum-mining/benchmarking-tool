@@ -43,8 +43,369 @@
         "x": 0,
         "y": 0
       },
+      "id": 76,
+      "title": "Shares measurements",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "left",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "opacity",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "smooth",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 1,
+            "pointSize": 1,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "fieldMinMax": false,
+          "links": [],
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Acceptance rate %"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percent"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 0,
+        "y": 1
+      },
+      "id": 77,
+      "options": {
+        "legend": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "maxHeight": 600,
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "10.4.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "sv1_submitted_shares",
+          "hide": false,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "Submitted shares",
+          "metric": "container_network_receive_bytes_total",
+          "range": true,
+          "refId": "A",
+          "step": 10
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "sv1_valid_shares",
+          "hide": false,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "Valid shares",
+          "metric": "container_network_receive_bytes_total",
+          "range": true,
+          "refId": "B",
+          "step": 10
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "sv1_stale_shares",
+          "hide": false,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "Stale shares",
+          "metric": "container_network_receive_bytes_total",
+          "range": true,
+          "refId": "C",
+          "step": 10
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "exemplar": false,
+          "expr": "(sv1_valid_shares * 100) / sv1_submitted_shares",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "Acceptance rate %",
+          "metric": "container_network_receive_bytes_total",
+          "range": true,
+          "refId": "D",
+          "step": 10,
+          "useBackend": false
+        }
+      ],
+      "title": "SV1 shares",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "left",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "opacity",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "smooth",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 1,
+            "pointSize": 1,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "fieldMinMax": false,
+          "links": [],
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Acceptance rate %"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percent"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 12,
+        "y": 1
+      },
+      "id": 78,
+      "options": {
+        "legend": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "maxHeight": 600,
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "10.4.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "sv2_submitted_shares",
+          "hide": false,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "Submitted shares",
+          "metric": "container_network_receive_bytes_total",
+          "range": true,
+          "refId": "A",
+          "step": 10
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "sv2_valid_shares",
+          "hide": false,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "Valid shares",
+          "metric": "container_network_receive_bytes_total",
+          "range": true,
+          "refId": "B",
+          "step": 10
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "sv2_stale_shares",
+          "hide": false,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "Stale shares",
+          "metric": "container_network_receive_bytes_total",
+          "range": true,
+          "refId": "C",
+          "step": 10
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "exemplar": false,
+          "expr": "(sv2_valid_shares * 100) / sv2_submitted_shares",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "Acceptance rate %",
+          "metric": "container_network_receive_bytes_total",
+          "range": true,
+          "refId": "D",
+          "step": 10,
+          "useBackend": false
+        }
+      ],
+      "title": "SV2 shares",
+      "type": "timeseries"
+    },
+    {
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 11
+      },
       "id": 71,
-      "title": "Latency",
+      "title": "Latency and time measurements",
       "type": "row"
     },
     {
@@ -116,7 +477,7 @@
         "h": 6,
         "w": 12,
         "x": 0,
-        "y": 1
+        "y": 12
       },
       "id": 75,
       "options": {
@@ -163,7 +524,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 7
+        "y": 18
       },
       "id": 56,
       "panels": [],
@@ -239,7 +600,7 @@
         "h": 10,
         "w": 12,
         "x": 0,
-        "y": 8
+        "y": 19
       },
       "id": 65,
       "options": {
@@ -362,7 +723,7 @@
         "h": 10,
         "w": 12,
         "x": 12,
-        "y": 8
+        "y": 19
       },
       "id": 64,
       "options": {
@@ -484,7 +845,7 @@
         "h": 10,
         "w": 12,
         "x": 0,
-        "y": 18
+        "y": 29
       },
       "id": 60,
       "options": {
@@ -607,7 +968,7 @@
         "h": 10,
         "w": 12,
         "x": 12,
-        "y": 18
+        "y": 29
       },
       "id": 59,
       "options": {
@@ -729,7 +1090,7 @@
         "h": 10,
         "w": 12,
         "x": 0,
-        "y": 28
+        "y": 39
       },
       "id": 69,
       "options": {
@@ -868,7 +1229,7 @@
         "h": 10,
         "w": 12,
         "x": 12,
-        "y": 28
+        "y": 39
       },
       "id": 70,
       "options": {
@@ -944,7 +1305,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 38
+        "y": 49
       },
       "id": 55,
       "panels": [],
@@ -1003,8 +1364,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1020,7 +1380,7 @@
         "h": 10,
         "w": 12,
         "x": 0,
-        "y": 39
+        "y": 50
       },
       "id": 63,
       "options": {
@@ -1139,8 +1499,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1156,7 +1515,7 @@
         "h": 10,
         "w": 12,
         "x": 12,
-        "y": 39
+        "y": 50
       },
       "id": 66,
       "options": {
@@ -1290,7 +1649,7 @@
         "h": 10,
         "w": 12,
         "x": 0,
-        "y": 49
+        "y": 60
       },
       "id": 57,
       "options": {
@@ -1427,7 +1786,7 @@
         "h": 10,
         "w": 12,
         "x": 12,
-        "y": 49
+        "y": 60
       },
       "id": 62,
       "options": {
@@ -1564,7 +1923,7 @@
         "h": 10,
         "w": 12,
         "x": 0,
-        "y": 59
+        "y": 70
       },
       "id": 67,
       "options": {
@@ -1711,7 +2070,7 @@
         "h": 10,
         "w": 12,
         "x": 12,
-        "y": 59
+        "y": 70
       },
       "id": 68,
       "options": {
@@ -1787,7 +2146,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 69
+        "y": 80
       },
       "id": 50,
       "panels": [],
@@ -1862,7 +2221,7 @@
         "h": 10,
         "w": 6,
         "x": 0,
-        "y": 70
+        "y": 81
       },
       "id": 51,
       "options": {
@@ -1993,7 +2352,7 @@
         "h": 10,
         "w": 6,
         "x": 6,
-        "y": 70
+        "y": 81
       },
       "id": 52,
       "options": {
@@ -2124,7 +2483,7 @@
         "h": 10,
         "w": 6,
         "x": 12,
-        "y": 70
+        "y": 81
       },
       "id": 53,
       "options": {
@@ -2255,7 +2614,7 @@
         "h": 10,
         "w": 6,
         "x": 18,
-        "y": 70
+        "y": 81
       },
       "id": 8,
       "options": {
@@ -2328,7 +2687,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 80
+        "y": 91
       },
       "id": 19,
       "panels": [],
@@ -2412,7 +2771,7 @@
         "h": 10,
         "w": 6,
         "x": 0,
-        "y": 81
+        "y": 92
       },
       "id": 45,
       "options": {
@@ -2527,7 +2886,7 @@
         "h": 10,
         "w": 6,
         "x": 6,
-        "y": 81
+        "y": 92
       },
       "id": 44,
       "options": {
@@ -2642,7 +3001,7 @@
         "h": 10,
         "w": 6,
         "x": 12,
-        "y": 81
+        "y": 92
       },
       "id": 43,
       "options": {
@@ -2757,7 +3116,7 @@
         "h": 10,
         "w": 6,
         "x": 18,
-        "y": 81
+        "y": 92
       },
       "id": 58,
       "options": {
@@ -2872,7 +3231,7 @@
         "h": 10,
         "w": 6,
         "x": 0,
-        "y": 91
+        "y": 102
       },
       "id": 46,
       "options": {
@@ -2987,7 +3346,7 @@
         "h": 10,
         "w": 6,
         "x": 6,
-        "y": 91
+        "y": 102
       },
       "id": 47,
       "options": {
@@ -3102,7 +3461,7 @@
         "h": 10,
         "w": 6,
         "x": 12,
-        "y": 91
+        "y": 102
       },
       "id": 48,
       "options": {
@@ -3217,7 +3576,7 @@
         "h": 10,
         "w": 6,
         "x": 18,
-        "y": 91
+        "y": 102
       },
       "id": 49,
       "options": {
@@ -3274,7 +3633,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 101
+        "y": 112
       },
       "id": 17,
       "panels": [],
@@ -3331,7 +3690,7 @@
         "h": 7,
         "w": 3,
         "x": 0,
-        "y": 102
+        "y": 113
       },
       "id": 15,
       "maxDataPoints": 100,
@@ -3408,7 +3767,7 @@
         "h": 7,
         "w": 3,
         "x": 3,
-        "y": 102
+        "y": 113
       },
       "id": 35,
       "maxDataPoints": 100,
@@ -3485,7 +3844,7 @@
         "h": 7,
         "w": 3,
         "x": 6,
-        "y": 102
+        "y": 113
       },
       "id": 37,
       "maxDataPoints": 100,
@@ -3569,7 +3928,7 @@
         "h": 7,
         "w": 3,
         "x": 9,
-        "y": 102
+        "y": 113
       },
       "id": 6,
       "maxDataPoints": 100,
@@ -3656,7 +4015,7 @@
         "h": 7,
         "w": 3,
         "x": 12,
-        "y": 102
+        "y": 113
       },
       "id": 4,
       "maxDataPoints": 100,
@@ -3741,7 +4100,7 @@
         "h": 7,
         "w": 3,
         "x": 15,
-        "y": 102
+        "y": 113
       },
       "id": 7,
       "maxDataPoints": 100,
@@ -3873,7 +4232,7 @@
         "h": 7,
         "w": 6,
         "x": 18,
-        "y": 102
+        "y": 113
       },
       "id": 27,
       "options": {
@@ -3932,7 +4291,7 @@
     "list": []
   },
   "time": {
-    "from": "now-15m",
+    "from": "now-5m",
     "to": "now"
   },
   "timeRangeUpdatedDuringEditOrView": false,
@@ -3964,6 +4323,6 @@
   "timezone": "browser",
   "title": "SRI benchmarking tool",
   "uid": "64nrElFmk",
-  "version": 14,
+  "version": 16,
   "weekStart": ""
 }
