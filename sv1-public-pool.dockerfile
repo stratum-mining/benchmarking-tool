@@ -8,11 +8,12 @@ FROM node:18.16.1-bookworm-slim AS build
 RUN apt-get update \
     && apt-get upgrade -y
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-        python3 \
-        build-essential \
-        cmake \
-        git \
-        ca-certificates \
+    python3 \
+    build-essential \
+    cmake \
+    curl \
+    git \
+    ca-certificates \
     && apt clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 RUN git clone https://github.com/benjamin-wilson/public-pool.git
