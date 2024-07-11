@@ -394,7 +394,7 @@
           "useBackend": false
         }
       ],
-      "title": "SV1 shares",
+      "title": "SV2 shares",
       "type": "timeseries"
     },
     {
@@ -627,7 +627,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.8\", src!=\"10.5.0.16\", src!=\"192.168.65.7\", src!=\"192.168.65.254\"}[20s]))\n",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.8\", src!=\"10.5.0.9\", src!=\"10.5.0.16\", src!=\"192.168.65.7\", src!=\"192.168.65.254\"}[20s]))",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
@@ -750,7 +750,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.8\", dst!=\"10.5.0.16\", dst!=\"192.168.65.7\", dst!=\"192.168.65.254\"}[20s]))\n",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.8\", dst!=\"10.5.0.9\", dst!=\"10.5.0.16\", dst!=\"192.168.65.7\", dst!=\"192.168.65.254\"}[20s]))\n",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
@@ -872,7 +872,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.7\", dst=\"10.5.0.4\"}[20s]))\n",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.17\", dst=\"10.5.0.4\"}[20s]))",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
@@ -880,6 +880,38 @@
           "metric": "container_network_receive_bytes_total",
           "range": true,
           "refId": "A",
+          "step": 10
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.6\", dst=\"10.5.0.5\"}[20s]))",
+          "hide": false,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "Job Declarator Client (JDC)",
+          "metric": "container_network_receive_bytes_total",
+          "range": true,
+          "refId": "B",
+          "step": 10
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.3\", dst!=\"192.168.65.1\", dst!=\"10.5.0.6\"}[20s]))",
+          "hide": false,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "Template Provider (TP)",
+          "metric": "container_network_receive_bytes_total",
+          "range": true,
+          "refId": "C",
           "step": 10
         }
       ],
@@ -995,7 +1027,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.7\", src=\"10.5.0.4\"}[20s]))",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.17\", src=\"10.5.0.4\"}[20s]))",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
@@ -1004,6 +1036,32 @@
           "range": true,
           "refId": "A",
           "step": 10
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.6\", src=\"10.5.0.5\"}[20s]))",
+          "hide": false,
+          "instant": false,
+          "legendFormat": "Job Declarator Client (JDC)",
+          "range": true,
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.3\", src!=\"192.168.65.1\", src!=\"10.5.0.6\"}[20s]))",
+          "hide": false,
+          "instant": false,
+          "legendFormat": "Template Provider (TP)",
+          "range": true,
+          "refId": "C"
         }
       ],
       "title": "SV2 - Network Rx ",
@@ -1117,7 +1175,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.8\", src!=\"10.5.0.16\", src!=\"192.168.65.7\", src!=\"192.168.65.254\"}[20s]))\n",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.8\", src!=\"10.5.0.9\", src!=\"10.5.0.16\", src!=\"192.168.65.7\", src!=\"192.168.65.254\"}[20s]))",
           "hide": false,
           "instant": false,
           "legendFormat": "SV1 (farm net interface)",
@@ -1130,11 +1188,11 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.7\", dst=\"10.5.0.4\"}[20s]))\n",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.17\", dst=\"10.5.0.4\"}[20s])) + sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.6\", dst=\"10.5.0.5\"}[20s])) + sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.3\", dst!=\"192.168.65.1\", dst!=\"10.5.0.6\"}[20s]))",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
-          "legendFormat": "SV2 (translator)",
+          "legendFormat": "SV2 (translator + jdc + tp)",
           "metric": "container_network_receive_bytes_total",
           "range": true,
           "refId": "B",
@@ -1151,7 +1209,7 @@
             "reduce": {
               "include": [
                 "SV1 (farm net interface)",
-                "SV2 (translator)"
+                "SV2 (translator + jdc + tp)"
               ],
               "reducer": "diff"
             }
@@ -1256,7 +1314,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.8\", dst!=\"10.5.0.16\", dst!=\"192.168.65.7\", dst!=\"192.168.65.254\"}[20s]))\n",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.8\", dst!=\"10.5.0.9\", dst!=\"10.5.0.16\", dst!=\"192.168.65.7\", dst!=\"192.168.65.254\"}[20s]))",
           "hide": false,
           "instant": false,
           "legendFormat": "SV1 (farm net interface)",
@@ -1269,11 +1327,11 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.7\", src=\"10.5.0.4\"}[20s]))",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.17\", src=\"10.5.0.4\"}[20s])) + sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.6\", src=\"10.5.0.5\"}[20s])) + sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.3\", src!=\"192.168.65.1\", src!=\"10.5.0.6\"}[20s]))",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
-          "legendFormat": "SV2 (translator)",
+          "legendFormat": "SV2 (translator + jdc + tp)",
           "metric": "container_network_receive_bytes_total",
           "range": true,
           "refId": "B",
@@ -1290,7 +1348,7 @@
             "reduce": {
               "include": [
                 "SV1 (farm net interface)",
-                "SV2 (translator)"
+                "SV2 (translator + jdc + tp)"
               ],
               "reducer": "diff"
             }
@@ -1408,7 +1466,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.8\", dst!=\"10.5.0.16\", dst!=\"192.168.65.7\", dst!=\"192.168.65.254\"}[20s]))\n",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.8\", dst!=\"10.5.0.16\", dst!=\"10.5.0.9\", dst!=\"192.168.65.7\", dst!=\"192.168.65.254\"}[20s]))",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
@@ -1544,7 +1602,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.8\", src!=\"10.5.0.16\", src!=\"192.168.65.7\", src!=\"192.168.65.254\"}[20s]))\n",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.8\", src!=\"10.5.0.16\", src!=\"10.5.0.9\", src!=\"192.168.65.7\", src!=\"192.168.65.254\"}[20s]))",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
@@ -1560,7 +1618,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.16\", src!=\"192.168.65.1\", src!=\"10.5.0.8\"}[20s]))\n",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.16\", src!=\"192.168.65.1\", src!=\"10.5.0.8\"}[20s]))",
           "hide": false,
           "instant": false,
           "legendFormat": "Bitcoin Node",
@@ -1679,7 +1737,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.4\", dst=\"10.5.0.7\"}[20s]))\n",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.4\", dst=\"10.5.0.17\"}[20s]))",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
@@ -1695,14 +1753,30 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.2\", dst!=\"192.168.65.1\", dst!=\"10.5.0.4\", dst!=\"10.5.0.5\"}[20s]))\n",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.5\", dst=\"10.5.0.6\"}[20s]))",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
-          "legendFormat": "Template Provider",
+          "legendFormat": "Job Declarator Server (JDS)",
           "metric": "container_network_receive_bytes_total",
           "range": true,
           "refId": "B",
+          "step": 10
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.2\", dst!=\"192.168.65.1\", dst!=\"10.5.0.4\", dst!=\"10.5.0.5\"}[20s]))",
+          "hide": false,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "Template Provider (TP)",
+          "metric": "container_network_receive_bytes_total",
+          "range": true,
+          "refId": "C",
           "step": 10
         }
       ],
@@ -1817,7 +1891,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.4\", src=\"10.5.0.7\"}[20s]))\n",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.4\", src=\"10.5.0.17\"}[20s]))",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
@@ -1833,15 +1907,25 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.2\", src!=\"192.168.65.1\", src!=\"10.5.0.4\", src!=\"10.5.0.5\"}[20s]))\n",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.5\", src=\"10.5.0.6\"}[20s]))",
           "hide": false,
-          "interval": "",
-          "intervalFactor": 1,
-          "legendFormat": "Template Provider",
-          "metric": "container_network_receive_bytes_total",
+          "instant": false,
+          "legendFormat": "Job Declarator Server (JDS)",
           "range": true,
-          "refId": "B",
-          "step": 10
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.2\", src!=\"192.168.65.1\", src!=\"10.5.0.4\", src!=\"10.5.0.5\"}[20s]))",
+          "hide": false,
+          "instant": false,
+          "legendFormat": "Template Provider (TP)",
+          "range": true,
+          "refId": "C"
         }
       ],
       "title": "SV2 - Network Rx ",
@@ -1955,7 +2039,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.8\", dst!=\"10.5.0.16\", dst!=\"192.168.65.7\", dst!=\"192.168.65.254\"}[20s])) + sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.16\", dst!=\"192.168.65.1\", dst!=\"10.5.0.8\"}[20s]))\n",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.8\", dst!=\"10.5.0.16\", dst!=\"10.5.0.9\", dst!=\"192.168.65.7\", dst!=\"192.168.65.254\"}[20s])) + sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.16\", dst!=\"192.168.65.1\", dst!=\"10.5.0.8\"}[20s]))",
           "hide": false,
           "instant": false,
           "legendFormat": "SV1 (pool + bitcoin node)",
@@ -1968,11 +2052,11 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.4\", dst=\"10.5.0.7\"}[20s])) + sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.2\", dst!=\"192.168.65.1\", dst!=\"10.5.0.4\", dst!=\"10.5.0.5\"}[20s]))\n",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.4\", dst=\"10.5.0.17\"}[20s])) + sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.5\", dst=\"10.5.0.6\"}[20s]))\n+ sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.2\", dst!=\"192.168.65.1\", dst!=\"10.5.0.4\", dst!=\"10.5.0.5\"}[20s]))",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
-          "legendFormat": "SV2 (pool + template provider)",
+          "legendFormat": "SV2 (pool + jds + tp)",
           "metric": "container_network_receive_bytes_total",
           "range": true,
           "refId": "B",
@@ -1997,7 +2081,7 @@
             "reduce": {
               "include": [
                 "SV1 (pool + bitcoin node)",
-                "SV2 (pool + template provider)"
+                "SV2 (pool + jds + tp)"
               ],
               "reducer": "diff"
             },
@@ -2103,7 +2187,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.8\", src!=\"10.5.0.16\", src!=\"192.168.65.7\", src!=\"192.168.65.254\"}[20s])) + sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.16\", src!=\"192.168.65.1\", src!=\"10.5.0.8\"}[20s]))\n\n",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.8\", src!=\"10.5.0.16\", src!=\"10.5.0.9\", src!=\"192.168.65.7\", src!=\"192.168.65.254\"}[20s])) + sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.16\", src!=\"192.168.65.1\", src!=\"10.5.0.8\"}[20s]))",
           "hide": false,
           "instant": false,
           "legendFormat": "SV1 (pool + bitcoin node)",
@@ -2116,11 +2200,11 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.4\", src=\"10.5.0.7\"}[20s])) + sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.2\", src!=\"192.168.65.1\", src!=\"10.5.0.4\", src!=\"10.5.0.5\"}[20s]))\n",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.4\", src=\"10.5.0.17\"}[20s])) + sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.5\", src=\"10.5.0.6\"}[20s])) + sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.2\", src!=\"192.168.65.1\", src!=\"10.5.0.4\", src!=\"10.5.0.5\"}[20s]))",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
-          "legendFormat": "SV2 (pool + template provider)",
+          "legendFormat": "SV2 (pool + jds + tp)",
           "metric": "container_network_receive_bytes_total",
           "range": true,
           "refId": "B",
@@ -2137,7 +2221,7 @@
             "reduce": {
               "include": [
                 "SV1 (pool + bitcoin node)",
-                "SV2 (pool + template provider)"
+                "SV2 (pool + jds + tp)"
               ],
               "reducer": "diff"
             }
@@ -3472,7 +3556,32 @@
           },
           "unit": "binBps"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "__systemRef": "hideSeriesFrom",
+            "matcher": {
+              "id": "byNames",
+              "options": {
+                "mode": "exclude",
+                "names": [
+                  "sv2-tp-miner-side"
+                ],
+                "prefix": "All except:",
+                "readOnly": true
+              }
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": true
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 10,
@@ -4348,6 +4457,6 @@
   "timezone": "browser",
   "title": "SRI benchmarking tool",
   "uid": "64nrElFmk",
-  "version": 8,
+  "version": 9,
   "weekStart": ""
 }
