@@ -305,7 +305,7 @@
         "x": 12,
         "y": 1
       },
-      "id": 79,
+      "id": 80,
       "options": {
         "legend": {
           "calcs": [
@@ -379,7 +379,7 @@
           "disableTextWrap": false,
           "editorMode": "code",
           "exemplar": false,
-          "expr": "(sv2_valid_shares * 100) / sv1_submitted_shares",
+          "expr": "(sv2_valid_shares * 100) / sv2_submitted_shares",
           "fullMetaSearch": false,
           "hide": false,
           "includeNullMetadata": true,
@@ -4425,7 +4425,7 @@
     "list": []
   },
   "time": {
-    "from": "now-5m",
+    "from": "now-15m",
     "to": "now"
   },
   "timeRangeUpdatedDuringEditOrView": false,
