@@ -167,7 +167,7 @@ services:
 
   sv2-custom-proxy:
     image: sv2-custom-proxy-builder-image  
-    command: ["./target/release/proxy-between-pool-and-jdc"]
+    command: ["./target/release/sv2-custom-proxy"]
     ports:
       - "34253:34254" 
       - "34251:34251"
@@ -209,7 +209,7 @@ services:
 
   sv1-custom-proxy:
     image: sv1-custom-proxy-builder-image  
-    command: ["./target/release/proxy-miner-sv1-pool"]
+    command: ["./target/release/sv1-custom-proxy"]
     ports:
       - "3333:3333"
       - "2345:2345"
