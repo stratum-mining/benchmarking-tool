@@ -4,7 +4,7 @@ authority_secret_key = "mkDLTBBRxdBv998612qipDYoTK3YUrqLe8uWw7gu3iXbSrn2n"
 #authority_secret_key = "7qbpUjScc865jyX2kiB4NVJANoC7GA7TAJupdzXWkc62"
 cert_validity_sec = 3600
 test_only_listen_adress_plain =  "0.0.0.0:34250"
-listen_address = "0.0.0.0:34254"
+listen_address = "10.5.0.4:34254"
 
 # List of coinbase outputs used to build the coinbase tx
 # ! Right now only one output is supported, so comment all the ones you don't need !

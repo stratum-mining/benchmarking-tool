@@ -305,7 +305,7 @@
         "x": 12,
         "y": 1
       },
-      "id": 78,
+      "id": 80,
       "options": {
         "legend": {
           "calcs": [
@@ -474,7 +474,7 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 6,
+        "h": 8,
         "w": 12,
         "x": 0,
         "y": 12
@@ -504,7 +504,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "average_pool_subscription_latency_milliseconds\n",
+          "expr": "average_pool_subscription_latency_milliseconds",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
@@ -524,7 +524,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 18
+        "y": 20
       },
       "id": 56,
       "panels": [],
@@ -600,7 +600,7 @@
         "h": 10,
         "w": 12,
         "x": 0,
-        "y": 19
+        "y": 21
       },
       "id": 65,
       "options": {
@@ -627,7 +627,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.8\", src!=\"10.5.0.16\", src!=\"192.168.65.7\", src!=\"192.168.65.254\"}[20s]))\n",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.8\", src!=\"10.5.0.9\", src!=\"10.5.0.16\", src!=\"192.168.65.7\", src!=\"192.168.65.254\"}[20s]))",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
@@ -723,7 +723,7 @@
         "h": 10,
         "w": 12,
         "x": 12,
-        "y": 19
+        "y": 21
       },
       "id": 64,
       "options": {
@@ -750,7 +750,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.8\", dst!=\"10.5.0.16\", dst!=\"192.168.65.7\", dst!=\"192.168.65.254\"}[20s]))\n",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.8\", dst!=\"10.5.0.9\", dst!=\"10.5.0.16\", dst!=\"192.168.65.7\", dst!=\"192.168.65.254\"}[20s]))",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
@@ -845,7 +845,7 @@
         "h": 10,
         "w": 12,
         "x": 0,
-        "y": 29
+        "y": 31
       },
       "id": 60,
       "options": {
@@ -872,7 +872,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.7\", dst=\"10.5.0.4\"}[20s]))\n",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.17\", dst=\"10.5.0.4\"}[20s]))",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
@@ -968,7 +968,7 @@
         "h": 10,
         "w": 12,
         "x": 12,
-        "y": 29
+        "y": 31
       },
       "id": 59,
       "options": {
@@ -995,7 +995,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.7\", src=\"10.5.0.4\"}[20s]))",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.17\", src=\"10.5.0.4\"}[20s]))",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
@@ -1090,7 +1090,7 @@
         "h": 10,
         "w": 12,
         "x": 0,
-        "y": 39
+        "y": 41
       },
       "id": 69,
       "options": {
@@ -1117,7 +1117,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.8\", src!=\"10.5.0.16\", src!=\"192.168.65.7\", src!=\"192.168.65.254\"}[20s]))\n",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.8\", src!=\"10.5.0.9\", src!=\"10.5.0.16\", src!=\"192.168.65.7\", src!=\"192.168.65.254\"}[20s]))",
           "hide": false,
           "instant": false,
           "legendFormat": "SV1 (farm net interface)",
@@ -1130,7 +1130,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.7\", dst=\"10.5.0.4\"}[20s]))\n",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.17\", dst=\"10.5.0.4\"}[20s]))",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
@@ -1229,7 +1229,7 @@
         "h": 10,
         "w": 12,
         "x": 12,
-        "y": 39
+        "y": 41
       },
       "id": 70,
       "options": {
@@ -1256,7 +1256,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.8\", dst!=\"10.5.0.16\", dst!=\"192.168.65.7\", dst!=\"192.168.65.254\"}[20s]))\n",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.8\", dst!=\"10.5.0.9\", dst!=\"10.5.0.16\", dst!=\"192.168.65.7\", dst!=\"192.168.65.254\"}[20s]))",
           "hide": false,
           "instant": false,
           "legendFormat": "SV1 (farm net interface)",
@@ -1269,7 +1269,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.7\", src=\"10.5.0.4\"}[20s]))",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.17\", src=\"10.5.0.4\"}[20s]))",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
@@ -1305,7 +1305,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 49
+        "y": 51
       },
       "id": 55,
       "panels": [],
@@ -1364,7 +1364,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1380,7 +1381,7 @@
         "h": 10,
         "w": 12,
         "x": 0,
-        "y": 50
+        "y": 52
       },
       "id": 63,
       "options": {
@@ -1407,7 +1408,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.8\", dst!=\"10.5.0.16\", dst!=\"192.168.65.7\", dst!=\"192.168.65.254\"}[20s]))\n",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.8\", dst!=\"10.5.0.16\", dst!=\"10.5.0.9\", dst!=\"192.168.65.7\", dst!=\"192.168.65.254\"}[20s]))",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
@@ -1439,6 +1440,10 @@
             "alias": "Total (pool level)",
             "mode": "reduceRow",
             "reduce": {
+              "include": [
+                "Bitcoin Node",
+                "Pool"
+              ],
               "reducer": "sum"
             },
             "replaceFields": false
@@ -1499,7 +1504,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1515,7 +1521,7 @@
         "h": 10,
         "w": 12,
         "x": 12,
-        "y": 50
+        "y": 52
       },
       "id": 66,
       "options": {
@@ -1542,7 +1548,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.8\", src!=\"10.5.0.16\", src!=\"192.168.65.7\", src!=\"192.168.65.254\"}[20s]))\n",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.8\", src!=\"10.5.0.16\", src!=\"10.5.0.9\", src!=\"192.168.65.7\", src!=\"192.168.65.254\"}[20s]))",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
@@ -1558,7 +1564,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.16\", src!=\"192.168.65.1\", src!=\"10.5.0.8\"}[20s]))\n",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.16\", src!=\"192.168.65.1\", src!=\"10.5.0.8\"}[20s]))",
           "hide": false,
           "instant": false,
           "legendFormat": "Bitcoin Node",
@@ -1574,6 +1580,10 @@
             "alias": "Total (pool level)",
             "mode": "reduceRow",
             "reduce": {
+              "include": [
+                "Bitcoin Node",
+                "Pool"
+              ],
               "reducer": "sum"
             }
           }
@@ -1633,7 +1643,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1649,7 +1660,7 @@
         "h": 10,
         "w": 12,
         "x": 0,
-        "y": 60
+        "y": 62
       },
       "id": 57,
       "options": {
@@ -1676,7 +1687,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.4\", dst=\"10.5.0.7\"}[20s]))\n",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.4\", dst=\"10.5.0.17\"}[20s]))",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
@@ -1692,11 +1703,11 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.2\", dst!=\"192.168.65.1\", dst!=\"10.5.0.4\", dst!=\"10.5.0.5\"}[20s]))\n",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.2\", dst!=\"192.168.65.1\", dst!=\"10.5.0.4\", dst!=\"10.5.0.5\"}[20s]))",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
-          "legendFormat": "Template Provider",
+          "legendFormat": "Template Provider (TP)",
           "metric": "container_network_receive_bytes_total",
           "range": true,
           "refId": "B",
@@ -1711,6 +1722,10 @@
             "alias": "Total (pool level)",
             "mode": "reduceRow",
             "reduce": {
+              "include": [
+                "Template Provider (TP)",
+                "Pool"
+              ],
               "reducer": "sum"
             }
           }
@@ -1770,7 +1785,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1786,7 +1802,7 @@
         "h": 10,
         "w": 12,
         "x": 12,
-        "y": 60
+        "y": 62
       },
       "id": 62,
       "options": {
@@ -1813,7 +1829,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.4\", src=\"10.5.0.7\"}[20s]))\n",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.4\", src=\"10.5.0.17\"}[20s]))",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
@@ -1829,15 +1845,12 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.2\", src!=\"192.168.65.1\", src!=\"10.5.0.4\", src!=\"10.5.0.5\"}[20s]))\n",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.2\", src!=\"192.168.65.1\", src!=\"10.5.0.4\", src!=\"10.5.0.5\"}[20s]))",
           "hide": false,
-          "interval": "",
-          "intervalFactor": 1,
-          "legendFormat": "Template Provider",
-          "metric": "container_network_receive_bytes_total",
+          "instant": false,
+          "legendFormat": "Template Provider (TP)",
           "range": true,
-          "refId": "B",
-          "step": 10
+          "refId": "C"
         }
       ],
       "title": "SV2 - Network Rx ",
@@ -1848,6 +1861,10 @@
             "alias": "Total (pool level)",
             "mode": "reduceRow",
             "reduce": {
+              "include": [
+                "Template Provider (TP)",
+                "Pool"
+              ],
               "reducer": "sum"
             }
           }
@@ -1907,7 +1924,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1923,7 +1941,7 @@
         "h": 10,
         "w": 12,
         "x": 0,
-        "y": 70
+        "y": 72
       },
       "id": 67,
       "options": {
@@ -1950,7 +1968,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.8\", dst!=\"10.5.0.16\", dst!=\"192.168.65.7\", dst!=\"192.168.65.254\"}[20s])) + sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.16\", dst!=\"192.168.65.1\", dst!=\"10.5.0.8\"}[20s]))\n",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.8\", dst!=\"10.5.0.16\", dst!=\"10.5.0.9\", dst!=\"192.168.65.7\", dst!=\"192.168.65.254\"}[20s])) + sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.16\", dst!=\"192.168.65.1\", dst!=\"10.5.0.8\"}[20s]))",
           "hide": false,
           "instant": false,
           "legendFormat": "SV1 (pool + bitcoin node)",
@@ -1963,11 +1981,11 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.4\", dst=\"10.5.0.7\"}[20s])) + sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.2\", dst!=\"192.168.65.1\", dst!=\"10.5.0.4\", dst!=\"10.5.0.5\"}[20s]))\n",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.4\", dst=\"10.5.0.17\"}[20s])) + sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.2\", dst!=\"192.168.65.1\", dst!=\"10.5.0.4\", dst!=\"10.5.0.5\"}[20s]))",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
-          "legendFormat": "SV2 (pool + template provider)",
+          "legendFormat": "SV2 (pool + tp)",
           "metric": "container_network_receive_bytes_total",
           "range": true,
           "refId": "B",
@@ -1992,7 +2010,7 @@
             "reduce": {
               "include": [
                 "SV1 (pool + bitcoin node)",
-                "SV2 (pool + template provider)"
+                "SV2 (pool + tp)"
               ],
               "reducer": "diff"
             },
@@ -2054,7 +2072,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -2070,7 +2089,7 @@
         "h": 10,
         "w": 12,
         "x": 12,
-        "y": 70
+        "y": 72
       },
       "id": 68,
       "options": {
@@ -2097,7 +2116,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.8\", src!=\"10.5.0.16\", src!=\"192.168.65.7\", src!=\"192.168.65.254\"}[20s])) + sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.16\", src!=\"192.168.65.1\", src!=\"10.5.0.8\"}[20s]))\n\n",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.8\", src!=\"10.5.0.16\", src!=\"10.5.0.9\", src!=\"192.168.65.7\", src!=\"192.168.65.254\"}[20s])) + sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.16\", src!=\"192.168.65.1\", src!=\"10.5.0.8\"}[20s]))",
           "hide": false,
           "instant": false,
           "legendFormat": "SV1 (pool + bitcoin node)",
@@ -2110,11 +2129,11 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.4\", src=\"10.5.0.7\"}[20s])) + sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.2\", src!=\"192.168.65.1\", src!=\"10.5.0.4\", src!=\"10.5.0.5\"}[20s]))\n",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.4\", src=\"10.5.0.17\"}[20s])) + sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.2\", src!=\"192.168.65.1\", src!=\"10.5.0.4\", src!=\"10.5.0.5\"}[20s]))",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
-          "legendFormat": "SV2 (pool + template provider)",
+          "legendFormat": "SV2 (pool + tp)",
           "metric": "container_network_receive_bytes_total",
           "range": true,
           "refId": "B",
@@ -2131,7 +2150,7 @@
             "reduce": {
               "include": [
                 "SV1 (pool + bitcoin node)",
-                "SV2 (pool + template provider)"
+                "SV2 (pool + tp)"
               ],
               "reducer": "diff"
             }
@@ -2146,7 +2165,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 80
+        "y": 82
       },
       "id": 50,
       "panels": [],
@@ -2205,7 +2224,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -2221,7 +2241,7 @@
         "h": 10,
         "w": 6,
         "x": 0,
-        "y": 81
+        "y": 83
       },
       "id": 51,
       "options": {
@@ -2336,7 +2356,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -2352,7 +2373,7 @@
         "h": 10,
         "w": 6,
         "x": 6,
-        "y": 81
+        "y": 83
       },
       "id": 52,
       "options": {
@@ -2467,7 +2488,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -2483,7 +2505,7 @@
         "h": 10,
         "w": 6,
         "x": 12,
-        "y": 81
+        "y": 83
       },
       "id": 53,
       "options": {
@@ -2598,7 +2620,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -2614,7 +2637,7 @@
         "h": 10,
         "w": 6,
         "x": 18,
-        "y": 81
+        "y": 83
       },
       "id": 8,
       "options": {
@@ -2687,7 +2710,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 91
+        "y": 93
       },
       "id": 19,
       "panels": [],
@@ -2755,7 +2778,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -2771,7 +2795,7 @@
         "h": 10,
         "w": 6,
         "x": 0,
-        "y": 92
+        "y": 94
       },
       "id": 45,
       "options": {
@@ -2870,7 +2894,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -2886,7 +2911,7 @@
         "h": 10,
         "w": 6,
         "x": 6,
-        "y": 92
+        "y": 94
       },
       "id": 44,
       "options": {
@@ -2985,7 +3010,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -3001,7 +3027,7 @@
         "h": 10,
         "w": 6,
         "x": 12,
-        "y": 92
+        "y": 94
       },
       "id": 43,
       "options": {
@@ -3100,7 +3126,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -3116,7 +3143,7 @@
         "h": 10,
         "w": 6,
         "x": 18,
-        "y": 92
+        "y": 94
       },
       "id": 58,
       "options": {
@@ -3215,7 +3242,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -3231,7 +3259,7 @@
         "h": 10,
         "w": 6,
         "x": 0,
-        "y": 102
+        "y": 104
       },
       "id": 46,
       "options": {
@@ -3330,7 +3358,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -3346,7 +3375,7 @@
         "h": 10,
         "w": 6,
         "x": 6,
-        "y": 102
+        "y": 104
       },
       "id": 47,
       "options": {
@@ -3445,7 +3474,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -3455,13 +3485,38 @@
           },
           "unit": "binBps"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "__systemRef": "hideSeriesFrom",
+            "matcher": {
+              "id": "byNames",
+              "options": {
+                "mode": "exclude",
+                "names": [
+                  "Total"
+                ],
+                "prefix": "All except:",
+                "readOnly": true
+              }
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": true
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 10,
         "w": 6,
         "x": 12,
-        "y": 102
+        "y": 104
       },
       "id": 48,
       "options": {
@@ -3488,7 +3543,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (irate(container_network_transmit_bytes_total{name=~\"sv2-tp-miner-side|sv2-jdc|sv2-translator\"}[10s]))\n",
+          "expr": "sum by (id, name) (irate(container_network_transmit_bytes_total{name=~\"sv2-translator\"}[20s]))",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
@@ -3560,7 +3615,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -3576,7 +3632,7 @@
         "h": 10,
         "w": 6,
         "x": 18,
-        "y": 102
+        "y": 104
       },
       "id": 49,
       "options": {
@@ -3633,7 +3689,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 112
+        "y": 114
       },
       "id": 17,
       "panels": [],
@@ -3674,7 +3730,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -3690,7 +3747,7 @@
         "h": 7,
         "w": 3,
         "x": 0,
-        "y": 113
+        "y": 115
       },
       "id": 15,
       "maxDataPoints": 100,
@@ -3751,7 +3808,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -3767,7 +3825,7 @@
         "h": 7,
         "w": 3,
         "x": 3,
-        "y": 113
+        "y": 115
       },
       "id": 35,
       "maxDataPoints": 100,
@@ -3795,89 +3853,12 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "count(count(node_cpu_seconds_total{mode='system'}) by (cpu))",
+          "expr": "count(count(node_cpu_seconds_total{mode=\"idle\"}) by (cpu))",
           "instant": true,
           "refId": "A"
         }
       ],
       "title": "CPU Cores",
-      "type": "stat"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [
-            {
-              "options": {
-                "match": "null",
-                "result": {
-                  "text": "N/A"
-                }
-              },
-              "type": "special"
-            }
-          ],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green"
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "decbytes"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 7,
-        "w": 3,
-        "x": 6,
-        "y": 113
-      },
-      "id": 37,
-      "maxDataPoints": 100,
-      "options": {
-        "colorMode": "none",
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "orientation": "horizontal",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "showPercentChange": false,
-        "textMode": "auto",
-        "wideLayout": true
-      },
-      "pluginVersion": "11.0.0",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "editorMode": "code",
-          "expr": "node_memory_MemTotal_bytes",
-          "range": true,
-          "refId": "A"
-        }
-      ],
-      "title": "Host Memory",
       "type": "stat"
     },
     {
@@ -3908,7 +3889,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "rgba(50, 172, 45, 0.97)"
+                "color": "rgba(50, 172, 45, 0.97)",
+                "value": null
               },
               {
                 "color": "rgba(237, 129, 40, 0.89)",
@@ -3927,8 +3909,8 @@
       "gridPos": {
         "h": 7,
         "w": 3,
-        "x": 9,
-        "y": 113
+        "x": 6,
+        "y": 115
       },
       "id": 6,
       "maxDataPoints": 100,
@@ -3989,13 +3971,92 @@
               "type": "special"
             }
           ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "decbytes"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 3,
+        "x": 9,
+        "y": 115
+      },
+      "id": 37,
+      "maxDataPoints": 100,
+      "options": {
+        "colorMode": "none",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "node_memory_MemTotal_bytes",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Host Memory",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [
+            {
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "N/A"
+                }
+              },
+              "type": "special"
+            }
+          ],
           "max": 100,
           "min": 0,
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "rgba(50, 172, 45, 0.97)"
+                "color": "rgba(50, 172, 45, 0.97)",
+                "value": null
               },
               {
                 "color": "rgba(237, 129, 40, 0.89)",
@@ -4015,7 +4076,7 @@
         "h": 7,
         "w": 3,
         "x": 12,
-        "y": 113
+        "y": 115
       },
       "id": 4,
       "maxDataPoints": 100,
@@ -4080,7 +4141,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "rgba(50, 172, 45, 0.97)"
+                "color": "rgba(50, 172, 45, 0.97)",
+                "value": null
               },
               {
                 "color": "rgba(237, 129, 40, 0.89)",
@@ -4100,7 +4162,7 @@
         "h": 7,
         "w": 3,
         "x": 15,
-        "y": 113
+        "y": 115
       },
       "id": 7,
       "maxDataPoints": 100,
@@ -4185,7 +4247,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -4232,7 +4295,7 @@
         "h": 7,
         "w": 6,
         "x": 18,
-        "y": 113
+        "y": 115
       },
       "id": 27,
       "options": {
@@ -4323,6 +4386,6 @@
   "timezone": "browser",
   "title": "SRI benchmarking tool",
   "uid": "64nrElFmk",
-  "version": 16,
+  "version": 9,
   "weekStart": ""
 }

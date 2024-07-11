@@ -24,13 +24,12 @@ services:
     image: sv2-roles-builder-image  
     command: echo "SRI build completed"  
   
-  #sv2-custom-proxies-builder:
-    #build:
-      #context: ../../
-      #dockerfile: benches/benchmarking-tool/custom-proxies.dockerfile
-    #container_name: custom-proxies-builder
-    #image: custom-proxies-builder-image  
-    #command: echo "Custom proxies build completed"
+  sv2-custom-proxy-builder:
+    build:
+      dockerfile: ./sv2-custom-proxy/Dockerfile
+    container_name: sv2-custom-proxy-builder
+    image: sv2-custom-proxy-builder-image  
+    command: echo "sv2-custom-proxy build completed"
 
   sv1-custom-proxy-builder:
     build:
@@ -97,6 +96,8 @@ services:
     networks:
       sv2-net:
           ipv4_address: 10.5.0.4
+    cap_add:
+    - NET_ADMIN
 
   translator:
     image: sv2-roles-builder-image
@@ -105,7 +106,7 @@ services:
       - "34255:34255" 
     container_name: sv2-translator
     depends_on:
-      - pool 
+      - sv2-custom-proxy
     volumes:
       - ./custom-configs/sri-roles/config-c:/usr/src/stratum/roles/translator/config-examples/
     restart: unless-stopped
@@ -113,28 +114,32 @@ services:
       sv2-net:
           ipv4_address: 10.5.0.7
 
-  #pool-jdc-proxy:
-    #image: custom-proxies-builder-image  
-    #command: ["./target/release/proxy-between-pool-and-jdc"]
-    #ports:
-      #- "34254:34254" 
-      #- "34251:34251"
-    #container_name: pool-jdc-proxy
-    #depends_on:
-      #- custom-proxies-builder
-      #- pool
-    #volumes:
-      #- ./custom-configs/sri-roles/config-a:/usr/src/stratum/roles/pool/config-examples/
-    #restart: unless-stopped
-    #networks:
-      #sv2-net:
-          #ipv4_address: 10.5.0.17
+  sv2-custom-proxy:
+    image: sv2-custom-proxy-builder-image  
+    command: ["./target/release/sv2-custom-proxy"]
+    ports:
+      - "34253:34254" 
+      - "34251:34251"
+      - "3456:3456"
+    environment:
+      - SERVER=10.5.0.4:34254
+      - CLIENT=10.5.0.17:34251
+    container_name: sv2-custom-proxy
+    depends_on:
+      - sv2-custom-proxy-builder
+      - pool
+    volumes:
+      - ./custom-configs/sri-roles/config-a:/usr/src/stratum/roles/pool/config-examples/
+    restart: unless-stopped
+    networks:
+      sv2-net:
+          ipv4_address: 10.5.0.17
 
   sv1-pool:
     container_name: sv1-pool
     build:
       context: .
-      dockerfile: ./sv1-pool.dockerfile
+      dockerfile: ./sv1-public-pool.dockerfile
     ports:
       - "3332:3332"
       - "3334:3334"
@@ -153,7 +158,7 @@ services:
 
   sv1-custom-proxy:
     image: sv1-custom-proxy-builder-image  
-    command: ["./target/release/proxy-miner-sv1-pool"]
+    command: ["./target/release/sv1-custom-proxy"]
     ports:
       - "3333:3333"
       - "2345:2345"
