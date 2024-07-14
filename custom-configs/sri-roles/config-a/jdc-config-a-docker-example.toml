@@ -25,7 +25,7 @@ retry = 10
 
 # Template Provider config
 # Local TP (this is pointing to localhost so you must run a TP locally for this configuration to work)
-tp_address = "10.5.0.3:8443"
+tp_address = "10.5.0.20:8441"
 # Hosted testnet TP 
 # tp_address = "75.119.150.111:8442"
 
@@ -55,7 +55,7 @@ pool_address = "10.5.0.17:34251"
 jd_address = "10.5.0.5:34264"
 # Pool signature (string to be included in coinbase tx)
 pool_signature = "Stratum v2 SRI Pool"
- 
+
 # [[upstreams]]
 # authority_pubkey = "2di19GHYQnAZJmEpoUeP7C3Eg9TCcksHr23rZCC83dvUiZgiDL"
 # pool_address = "10.5.0.3:34254"

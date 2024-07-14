@@ -69,3 +69,8 @@ scrape_configs:
 
     static_configs:
       - targets: ['sv2-custom-proxy:3456'] # The Network Traffic Metrics IP/port
+  
+  - job_name: 'sv2-new-job-proxy'
+    scrape_interval: 10s
+    static_configs:
+      - targets: ['sv2-new-job-proxy:3477']
