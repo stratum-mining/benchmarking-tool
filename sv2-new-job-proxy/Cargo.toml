@@ -9,5 +9,7 @@ edition = "2021"
 demand-easy-sv2 = { version = "0.4.0", git = "https://github.com/demand-open-source/demand-easy-sv2" }
 dotenv = "0.15.0"
 prometheus = "0.13.4"
+serde = "1.0.204"
+serde_json = "1.0.120"
 tokio = { version = "1.38.0", features = ["full", "tracing"] }
 warp = "0.3.7"

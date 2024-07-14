@@ -209,7 +209,7 @@ services:
         "translator/config-examples/tproxy-config-a-docker-example.toml",
       ]
     ports:
-      - "34255:34255"
+      - "34256:34256"
     container_name: sv2-translator
     depends_on:
       - jd-client
@@ -248,6 +248,7 @@ services:
       - "3477:3477"
       - "8441:8441"
       - "8440:8443"
+      - "34255:34255"
     environment:
       - CLIENT=10.5.0.20:8441
       - SERVER=10.5.0.3:8443
