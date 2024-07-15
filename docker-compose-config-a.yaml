@@ -20,7 +20,7 @@ services:
 
   sv2-roles-builder:
     build:
-      dockerfile: ./sri-roles.dockerfile
+      dockerfile: ./sv2-roles.dockerfile
     container_name: sv2-roles-builder
     image: sv2-roles-builder-image  
     command: echo "SRI build completed"  
@@ -41,7 +41,7 @@ services:
     
   pools-latency-calculator-builder:
     build:
-      dockerfile: pools-latency-calculator.dockerfile
+      dockerfile: ./pools-latency-calculator/Dockerfile
     container_name: pools-latency-calculator-builder
     image: pools-latency-calculator-builder-image 
     command: echo "pools-latency-calculator build completed"
@@ -101,7 +101,8 @@ services:
 
   pool:
     image: sv2-roles-builder-image  
-    command: ["./target/release/pool_sv2", "-c", "pool/config-examples/pool-config-a-docker-example.toml"]
+    command: ["/bin/bash", "-c", "/usr/local/bin/monitor_and_apply_latency.sh 10.5.0.17 1 & exec ./target/release/pool_sv2 -c pool/config-examples/pool-config-a-docker-example.toml"]
+    #command: ["./target/release/pool_sv2", "-c", "pool/config-examples/pool-config-a-docker-example.toml"]
     ports:
       - "34254:34254" 
     container_name: sv2-pool
@@ -119,7 +120,8 @@ services:
 
   jd-server:
     image: sv2-roles-builder-image
-    command: ["./target/release/jd_server", "-c", "jd-server/config-examples/jds-config-a-docker-example.toml"]
+    command: ["/bin/bash", "-c", "/usr/local/bin/monitor_and_apply_latency.sh 10.5.0.6 1 & exec ./target/release/jd_server -c jd-server/config-examples/jds-config-a-docker-example.toml"]
+    #command: ["./target/release/jd_server", "-c", "jd-server/config-examples/jds-config-a-docker-example.toml"]
     ports:
       - "34264:34264"  
     container_name: sv2-jds
@@ -132,10 +134,13 @@ services:
     networks:
       sv2-net:
           ipv4_address: 10.5.0.5
+    cap_add:
+    - NET_ADMIN
 
   jd-client:
     image: sv2-roles-builder-image
-    command: ["./target/release/jd_client", "-c", "jd-client/config-examples/jdc-config-a-docker-example.toml"]
+    command: ["/bin/bash", "-c", "/usr/local/bin/monitor_and_apply_latency.sh 10.5.0.17 1 & exec ./target/release/jd_client -c jd-client/config-examples/jdc-config-a-docker-example.toml"]
+    #command: ["./target/release/jd_client", "-c", "jd-client/config-examples/jdc-config-a-docker-example.toml"]
     ports:
       - "34265:34265"
     container_name: sv2-jdc
@@ -149,6 +154,8 @@ services:
     networks:
       sv2-net:
           ipv4_address: 10.5.0.6
+    cap_add:
+    - NET_ADMIN
 
   translator:
     image: sv2-roles-builder-image
@@ -208,8 +215,9 @@ services:
     - NET_ADMIN
 
   sv1-custom-proxy:
-    image: sv1-custom-proxy-builder-image  
-    command: ["./target/release/sv1-custom-proxy"]
+    image: sv1-custom-proxy-builder-image 
+    command: ["/bin/bash", "-c", "/usr/local/bin/monitor_and_apply_latency.sh 10.5.0.8 2 & exec ./target/release/sv1-custom-proxy"] 
+    #command: ["./target/release/sv1-custom-proxy"]
     ports:
       - "3333:3333"
       - "2345:2345"
@@ -221,6 +229,8 @@ services:
     networks:
       sv2-net:
           ipv4_address: 10.5.0.19
+    cap_add:
+    - NET_ADMIN
 
   monitor-traffic-tcpdump:
     image: inzania/network-traffic-metrics:latest
