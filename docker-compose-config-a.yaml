@@ -450,4 +450,5 @@ services:
     container_name: pools-latency-calculator
     restart: unless-stopped
     networks:
-      ipv4_address: 10.5.0.18
+      sv2-net:
+        ipv4_address: 10.5.0.18

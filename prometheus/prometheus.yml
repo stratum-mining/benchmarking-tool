@@ -74,3 +74,8 @@ scrape_configs:
     scrape_interval: 10s
     static_configs:
       - targets: ['sv2-new-job-proxy:3477']
+
+  - job_name: 'sv2-pool-new-job-proxy'
+    scrape_interval: 10s
+    static_configs:
+      - targets: ['sv2-pool-new-job-proxy:3497']

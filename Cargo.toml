@@ -4,6 +4,6 @@ resolver="2"
 
 members = [
     'pools-latency-calculator',
-    'sv1-custom-proxy',
+    'sv1-custom-proxy', "sv1-new-job-proxy",
     'sv2-custom-proxy', "sv2-new-job-proxy",
 ]
