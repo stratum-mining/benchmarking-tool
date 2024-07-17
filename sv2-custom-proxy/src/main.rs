@@ -1,4 +1,7 @@
-use demand_easy_sv2::const_sv2::{MESSAGE_TYPE_SUBMIT_SHARES_EXTENDED, MESSAGE_TYPE_SUBMIT_SHARES_SUCCESS, MESSAGE_TYPE_SUBMIT_SHARES_ERROR};
+use demand_easy_sv2::const_sv2::{
+    MESSAGE_TYPE_SUBMIT_SHARES_ERROR, MESSAGE_TYPE_SUBMIT_SHARES_EXTENDED,
+    MESSAGE_TYPE_SUBMIT_SHARES_SUCCESS,
+};
 use demand_easy_sv2::roles_logic_sv2::parsers::{Mining, PoolMessages};
 use demand_easy_sv2::{ProxyBuilder, Remote};
 use prometheus::{register_counter, Counter, Encoder, TextEncoder};
@@ -17,17 +20,14 @@ async fn main() {
     let submitted_shares = register_counter!(
         "sv2_submitted_shares",
         "Total number of SV2 submitted shares"
-    ).unwrap();
+    )
+    .unwrap();
 
-    let valid_shares = register_counter!(
-        "sv2_valid_shares",
-        "Total number of SV2 valid shares"
-    ).unwrap();
+    let valid_shares =
+        register_counter!("sv2_valid_shares", "Total number of SV2 valid shares").unwrap();
 
-    let stale_shares = register_counter!(
-        "sv2_stale_shares",
-        "Total number of SV2 stale shares"
-    ).unwrap();
+    let stale_shares =
+        register_counter!("sv2_stale_shares", "Total number of SV2 stale shares").unwrap();
 
     // Spawn the metrics endpoint
     tokio::spawn(async move {
@@ -78,8 +78,7 @@ async fn connect_to_server(server_address: &str) -> TcpStream {
 }
 
 async fn intercept_submit_share_extended(builder: &mut ProxyBuilder, submitted_shares: Counter) {
-    let mut r =
-        builder.add_handler(Remote::Client, MESSAGE_TYPE_SUBMIT_SHARES_EXTENDED);
+    let mut r = builder.add_handler(Remote::Client, MESSAGE_TYPE_SUBMIT_SHARES_EXTENDED);
     tokio::spawn(async move {
         while let Some(PoolMessages::Mining(Mining::SubmitSharesExtended(m))) = r.recv().await {
             println!("SubmitSharesExtended received --> {:?}", m);
@@ -89,8 +88,7 @@ async fn intercept_submit_share_extended(builder: &mut ProxyBuilder, submitted_s
 }
 
 async fn intercept_submit_share_success(builder: &mut ProxyBuilder, valid_shares: Counter) {
-    let mut r =
-        builder.add_handler(Remote::Server, MESSAGE_TYPE_SUBMIT_SHARES_SUCCESS);
+    let mut r = builder.add_handler(Remote::Server, MESSAGE_TYPE_SUBMIT_SHARES_SUCCESS);
     tokio::spawn(async move {
         while let Some(PoolMessages::Mining(Mining::SubmitSharesSuccess(m))) = r.recv().await {
             println!("SubmitSharesSuccess received --> {:?}", m);
@@ -100,8 +98,7 @@ async fn intercept_submit_share_success(builder: &mut ProxyBuilder, valid_shares
 }
 
 async fn intercept_submit_share_error(builder: &mut ProxyBuilder, stale_shares: Counter) {
-    let mut r =
-        builder.add_handler(Remote::Server, MESSAGE_TYPE_SUBMIT_SHARES_ERROR);
+    let mut r = builder.add_handler(Remote::Server, MESSAGE_TYPE_SUBMIT_SHARES_ERROR);
     tokio::spawn(async move {
         while let Some(PoolMessages::Mining(Mining::SubmitSharesError(m))) = r.recv().await {
             println!("SubmitSharesError received --> {:?}", m);

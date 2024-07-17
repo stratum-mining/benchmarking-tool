@@ -1,10 +1,16 @@
+use prometheus::{register_counter, Counter, Encoder, TextEncoder};
+use serde_json::Value;
 use tokio::io::{self, AsyncReadExt, AsyncWriteExt};
 use tokio::net::{TcpListener, TcpStream};
-use serde_json::Value;
-use prometheus::{register_counter, Counter, Encoder, TextEncoder};
 use warp::Filter;
 
-async fn transfer(mut inbound: TcpStream, mut outbound: TcpStream, submitted_shares: Counter, valid_shares: Counter, stale_shares: Counter) -> io::Result<()> {
+async fn transfer(
+    mut inbound: TcpStream,
+    mut outbound: TcpStream,
+    submitted_shares: Counter,
+    valid_shares: Counter,
+    stale_shares: Counter,
+) -> io::Result<()> {
     let (mut ri, mut wi) = inbound.split();
     let (mut ro, mut wo) = outbound.split();
 
@@ -68,23 +74,19 @@ async fn transfer(mut inbound: TcpStream, mut outbound: TcpStream, submitted_sha
     Ok(())
 }
 
-
 #[tokio::main]
 async fn main() -> io::Result<()> {
     let submitted_shares = register_counter!(
         "sv1_submitted_shares",
         "Total number of SV1 submitted shares"
-    ).unwrap();
+    )
+    .unwrap();
 
-    let valid_shares = register_counter!(
-        "sv1_valid_shares",
-        "Total number of SV1 valid shares"
-    ).unwrap();
+    let valid_shares =
+        register_counter!("sv1_valid_shares", "Total number of SV1 valid shares").unwrap();
 
-    let stale_shares = register_counter!(
-        "sv1_stale_shares",
-        "Total number of SV1 stale shares"
-    ).unwrap();
+    let stale_shares =
+        register_counter!("sv1_stale_shares", "Total number of SV1 stale shares").unwrap();
 
     tokio::spawn(async move {
         let metrics_route = warp::path("metrics").map(move || {
@@ -106,13 +108,21 @@ async fn main() -> io::Result<()> {
     loop {
         let (inbound, _) = listener.accept().await?;
         let outbound = TcpStream::connect("10.5.0.8:3332").await?;
-        
+
         let submitted_shares_clone = submitted_shares.clone();
         let valid_shares_clone = valid_shares.clone();
         let stale_shares_clone = stale_shares.clone();
-        
+
         tokio::spawn(async move {
-            if let Err(e) = transfer(inbound, outbound, submitted_shares_clone, valid_shares_clone, stale_shares_clone).await {
+            if let Err(e) = transfer(
+                inbound,
+                outbound,
+                submitted_shares_clone,
+                valid_shares_clone,
+                stale_shares_clone,
+            )
+            .await
+            {
                 println!("Failed to transfer; error = {}", e);
             }
         });

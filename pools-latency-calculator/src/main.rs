@@ -1,10 +1,10 @@
+use prometheus::{register_gauge, Encoder, Gauge, TextEncoder};
+use serde_json::json;
+use std::net::SocketAddr;
+use std::time::{Duration, Instant};
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 use tokio::net::TcpStream;
-use std::time::{Duration, Instant};
 use tokio::time::{sleep, timeout};
-use serde_json::json;
-use prometheus::{Encoder, TextEncoder, register_gauge, Gauge};
-use std::net::SocketAddr;
 use warp::Filter;
 
 const TIMEOUT_DURATION: Duration = Duration::from_secs(10);
@@ -23,7 +23,9 @@ async fn subscribe_to_pool(mut stream: TcpStream) -> Result<Duration, std::io::E
         "id": 1,
         "method": "mining.subscribe",
         "params": []
-    }).to_string() + "\n";
+    })
+    .to_string()
+        + "\n";
 
     let start = Instant::now();
     stream.write_all(subscribe_msg.as_bytes()).await?;
@@ -34,15 +36,16 @@ async fn subscribe_to_pool(mut stream: TcpStream) -> Result<Duration, std::io::E
 
 async fn get_subscription_latency(address: &str) -> Result<Duration, std::io::Error> {
     match connect_to_pool(address).await {
-        Ok(connection) => {
-            match timeout(TIMEOUT_DURATION, subscribe_to_pool(connection)).await {
-                Ok(result) => result,
-                Err(_) => {
-                    println!("Timeout while subscribing to {}", address);
-                    Err(std::io::Error::new(std::io::ErrorKind::TimedOut, "Subscription timeout"))
-                }
+        Ok(connection) => match timeout(TIMEOUT_DURATION, subscribe_to_pool(connection)).await {
+            Ok(result) => result,
+            Err(_) => {
+                println!("Timeout while subscribing to {}", address);
+                Err(std::io::Error::new(
+                    std::io::ErrorKind::TimedOut,
+                    "Subscription timeout",
+                ))
             }
-        }
+        },
         Err(e) => {
             println!("Failed to connect to {}: {}", address, e);
             Err(e)
@@ -73,7 +76,10 @@ async fn average_latency(addresses: Vec<&str>, repetitions: usize, gauge: Gauge)
 
         let avg_address_duration = address_duration / repetitions as u32;
         total_duration += address_duration;
-        println!("Average latency for {}: {:?}", address, avg_address_duration);
+        println!(
+            "Average latency for {}: {:?}",
+            address, avg_address_duration
+        );
     }
 
     let avg_total_duration = total_duration / total_attempts as u32;
@@ -101,7 +107,7 @@ async fn main() {
         "stratum+tcp://btc.global.luxor.tech:700",
         "stratum+tcp://btc.secpool.com:3333",
         "stratum+tcp://btc.secpool.com:443",
-        "stratum+tcp://mine.ocean.xyz:3334"
+        "stratum+tcp://mine.ocean.xyz:3334",
     ];
 
     let repetitions = 10;
@@ -109,7 +115,8 @@ async fn main() {
     let gauge = register_gauge!(
         "average_pool_subscription_latency_milliseconds",
         "Average subscription latency to various mining pools in milliseconds"
-    ).unwrap();
+    )
+    .unwrap();
 
     // Start the latency measurement in a loop
     tokio::spawn(async move {
