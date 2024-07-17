@@ -1,0 +1,12 @@
+[package]
+name = "sv2-custom-proxy"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+demand-easy-sv2 = {version="0.4.0",git="https://github.com/demand-open-source/demand-easy-sv2"}
+prometheus = "0.13"
+warp = "0.3"
+tokio = {version="1.36.0",features = ["full","tracing"]}
+dotenv = "0.15.0"
+#serde = { version = "1.0.89", features = ["derive", "alloc"], default-features = false }

@@ -20,22 +20,28 @@ services:
 
   sv2-roles-builder:
     build:
-      dockerfile: ./sri-roles.dockerfile
+      dockerfile: ./sv2-roles.dockerfile
     container_name: sv2-roles-builder
     image: sv2-roles-builder-image  
     command: echo "SRI build completed"  
   
-  #custom-proxies-builder:
-    #build:
-      #context: ../../
-      #dockerfile: benches/benchmarking-tool/custom-proxies.dockerfile
-    #container_name: custom-proxies-builder
-    #image: custom-proxies-builder-image  
-    #command: echo "Custom proxies build completed"
+  sv2-custom-proxy-builder:
+    build:
+      dockerfile: ./sv2-custom-proxy/Dockerfile
+    container_name: sv2-custom-proxy-builder
+    image: sv2-custom-proxy-builder-image  
+    command: echo "sv2-custom-proxy build completed"
+
+  sv1-custom-proxy-builder:
+    build:
+      dockerfile: ./sv1-custom-proxy/Dockerfile
+    container_name: sv1-custom-proxy-builder
+    image: sv1-custom-proxy-builder-image  
+    command: echo "sv1-custom-proxy build completed"
     
   pools-latency-calculator-builder:
     build:
-      dockerfile: pools-latency-calculator.dockerfile
+      dockerfile: ./pools-latency-calculator/Dockerfile
     container_name: pools-latency-calculator-builder
     image: pools-latency-calculator-builder-image 
     command: echo "pools-latency-calculator build completed"
@@ -63,7 +69,7 @@ services:
     build:
       dockerfile: ./template-provider.dockerfile
     image: sv2-template-provider
-    command: ["/bitcoin/src/bitcoind", "-testnet4", "-sv2", "-sv2port=8443", "-sv2interval=15", "-sv2feedelta=0", "-debug=sv2", "-loglevel=sv2:trace", "-sv2bind=0.0.0.0"]   
+    command: ["/bitcoin/src/bitcoind", "-testnet4", "-sv2", "-sv2port=8443", "-sv2interval=30", "-sv2feedelta=0", "-debug=sv2", "-loglevel=sv2:trace", "-sv2bind=0.0.0.0"]   
     ports:
       - "8443:8443"
       - "28333:18333"
@@ -95,7 +101,8 @@ services:
 
   pool:
     image: sv2-roles-builder-image  
-    command: ["./target/release/pool_sv2", "-c", "pool/config-examples/pool-config-a-docker-example.toml"]
+    command: ["/bin/bash", "-c", "/usr/local/bin/monitor_and_apply_latency.sh 10.5.0.17 1 & exec ./target/release/pool_sv2 -c pool/config-examples/pool-config-a-docker-example.toml"]
+    #command: ["./target/release/pool_sv2", "-c", "pool/config-examples/pool-config-a-docker-example.toml"]
     ports:
       - "34254:34254" 
     container_name: sv2-pool
@@ -108,10 +115,13 @@ services:
     networks:
       sv2-net:
           ipv4_address: 10.5.0.4
+    cap_add:
+    - NET_ADMIN
 
   jd-server:
     image: sv2-roles-builder-image
-    command: ["./target/release/jd_server", "-c", "jd-server/config-examples/jds-config-a-docker-example.toml"]
+    command: ["/bin/bash", "-c", "/usr/local/bin/monitor_and_apply_latency.sh 10.5.0.6 1 & exec ./target/release/jd_server -c jd-server/config-examples/jds-config-a-docker-example.toml"]
+    #command: ["./target/release/jd_server", "-c", "jd-server/config-examples/jds-config-a-docker-example.toml"]
     ports:
       - "34264:34264"  
     container_name: sv2-jds
@@ -124,10 +134,13 @@ services:
     networks:
       sv2-net:
           ipv4_address: 10.5.0.5
+    cap_add:
+    - NET_ADMIN
 
   jd-client:
     image: sv2-roles-builder-image
-    command: ["./target/release/jd_client", "-c", "jd-client/config-examples/jdc-config-a-docker-example.toml"]
+    command: ["/bin/bash", "-c", "/usr/local/bin/monitor_and_apply_latency.sh 10.5.0.17 1 & exec ./target/release/jd_client -c jd-client/config-examples/jdc-config-a-docker-example.toml"]
+    #command: ["./target/release/jd_client", "-c", "jd-client/config-examples/jdc-config-a-docker-example.toml"]
     ports:
       - "34265:34265"
     container_name: sv2-jdc
@@ -135,12 +148,14 @@ services:
       - ./custom-configs/sri-roles/config-a:/usr/src/stratum/roles/jd-client/config-examples/
     restart: unless-stopped
     depends_on:
-      - pool 
       - jd-server
       - template-provider-miner-side
+      - sv2-custom-proxy
     networks:
       sv2-net:
           ipv4_address: 10.5.0.6
+    cap_add:
+    - NET_ADMIN
 
   translator:
     image: sv2-roles-builder-image
@@ -157,41 +172,65 @@ services:
       sv2-net:
           ipv4_address: 10.5.0.7
 
-  #pool-jdc-proxy:
-    #image: custom-proxies-builder-image  
-    #command: ["./target/release/proxy-between-pool-and-jdc"]
-    #ports:
-      #- "34254:34254" 
-      #- "34251:34251"
-    #container_name: pool-jdc-proxy
-    #depends_on:
-      #- custom-proxies-builder
-      #- pool
-    #volumes:
-      #- ./custom-configs/sri-roles/config-a:/usr/src/stratum/roles/pool/config-examples/
-    #restart: unless-stopped
-    #networks:
-      #sv2-net:
-          #ipv4_address: 10.5.0.17
+  sv2-custom-proxy:
+    image: sv2-custom-proxy-builder-image  
+    command: ["./target/release/sv2-custom-proxy"]
+    ports:
+      - "34253:34254" 
+      - "34251:34251"
+      - "3456:3456"
+    environment:
+      - SERVER=10.5.0.4:34254
+      - CLIENT=10.5.0.17:34251
+    container_name: sv2-custom-proxy
+    depends_on:
+      - sv2-custom-proxy-builder
+      - pool
+    volumes:
+      - ./custom-configs/sri-roles/config-a:/usr/src/stratum/roles/pool/config-examples/
+    restart: unless-stopped
+    networks:
+      sv2-net:
+          ipv4_address: 10.5.0.17
 
-  sv1-public-pool:
-    container_name: sv1-public-pool
+  sv1-pool:
+    container_name: sv1-pool
     build:
       context: .
       dockerfile: ./sv1-public-pool.dockerfile
     ports:
-      - "3333:3333"
+      - "3332:3332"
       - "3334:3334"
     volumes:
       - "./testnet-DB:/public-pool/DB"
-      - "./custom-configs/sv1-public-pool/.env:/public-pool/.env:ro"
-      - "./custom-configs/sv1-public-pool/rpc.js:/public-pool/node_modules/rpc-bitcoin/build/src/rpc.js" # to fix rpc-version field issue 
+      - "./custom-configs/sv1-pool/.env:/public-pool/.env:ro"
+      - "./custom-configs/sv1-pool/rpc.js:/public-pool/node_modules/rpc-bitcoin/build/src/rpc.js" # to fix rpc-version field issue 
     restart: unless-stopped
     environment:
       - NODE_ENV=production
     networks:
       sv2-net:
         ipv4_address: 10.5.0.8
+    cap_add:
+    - NET_ADMIN
+
+  sv1-custom-proxy:
+    image: sv1-custom-proxy-builder-image 
+    command: ["/bin/bash", "-c", "/usr/local/bin/monitor_and_apply_latency.sh 10.5.0.8 2 & exec ./target/release/sv1-custom-proxy"] 
+    #command: ["./target/release/sv1-custom-proxy"]
+    ports:
+      - "3333:3333"
+      - "2345:2345"
+    container_name: sv1-custom-proxy
+    depends_on:
+      - sv1-custom-proxy-builder
+      - sv1-pool
+    restart: unless-stopped
+    networks:
+      sv2-net:
+          ipv4_address: 10.5.0.19
+    cap_add:
+    - NET_ADMIN
 
   monitor-traffic-tcpdump:
     image: inzania/network-traffic-metrics:latest

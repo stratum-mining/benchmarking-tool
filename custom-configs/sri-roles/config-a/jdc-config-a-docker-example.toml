@@ -51,7 +51,7 @@ value = 1
 # In case of shares refused by the JDS, the fallback system will propose the same job to the next upstream in this list
 [[upstreams]]
 authority_pubkey = "9auqWEzQDVyd2oe1JVGFLMLHZtCo2FFqZwtKA5gd9xbuEu7PH72"
-pool_address = "10.5.0.4:34254"
+pool_address = "10.5.0.17:34251"
 jd_address = "10.5.0.5:34264"
 # Pool signature (string to be included in coinbase tx)
 pool_signature = "Stratum v2 SRI Pool"
