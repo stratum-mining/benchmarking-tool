@@ -49,12 +49,12 @@ services:
     build:
       dockerfile: ./template-provider.dockerfile
     image: sv2-template-provider
-    command: ["/bitcoin/src/bitcoind", "-testnet4", "-sv2", "-sv2port=8442", "-sv2interval=60", "-sv2feedelta=0", "-debug=sv2", "-loglevel=sv2:trace", "-sv2bind=0.0.0.0"]   
+    command: ["/bitcoin/src/bitcoind", "-regtest", "-sv2", "-sv2port=8442", "-sv2interval=60", "-sv2feedelta=0", "-debug=sv2", "-loglevel=sv2:trace", "-sv2bind=0.0.0.0"]   
     ports:
       - "8442:8442"
       - "18333:48333"
       - "8332:8332"
-      - "48332:48332"
+      - "18332:18332"
     container_name: sv2-tp-pool-side
     volumes:
       - bitcoin_pool_side_data:/root/.bitcoin
@@ -68,10 +68,11 @@ services:
     build:
       dockerfile: ./template-provider.dockerfile
     image: sv2-template-provider
-    command: ["/bitcoin/src/bitcoind", "-testnet4"]   
+    command: ["/bitcoin/src/bitcoind", "-regtest"]   
     ports:
       - "38333:18333"
-      - "48333:48332"
+      - "28332:18332"
+      - "18443:18443"
     container_name: sv1-node-pool-side
     volumes:
       - bitcoin_sv1_pool_side_data:/root/.bitcoin
@@ -83,14 +84,14 @@ services:
 
   pool:
     image: sv2-roles-builder-image  
-    command: ["/bin/bash", "-c", "/usr/local/bin/monitor_and_apply_latency.sh 10.5.0.17 1 & exec ./target/release/pool_sv2 -c pool/config-examples/pool-config-c-docker-example.toml"]
+    command: ["/bin/bash", "-c", "/usr/local/bin/monitor_and_apply_latency.sh 10.5.0.17 2 & exec ./target/release/pool_sv2 -c pool/config-examples/pool-config-c-docker-example.toml"]
     #command: ["./target/release/pool_sv2", "-c", "pool/config-examples/pool-config-c-docker-example.toml"]
     ports:
       - "34254:34254" 
     container_name: sv2-pool
     depends_on:
       - sv2-roles-builder
-      - template-provider-pool-side
+      - sv2-tp-pool-proxy
     volumes:
       - ./custom-configs/sri-roles/config-c:/usr/src/stratum/roles/pool/config-examples/
     restart: unless-stopped
@@ -102,13 +103,13 @@ services:
 
   translator:
     image: sv2-roles-builder-image
-    command: ["/bin/bash", "-c", "/usr/local/bin/monitor_and_apply_latency.sh 10.5.0.17 1 & exec ./target/release/translator_sv2 -c translator/config-examples/tproxy-config-c-docker-example.toml"]
-    #command: ["./target/release/translator_sv2", "-c", "translator/config-examples/tproxy-config-c-docker-example.toml"]
+    #command: ["/bin/bash", "-c", "/usr/local/bin/monitor_and_apply_latency.sh 10.5.0.17 1 & exec ./target/release/translator_sv2 -c translator/config-examples/tproxy-config-c-docker-example.toml"]
+    command: ["./target/release/translator_sv2", "-c", "translator/config-examples/tproxy-config-c-docker-example.toml"]
     ports:
       - "34255:34255" 
     container_name: sv2-translator
     depends_on:
-      - sv2-custom-proxy
+      - sv2-pool-translator-proxy
     volumes:
       - ./custom-configs/sri-roles/config-c:/usr/src/stratum/roles/translator/config-examples/
     restart: unless-stopped
@@ -118,9 +119,9 @@ services:
     cap_add:
     - NET_ADMIN
 
-  sv2-custom-proxy:
+  sv2-pool-translator-proxy:
     image: sv2-custom-proxy-builder-image  
-    command: ["./target/release/sv2-custom-proxy"]
+    command: ["/bin/bash", "-c", "/usr/local/bin/monitor_and_apply_latency.sh 10.5.0.4 2 & exec ./target/release/sv2-custom-proxy"]
     ports:
       - "34253:34254" 
       - "34251:34251"
@@ -128,16 +129,38 @@ services:
     environment:
       - SERVER=10.5.0.4:34254
       - CLIENT=10.5.0.17:34251
-    container_name: sv2-custom-proxy
+      - PROM_ADDRESS=10.5.0.17:3456
+      - PROXY_TYPE=pool-translator
+    container_name: sv2-pool-translator-proxy
     depends_on:
       - sv2-custom-proxy-builder
       - pool
-    volumes:
-      - ./custom-configs/sri-roles/config-a:/usr/src/stratum/roles/pool/config-examples/
     restart: unless-stopped
     networks:
       sv2-net:
           ipv4_address: 10.5.0.17
+    cap_add:
+    - NET_ADMIN
+  
+  sv2-tp-pool-proxy:
+    image: sv2-custom-proxy-builder-image  
+    command: ["./target/release/sv2-custom-proxy"]
+    ports: 
+      - "8441:8441"
+      - "5678:5678"
+    environment:
+      - SERVER=10.5.0.2:8442
+      - CLIENT=10.5.0.21:8441
+      - PROM_ADDRESS=10.5.0.21:5678
+      - PROXY_TYPE=tp-pool
+    container_name: sv2-tp-pool-proxy
+    depends_on:
+      - sv2-custom-proxy-builder
+      - template-provider-pool-side
+    restart: unless-stopped
+    networks:
+      sv2-net:
+          ipv4_address: 10.5.0.21
 
   sv1-pool:
     container_name: sv1-pool
@@ -160,14 +183,18 @@ services:
     cap_add:
     - NET_ADMIN
 
-  sv1-custom-proxy:
+  sv1-pool-miner-proxy:
     image: sv1-custom-proxy-builder-image 
     command: ["/bin/bash", "-c", "/usr/local/bin/monitor_and_apply_latency.sh 10.5.0.8 2 & exec ./target/release/sv1-custom-proxy"] 
-    #command: ["./target/release/sv1-custom-proxy"]
     ports:
       - "3333:3333"
       - "2345:2345"
-    container_name: sv1-custom-proxy
+    environment:
+      - SERVER=10.5.0.8:3332
+      - CLIENT=0.0.0.0:3333
+      - PROM_ADDRESS=10.5.0.19:2345
+      - PROXY_TYPE=pool-miner 
+    container_name: sv1-pool-miner-proxy
     depends_on:
       - sv1-custom-proxy-builder
       - sv1-pool
@@ -177,6 +204,26 @@ services:
           ipv4_address: 10.5.0.19
     cap_add:
     - NET_ADMIN
+
+  sv1-node-pool-proxy:
+    image: sv1-custom-proxy-builder-image  
+    command: ["./target/release/sv1-custom-proxy"]
+    ports:
+      - "48330:48330"
+      - "4567:4567"
+    environment:
+      - SERVER=http://10.5.0.16:18332
+      - CLIENT=0.0.0.0:48330
+      - PROM_ADDRESS=10.5.0.20:4567
+      - PROXY_TYPE=node-pool 
+    container_name: sv1-node-pool-proxy
+    depends_on:
+      - sv1-custom-proxy-builder
+      - sv1-node-pool-side
+    restart: unless-stopped
+    networks:
+      sv2-net:
+          ipv4_address: 10.5.0.20
 
   monitor-traffic-tcpdump:
     image: inzania/network-traffic-metrics:latest
@@ -300,7 +347,6 @@ services:
     networks:
       sv2-net:
         ipv4_address: 10.5.0.14
-
 
   renderer:
     image: grafana/grafana-image-renderer:latest

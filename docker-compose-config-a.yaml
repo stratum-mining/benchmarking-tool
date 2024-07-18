@@ -50,12 +50,12 @@ services:
     build:
       dockerfile: ./template-provider.dockerfile
     image: sv2-template-provider
-    command: ["/bitcoin/src/bitcoind", "-testnet4", "-sv2", "-sv2port=8442", "-sv2interval=60", "-sv2feedelta=0", "-debug=sv2", "-loglevel=sv2:trace", "-sv2bind=0.0.0.0"]   
+    command: ["/bitcoin/src/bitcoind", "-regtest", "-sv2", "-sv2port=8442", "-sv2interval=60", "-sv2feedelta=0", "-debug=sv2", "-loglevel=sv2:trace", "-sv2bind=0.0.0.0"]   
     ports:
       - "8442:8442"
       - "18333:48333"
       - "8332:8332"
-      - "48332:48332"
+      - "18332:18332"
     container_name: sv2-tp-pool-side
     volumes:
       - bitcoin_pool_side_data:/root/.bitcoin
@@ -69,7 +69,7 @@ services:
     build:
       dockerfile: ./template-provider.dockerfile
     image: sv2-template-provider
-    command: ["/bitcoin/src/bitcoind", "-testnet4", "-sv2", "-sv2port=8443", "-sv2interval=30", "-sv2feedelta=0", "-debug=sv2", "-loglevel=sv2:trace", "-sv2bind=0.0.0.0"]   
+    command: ["/bitcoin/src/bitcoind", "-regtest", "-sv2", "-sv2port=8443", "-sv2interval=30", "-sv2feedelta=0", "-debug=sv2", "-loglevel=sv2:trace", "-sv2bind=0.0.0.0"]   
     ports:
       - "8443:8443"
       - "28333:18333"
@@ -89,7 +89,7 @@ services:
     command: ["/bitcoin/src/bitcoind", "-testnet4"]   
     ports:
       - "38333:18333"
-      - "48333:48332"
+      - "28332:18332"
     container_name: sv1-node-pool-side
     volumes:
       - bitcoin_sv1_pool_side_data:/root/.bitcoin
@@ -108,7 +108,7 @@ services:
     container_name: sv2-pool
     depends_on:
       - sv2-roles-builder
-      - template-provider-pool-side
+      - sv2-tp-pool-proxy
     volumes:
       - ./custom-configs/sri-roles/config-a:/usr/src/stratum/roles/pool/config-examples/
     restart: unless-stopped
@@ -149,8 +149,8 @@ services:
     restart: unless-stopped
     depends_on:
       - jd-server
-      - template-provider-miner-side
-      - sv2-custom-proxy
+      - sv2-tp-jdc-proxy
+      - pool
     networks:
       sv2-net:
           ipv4_address: 10.5.0.6
@@ -164,7 +164,7 @@ services:
       - "34255:34255" 
     container_name: sv2-translator
     depends_on:
-      - jd-client 
+      - sv2-jdc-translator-proxy
     volumes:
       - ./custom-configs/sri-roles/config-a:/usr/src/stratum/roles/translator/config-examples/
     restart: unless-stopped
@@ -172,7 +172,7 @@ services:
       sv2-net:
           ipv4_address: 10.5.0.7
 
-  sv2-custom-proxy:
+  sv2-jdc-translator-proxy:
     image: sv2-custom-proxy-builder-image  
     command: ["./target/release/sv2-custom-proxy"]
     ports:
@@ -180,18 +180,58 @@ services:
       - "34251:34251"
       - "3456:3456"
     environment:
-      - SERVER=10.5.0.4:34254
+      - SERVER=10.5.0.6:34265
       - CLIENT=10.5.0.17:34251
-    container_name: sv2-custom-proxy
+      - PROM_ADDRESS=10.5.0.17:3456
+      - PROXY_TYPE=jdc-translator
+    container_name: sv2-jdc-translator-proxy
     depends_on:
       - sv2-custom-proxy-builder
-      - pool
-    volumes:
-      - ./custom-configs/sri-roles/config-a:/usr/src/stratum/roles/pool/config-examples/
+      - jd-client
     restart: unless-stopped
     networks:
       sv2-net:
           ipv4_address: 10.5.0.17
+
+  sv2-tp-jdc-proxy:
+    image: sv2-custom-proxy-builder-image  
+    command: ["./target/release/sv2-custom-proxy"]
+    ports: 
+      - "8440:8440"
+      - "4567:4567"
+    environment:
+      - SERVER=10.5.0.3:8443
+      - CLIENT=10.5.0.20:8440
+      - PROM_ADDRESS=10.5.0.20:4567
+      - PROXY_TYPE=tp-jdc
+    container_name: sv2-tp-jdc-proxy
+    depends_on:
+      - sv2-custom-proxy-builder
+      - template-provider-miner-side
+    restart: unless-stopped
+    networks:
+      sv2-net:
+          ipv4_address: 10.5.0.20
+
+  sv2-tp-pool-proxy:
+    image: sv2-custom-proxy-builder-image  
+    command: ["./target/release/sv2-custom-proxy"]
+    ports: 
+      - "8441:8441"
+      - "5678:5678"
+    environment:
+      - SERVER=10.5.0.2:8442
+      - CLIENT=10.5.0.21:8441
+      - PROM_ADDRESS=10.5.0.21:5678
+      - PROXY_TYPE=tp-pool
+    container_name: sv2-tp-pool-proxy
+    depends_on:
+      - sv2-custom-proxy-builder
+      - template-provider-pool-side
+    restart: unless-stopped
+    networks:
+      sv2-net:
+          ipv4_address: 10.5.0.21
 
   sv1-pool:
     container_name: sv1-pool
@@ -217,7 +257,6 @@ services:
   sv1-custom-proxy:
     image: sv1-custom-proxy-builder-image 
     command: ["/bin/bash", "-c", "/usr/local/bin/monitor_and_apply_latency.sh 10.5.0.8 2 & exec ./target/release/sv1-custom-proxy"] 
-    #command: ["./target/release/sv1-custom-proxy"]
     ports:
       - "3333:3333"
       - "2345:2345"
