@@ -54,18 +54,42 @@ scrape_configs:
     static_configs:
       - targets: ['pools-latency-calculator:1234'] # The Network Traffic Metrics IP/port
 
-  - job_name: 'sv1-custom-proxy'
+  - job_name: 'sv1-pool-miner-proxy'
   
     # Override the global default and scrape targets from this job every 5 seconds.
     scrape_interval: 5s
 
     static_configs:
-      - targets: ['sv1-custom-proxy:2345'] # The Network Traffic Metrics IP/port
-
-  - job_name: 'sv2-custom-proxy'
+      - targets: ['sv1-pool-miner-proxy:2345'] # The Network Traffic Metrics IP/port
+  
+  - job_name: 'sv1-node-pool-proxy'
   
     # Override the global default and scrape targets from this job every 5 seconds.
     scrape_interval: 5s
 
     static_configs:
-      - targets: ['sv2-custom-proxy:3456'] # The Network Traffic Metrics IP/port
+      - targets: ['sv1-node-pool-proxy:4567'] # The Network Traffic Metrics IP/port
+
+  - job_name: 'sv2-jdc-translator-proxy'
+  
+    # Override the global default and scrape targets from this job every 5 seconds.
+    scrape_interval: 5s
+
+    static_configs:
+      - targets: ['sv2-jdc-translator-proxy:3456'] # The Network Traffic Metrics IP/port
+
+  - job_name: 'sv2-tp-jdc-proxy'
+  
+    # Override the global default and scrape targets from this job every 5 seconds.
+    scrape_interval: 5s
+
+    static_configs:
+      - targets: ['sv2-tp-jdc-proxy:4567'] # The Network Traffic Metrics IP/port
+
+  - job_name: 'sv2-tp-pool-proxy'
+  
+    # Override the global default and scrape targets from this job every 5 seconds.
+    scrape_interval: 5s
+
+    static_configs:
+      - targets: ['sv2-tp-pool-proxy:5678'] # The Network Traffic Metrics IP/port
