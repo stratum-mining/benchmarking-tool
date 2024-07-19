@@ -113,7 +113,8 @@ async fn transfer(
 async fn handle_rpc_request(
     req: Request<Body>,
     forward_uri: Uri,
-    latency_metric: Gauge,
+    block_propagation_time: Gauge,
+    mined_blocks: Counter,
 ) -> Result<Response<Body>, hyper::Error> {
     let uri = req.uri().clone();
     let method = req.method().clone();
@@ -178,7 +179,8 @@ async fn handle_rpc_request(
                                             println!("Current timestamp: {:?}", current_timestamp);
                                             let latency = current_timestamp - previous_timestamp;
                                             println!("Computed latency: {:?}", latency);
-                                            latency_metric.set(latency);
+                                            block_propagation_time.set(latency);
+                                            mined_blocks.inc();
                                         }
                                     }
                                     nonce_found = true;
@@ -325,13 +327,21 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             "block_propagation_time_through_sv1_pool",
             "Time to submit a block through SV1 Pool in milliseconds"
         )?;
+        let mined_blocks =
+            register_counter!("sv1_mined_blocks", "Total number of SV1 blocks mined")?;
 
         let make_svc = make_service_fn(move |_conn| {
             let forward_uri = forward_uri.clone();
-            let latency_metric = block_propagation_time_through_sv1_pool.clone(); // Clone the gauge
+            let latency_metric = block_propagation_time_through_sv1_pool.clone();
+            let blocks_mined_metric = mined_blocks.clone();
             async move {
                 Ok::<_, Infallible>(service_fn(move |req| {
-                    handle_rpc_request(req, forward_uri.clone(), latency_metric.clone())
+                    handle_rpc_request(
+                        req,
+                        forward_uri.clone(),
+                        latency_metric.clone(),
+                        blocks_mined_metric.clone(),
+                    )
                 }))
             }
         });

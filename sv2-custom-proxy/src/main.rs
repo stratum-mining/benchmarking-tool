@@ -29,10 +29,14 @@ async fn main() {
     let mut share_submission_timestamp: Option<GaugeVec> = None;
     let mut block_propagation_through_jdc_latency: Option<Gauge> = None;
     let mut block_propagation_through_pool_latency: Option<Gauge> = None;
+    let mut mined_blocks: Option<Counter> = None;
 
     // Initialize metrics based on proxy_type
     match proxy_type.as_str() {
         "tp-jdc" => {
+            mined_blocks = Some(
+                register_counter!("sv2_mined_blocks", "Total number of SV2 blocks mined").unwrap(),
+            );
             block_propagation_through_jdc_latency = Some(
                 register_gauge!(
                     "block_propagation_through_jdc_latency",
@@ -42,6 +46,9 @@ async fn main() {
             );
         }
         "tp-pool" => {
+            mined_blocks = Some(
+                register_counter!("sv2_mined_blocks", "Total number of SV2 blocks mined").unwrap(),
+            );
             block_propagation_through_pool_latency = Some(
                 register_gauge!(
                     "block_propagation_through_pool_latency",
@@ -122,13 +129,17 @@ async fn main() {
             }
         }
         "tp-pool" => {
-            if let Some(pool_latency) = block_propagation_through_pool_latency {
-                intercept_submit_solution(&mut proxy_builder, pool_latency).await;
+            if let (Some(pool_latency), Some(mined)) =
+                (block_propagation_through_pool_latency, mined_blocks)
+            {
+                intercept_submit_solution(&mut proxy_builder, pool_latency, mined).await;
             }
         }
         "tp-jdc" => {
-            if let Some(jdc_latency) = block_propagation_through_jdc_latency {
-                intercept_submit_solution(&mut proxy_builder, jdc_latency).await;
+            if let (Some(jdc_latency), Some(mined)) =
+                (block_propagation_through_jdc_latency, mined_blocks)
+            {
+                intercept_submit_solution(&mut proxy_builder, jdc_latency, mined).await;
             }
         }
         _ => {
@@ -206,7 +217,11 @@ async fn intercept_submit_share_error(builder: &mut ProxyBuilder, stale_shares: 
     });
 }
 
-async fn intercept_submit_solution(builder: &mut ProxyBuilder, latency_metric: Gauge) {
+async fn intercept_submit_solution(
+    builder: &mut ProxyBuilder,
+    block_propagation_time: Gauge,
+    mined_blocks: Counter,
+) {
     let mut r = builder.add_handler(Remote::Client, MESSAGE_TYPE_SUBMIT_SOLUTION);
     let client = Client::new();
 
@@ -236,7 +251,8 @@ async fn intercept_submit_solution(builder: &mut ProxyBuilder, latency_metric: G
                                     println!("Current timestamp: {:?}", current_timestamp);
                                     let latency = current_timestamp - previous_timestamp;
                                     println!("Computed latency: {:?}", latency);
-                                    latency_metric.set(latency);
+                                    block_propagation_time.set(latency);
+                                    mined_blocks.inc();
                                 }
                             }
                         }
