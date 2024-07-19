@@ -40,8 +40,6 @@ while true; do
 
             # Update the previous latency value
             PREV_LATENCY="$LATENCY"
-        else
-            echo "Latency value has not changed, skipping update."
         fi
     fi
 
