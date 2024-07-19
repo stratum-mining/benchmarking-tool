@@ -37,6 +37,7 @@
   "liveNow": false,
   "panels": [
     {
+      "collapsed": false,
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -44,7 +45,8 @@
         "y": 0
       },
       "id": 76,
-      "title": "Shares measurements",
+      "panels": [],
+      "title": "Shares and blocks stats",
       "type": "row"
     },
     {
@@ -126,7 +128,7 @@
       },
       "gridPos": {
         "h": 10,
-        "w": 12,
+        "w": 9,
         "x": 0,
         "y": 1
       },
@@ -230,6 +232,79 @@
       "fieldConfig": {
         "defaults": {
           "color": {
+            "mode": "thresholds"
+          },
+          "fieldMinMax": false,
+          "links": [],
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 3,
+        "x": 9,
+        "y": 1
+      },
+      "id": 81,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "text": {
+          "valueSize": 50
+        },
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "sv1_mined_blocks",
+          "hide": false,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "SV1 mined blocks",
+          "metric": "container_network_receive_bytes_total",
+          "range": true,
+          "refId": "A",
+          "step": 10
+        }
+      ],
+      "title": "SV1 mined blocks",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
             "mode": "palette-classic"
           },
           "custom": {
@@ -301,7 +376,7 @@
       },
       "gridPos": {
         "h": 10,
-        "w": 12,
+        "w": 9,
         "x": 12,
         "y": 1
       },
@@ -398,6 +473,80 @@
       "type": "timeseries"
     },
     {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "fieldMinMax": false,
+          "links": [],
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 3,
+        "x": 21,
+        "y": 1
+      },
+      "id": 82,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "text": {
+          "valueSize": 50
+        },
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "sv2_mined_blocks",
+          "hide": false,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "SV2 mined blocks",
+          "metric": "container_network_receive_bytes_total",
+          "range": true,
+          "refId": "A",
+          "step": 10
+        }
+      ],
+      "title": "SV2 mined blocks",
+      "type": "stat"
+    },
+    {
+      "collapsed": false,
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -405,6 +554,7 @@
         "y": 11
       },
       "id": 71,
+      "panels": [],
       "title": "Latency and time measurements",
       "type": "row"
     },
@@ -627,7 +777,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.8\", src!=\"10.5.0.9\", src!=\"10.5.0.16\", src!=\"192.168.65.7\", src!=\"192.168.65.254\"}[20s]))",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.8\", src=\"10.5.0.19\"}[20s]))",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
@@ -750,7 +900,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.8\", dst!=\"10.5.0.9\", dst!=\"10.5.0.16\", dst!=\"192.168.65.7\", dst!=\"192.168.65.254\"}[20s]))",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.8\", dst=\"10.5.0.19\"}[20s]))",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
@@ -1117,7 +1267,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.8\", src!=\"10.5.0.9\", src!=\"10.5.0.16\", src!=\"192.168.65.7\", src!=\"192.168.65.254\"}[20s]))",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.8\", src=\"10.5.0.19\"}[20s]))",
           "hide": false,
           "instant": false,
           "legendFormat": "SV1 (farm net interface)",
@@ -1256,7 +1406,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.8\", dst!=\"10.5.0.9\", dst!=\"10.5.0.16\", dst!=\"192.168.65.7\", dst!=\"192.168.65.254\"}[20s]))",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.8\", dst=\"10.5.0.19\"}[20s]))",
           "hide": false,
           "instant": false,
           "legendFormat": "SV1 (farm net interface)",
@@ -1408,7 +1558,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.8\", dst!=\"10.5.0.16\", dst!=\"10.5.0.9\", dst!=\"192.168.65.7\", dst!=\"192.168.65.254\"}[20s]))",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.8\", dst=\"10.5.0.19\"}[20s]))",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
@@ -1424,7 +1574,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.16\", dst!=\"192.168.65.1\", dst!=\"10.5.0.8\"}[20s]))",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.16\", dst!=\"192.168.65.1\", dst!=\"10.5.0.8\", dst!=\"10.5.0.21\", dst!=\"192.168.65.7\"}[20s]))",
           "hide": false,
           "instant": false,
           "legendFormat": "Bitcoin Node",
@@ -1548,7 +1698,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.8\", src!=\"10.5.0.16\", src!=\"10.5.0.9\", src!=\"192.168.65.7\", src!=\"192.168.65.254\"}[20s]))",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.8\", src=\"10.5.0.19\"}[20s]))",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
@@ -1564,7 +1714,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.16\", src!=\"192.168.65.1\", src!=\"10.5.0.8\"}[20s]))",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.16\", src!=\"192.168.65.1\", src!=\"10.5.0.8\", src!=\"10.5.0.21\", src!=\"192.168.65.7\"}[20s]))",
           "hide": false,
           "instant": false,
           "legendFormat": "Bitcoin Node",
@@ -1703,7 +1853,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.2\", dst!=\"192.168.65.1\", dst!=\"10.5.0.4\", dst!=\"10.5.0.5\"}[20s]))",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.2\", dst!=\"192.168.65.1\", dst!=\"10.5.0.4\", dst!=\"10.5.0.5\", dst!=\"10.5.0.20\", dst!=\"192.168.65.7\"}[20s]))",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
@@ -1845,7 +1995,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.2\", src!=\"192.168.65.1\", src!=\"10.5.0.4\", src!=\"10.5.0.5\"}[20s]))",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.2\", src!=\"192.168.65.1\", src!=\"10.5.0.4\", src!=\"10.5.0.5\", src!=\"10.5.0.20\", src!=\"192.168.65.7\"}[20s]))",
           "hide": false,
           "instant": false,
           "legendFormat": "Template Provider (TP)",
@@ -1968,7 +2118,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.8\", dst!=\"10.5.0.16\", dst!=\"10.5.0.9\", dst!=\"192.168.65.7\", dst!=\"192.168.65.254\"}[20s])) + sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.16\", dst!=\"192.168.65.1\", dst!=\"10.5.0.8\"}[20s]))",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.8\", dst=\"10.5.0.19\"}[20s])) + sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.16\", dst!=\"192.168.65.1\", dst!=\"10.5.0.8\", dst!=\"10.5.0.21\", dst!=\"192.168.65.7\"}[20s]))",
           "hide": false,
           "instant": false,
           "legendFormat": "SV1 (pool + bitcoin node)",
@@ -1981,7 +2131,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.4\", dst=\"10.5.0.17\"}[20s])) + sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.2\", dst!=\"192.168.65.1\", dst!=\"10.5.0.4\", dst!=\"10.5.0.5\"}[20s]))",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.4\", dst=\"10.5.0.17\"}[20s])) + sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.2\", dst!=\"192.168.65.1\", dst!=\"10.5.0.4\", dst!=\"10.5.0.5\", dst!=\"10.5.0.20\", dst!=\"192.168.65.7\"}[20s]))",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
@@ -2116,7 +2266,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.8\", src!=\"10.5.0.16\", src!=\"10.5.0.9\", src!=\"192.168.65.7\", src!=\"192.168.65.254\"}[20s])) + sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.16\", src!=\"192.168.65.1\", src!=\"10.5.0.8\"}[20s]))",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.8\", src=\"10.5.0.19\"}[20s])) + sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.16\", src!=\"192.168.65.1\", src!=\"10.5.0.8\", src!=\"10.5.0.21\", src!=\"192.168.65.7\"}[20s]))",
           "hide": false,
           "instant": false,
           "legendFormat": "SV1 (pool + bitcoin node)",
@@ -2129,7 +2279,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.4\", src=\"10.5.0.17\"}[20s])) + sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.2\", src!=\"192.168.65.1\", src!=\"10.5.0.4\", src!=\"10.5.0.5\"}[20s]))",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.4\", src=\"10.5.0.17\"}[20s])) + sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.2\", src!=\"192.168.65.1\", src!=\"10.5.0.4\", src!=\"10.5.0.5\", src!=\"10.5.0.20\", src!=\"192.168.65.7\"}[20s]))",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
@@ -3242,8 +3392,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -3358,8 +3507,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -3474,8 +3622,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -3615,8 +3762,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -3730,8 +3876,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -3808,8 +3953,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -3889,8 +4033,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "rgba(50, 172, 45, 0.97)",
-                "value": null
+                "color": "rgba(50, 172, 45, 0.97)"
               },
               {
                 "color": "rgba(237, 129, 40, 0.89)",
@@ -3975,8 +4118,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -4055,8 +4197,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "rgba(50, 172, 45, 0.97)",
-                "value": null
+                "color": "rgba(50, 172, 45, 0.97)"
               },
               {
                 "color": "rgba(237, 129, 40, 0.89)",
@@ -4141,8 +4282,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "rgba(50, 172, 45, 0.97)",
-                "value": null
+                "color": "rgba(50, 172, 45, 0.97)"
               },
               {
                 "color": "rgba(237, 129, 40, 0.89)",
@@ -4247,8 +4387,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -4386,6 +4525,6 @@
   "timezone": "browser",
   "title": "SRI benchmarking tool",
   "uid": "64nrElFmk",
-  "version": 9,
+  "version": 21,
   "weekStart": ""
 }

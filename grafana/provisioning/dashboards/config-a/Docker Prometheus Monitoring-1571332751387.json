@@ -44,7 +44,7 @@
         "y": 0
       },
       "id": 76,
-      "title": "Shares measurements",
+      "title": "Shares and blocks stats",
       "type": "row"
     },
     {
@@ -126,7 +126,7 @@
       },
       "gridPos": {
         "h": 10,
-        "w": 12,
+        "w": 9,
         "x": 0,
         "y": 1
       },
@@ -230,6 +230,79 @@
       "fieldConfig": {
         "defaults": {
           "color": {
+            "mode": "thresholds"
+          },
+          "fieldMinMax": false,
+          "links": [],
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 3,
+        "x": 9,
+        "y": 1
+      },
+      "id": 82,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "text": {
+          "valueSize": 50
+        },
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "sv1_mined_blocks",
+          "hide": false,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "SV1 mined blocks",
+          "metric": "container_network_receive_bytes_total",
+          "range": true,
+          "refId": "A",
+          "step": 10
+        }
+      ],
+      "title": "SV1 mined blocks",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
             "mode": "palette-classic"
           },
           "custom": {
@@ -301,7 +374,7 @@
       },
       "gridPos": {
         "h": 10,
-        "w": 12,
+        "w": 9,
         "x": 12,
         "y": 1
       },
@@ -398,6 +471,79 @@
       "type": "timeseries"
     },
     {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "fieldMinMax": false,
+          "links": [],
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 3,
+        "x": 21,
+        "y": 1
+      },
+      "id": 84,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "text": {
+          "valueSize": 50
+        },
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "sv2_mined_blocks",
+          "hide": false,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "SV2 mined blocks",
+          "metric": "container_network_receive_bytes_total",
+          "range": true,
+          "refId": "A",
+          "step": 10
+        }
+      ],
+      "title": "SV2 mined blocks",
+      "type": "stat"
+    },
+    {
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -474,8 +620,8 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
-        "w": 12,
+        "h": 7,
+        "w": 24,
         "x": 0,
         "y": 12
       },
@@ -519,12 +665,232 @@
       "type": "timeseries"
     },
     {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "left",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "opacity",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "smooth",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 1,
+            "pointSize": 1,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "fieldMinMax": false,
+          "links": [],
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "ms"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 19
+      },
+      "id": 85,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "lastNotNull"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "maxHeight": 600,
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "10.4.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "block_propagation_time_through_sv1_pool",
+          "hide": false,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "SV1 block propagation time",
+          "metric": "container_network_receive_bytes_total",
+          "range": true,
+          "refId": "A",
+          "step": 10
+        }
+      ],
+      "title": "SV1 block propagation time",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "left",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "opacity",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "smooth",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 1,
+            "pointSize": 1,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "fieldMinMax": false,
+          "links": [],
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "ms"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 19
+      },
+      "id": 86,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "lastNotNull"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "maxHeight": 600,
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "10.4.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "block_propagation_time_through_sv2_jdc",
+          "hide": false,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "SV2 block propagation time",
+          "metric": "container_network_receive_bytes_total",
+          "range": true,
+          "refId": "A",
+          "step": 10
+        }
+      ],
+      "title": "SV2 block propagation time ",
+      "type": "timeseries"
+    },
+    {
       "collapsed": false,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 20
+        "y": 26
       },
       "id": 56,
       "panels": [],
@@ -600,7 +966,7 @@
         "h": 10,
         "w": 12,
         "x": 0,
-        "y": 21
+        "y": 27
       },
       "id": 65,
       "options": {
@@ -627,7 +993,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.8\", src!=\"10.5.0.9\", src!=\"10.5.0.16\", src!=\"192.168.65.7\", src!=\"192.168.65.254\"}[20s]))",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.8\", src=\"10.5.0.19\"}[20s]))",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
@@ -723,7 +1089,7 @@
         "h": 10,
         "w": 12,
         "x": 12,
-        "y": 21
+        "y": 27
       },
       "id": 64,
       "options": {
@@ -750,7 +1116,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.8\", dst!=\"10.5.0.9\", dst!=\"10.5.0.16\", dst!=\"192.168.65.7\", dst!=\"192.168.65.254\"}[20s]))\n",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.8\", dst=\"10.5.0.19\"}[20s]))",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
@@ -845,7 +1211,7 @@
         "h": 10,
         "w": 12,
         "x": 0,
-        "y": 31
+        "y": 37
       },
       "id": 60,
       "options": {
@@ -872,7 +1238,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.17\", dst=\"10.5.0.4\"}[20s]))",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.17\", dst=\"10.5.0.6\"}[20s]))",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
@@ -904,7 +1270,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.3\", dst!=\"192.168.65.1\", dst!=\"10.5.0.6\"}[20s]))",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.3\", dst!=\"10.5.0.20\", dst!=\"192.168.65.1\", dst!=\"10.5.0.6\"}[20s]))",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
@@ -923,6 +1289,11 @@
             "alias": "Total (farm level)",
             "mode": "reduceRow",
             "reduce": {
+              "include": [
+                "Job Declarator Client (JDC)",
+                "Template Provider (TP)",
+                "Translator"
+              ],
               "reducer": "sum"
             },
             "replaceFields": false
@@ -1000,7 +1371,7 @@
         "h": 10,
         "w": 12,
         "x": 12,
-        "y": 31
+        "y": 37
       },
       "id": 59,
       "options": {
@@ -1027,7 +1398,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.17\", src=\"10.5.0.4\"}[20s]))",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.17\", src=\"10.5.0.6\"}[20s]))",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
@@ -1056,7 +1427,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.3\", src!=\"192.168.65.1\", src!=\"10.5.0.6\"}[20s]))",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.3\", src!=\"10.5.0.20\", src!=\"192.168.65.1\", src!=\"10.5.0.6\"}[20s]))",
           "hide": false,
           "instant": false,
           "legendFormat": "Template Provider (TP)",
@@ -1148,7 +1519,7 @@
         "h": 10,
         "w": 12,
         "x": 0,
-        "y": 41
+        "y": 47
       },
       "id": 69,
       "options": {
@@ -1175,7 +1546,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.8\", src!=\"10.5.0.9\", src!=\"10.5.0.16\", src!=\"192.168.65.7\", src!=\"192.168.65.254\"}[20s]))",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.8\", src=\"10.5.0.19\"}[20s]))",
           "hide": false,
           "instant": false,
           "legendFormat": "SV1 (farm net interface)",
@@ -1188,7 +1559,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.17\", dst=\"10.5.0.4\"}[20s])) + sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.6\", dst=\"10.5.0.5\"}[20s])) + sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.3\", dst!=\"192.168.65.1\", dst!=\"10.5.0.6\"}[20s]))",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.17\", dst=\"10.5.0.6\"}[20s])) + sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.6\", dst=\"10.5.0.5\"}[20s])) + sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.3\", dst!=\"10.5.0.20\", dst!=\"192.168.65.1\", dst!=\"10.5.0.6\"}[20s]))",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
@@ -1287,7 +1658,7 @@
         "h": 10,
         "w": 12,
         "x": 12,
-        "y": 41
+        "y": 47
       },
       "id": 70,
       "options": {
@@ -1314,7 +1685,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.8\", dst!=\"10.5.0.9\", dst!=\"10.5.0.16\", dst!=\"192.168.65.7\", dst!=\"192.168.65.254\"}[20s]))",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.8\", dst=\"10.5.0.19\"}[20s]))",
           "hide": false,
           "instant": false,
           "legendFormat": "SV1 (farm net interface)",
@@ -1327,7 +1698,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.17\", src=\"10.5.0.4\"}[20s])) + sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.6\", src=\"10.5.0.5\"}[20s])) + sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.3\", src!=\"192.168.65.1\", src!=\"10.5.0.6\"}[20s]))",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.17\", src=\"10.5.0.6\"}[20s])) + sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.6\", src=\"10.5.0.5\"}[20s])) + sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.3\", src!=\"10.5.0.20\", src!=\"192.168.65.1\", src!=\"10.5.0.6\"}[20s]))",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
@@ -1363,7 +1734,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 51
+        "y": 57
       },
       "id": 55,
       "panels": [],
@@ -1439,7 +1810,7 @@
         "h": 10,
         "w": 12,
         "x": 0,
-        "y": 52
+        "y": 58
       },
       "id": 63,
       "options": {
@@ -1466,7 +1837,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.8\", dst!=\"10.5.0.16\", dst!=\"10.5.0.9\", dst!=\"192.168.65.7\", dst!=\"192.168.65.254\"}[20s]))",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.8\", dst=\"10.5.0.19\"}[20s]))",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
@@ -1482,7 +1853,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.16\", dst!=\"192.168.65.1\", dst!=\"10.5.0.8\"}[20s]))",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.16\", dst!=\"10.5.0.21\", dst!=\"192.168.65.1\", dst!=\"192.168.65.7\", dst!=\"10.5.0.8\"}[20s]))",
           "hide": false,
           "instant": false,
           "legendFormat": "Bitcoin Node",
@@ -1575,7 +1946,7 @@
         "h": 10,
         "w": 12,
         "x": 12,
-        "y": 52
+        "y": 58
       },
       "id": 66,
       "options": {
@@ -1602,7 +1973,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.8\", src!=\"10.5.0.16\", src!=\"10.5.0.9\", src!=\"192.168.65.7\", src!=\"192.168.65.254\"}[20s]))",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.8\", src=\"10.5.0.19\"}[20s]))",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
@@ -1618,7 +1989,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.16\", src!=\"192.168.65.1\", src!=\"10.5.0.8\"}[20s]))",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.16\", src!=\"10.5.0.21\", src!=\"192.168.65.1\", src!=\"192.168.65.7\", src!=\"10.5.0.8\"}[20s]))",
           "hide": false,
           "instant": false,
           "legendFormat": "Bitcoin Node",
@@ -1710,7 +2081,7 @@
         "h": 10,
         "w": 12,
         "x": 0,
-        "y": 62
+        "y": 68
       },
       "id": 57,
       "options": {
@@ -1737,7 +2108,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.4\", dst=\"10.5.0.17\"}[20s]))",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.4\", dst=\"10.5.0.6\"}[20s]))",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
@@ -1769,7 +2140,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.2\", dst!=\"192.168.65.1\", dst!=\"10.5.0.4\", dst!=\"10.5.0.5\"}[20s]))",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.2\", dst!=\"192.168.65.1\", dst!=\"192.168.65.7\", dst!=\"10.5.0.4\", dst!=\"10.5.0.5\"}[20s]))",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
@@ -1864,7 +2235,7 @@
         "h": 10,
         "w": 12,
         "x": 12,
-        "y": 62
+        "y": 68
       },
       "id": 62,
       "options": {
@@ -1891,7 +2262,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.4\", src=\"10.5.0.17\"}[20s]))",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.4\", src=\"10.5.0.6\"}[20s]))",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
@@ -1920,7 +2291,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.2\", src!=\"192.168.65.1\", src!=\"10.5.0.4\", src!=\"10.5.0.5\"}[20s]))",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.2\", src!=\"192.168.65.1\", src!=\"192.168.65.7\", src!=\"10.5.0.4\", src!=\"10.5.0.5\"}[20s]))",
           "hide": false,
           "instant": false,
           "legendFormat": "Template Provider (TP)",
@@ -2012,7 +2383,7 @@
         "h": 10,
         "w": 12,
         "x": 0,
-        "y": 72
+        "y": 78
       },
       "id": 67,
       "options": {
@@ -2039,7 +2410,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.8\", dst!=\"10.5.0.16\", dst!=\"10.5.0.9\", dst!=\"192.168.65.7\", dst!=\"192.168.65.254\"}[20s])) + sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.16\", dst!=\"192.168.65.1\", dst!=\"10.5.0.8\"}[20s]))",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.8\", dst=\"10.5.0.19\"}[20s])) + sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.16\", dst!=\"10.5.0.21\", dst!=\"192.168.65.1\", dst!=\"192.168.65.7\", dst!=\"10.5.0.8\"}[20s]))",
           "hide": false,
           "instant": false,
           "legendFormat": "SV1 (pool + bitcoin node)",
@@ -2052,7 +2423,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.4\", dst=\"10.5.0.17\"}[20s])) + sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.5\", dst=\"10.5.0.6\"}[20s]))\n+ sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.2\", dst!=\"192.168.65.1\", dst!=\"10.5.0.4\", dst!=\"10.5.0.5\"}[20s]))",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.4\", dst=\"10.5.0.6\"}[20s])) + sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.5\", dst=\"10.5.0.6\"}[20s]))\n+ sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.2\", dst!=\"192.168.65.1\", dst!=\"192.168.65.7\", dst!=\"10.5.0.4\", dst!=\"10.5.0.5\"}[20s]))",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
@@ -2160,7 +2531,7 @@
         "h": 10,
         "w": 12,
         "x": 12,
-        "y": 72
+        "y": 78
       },
       "id": 68,
       "options": {
@@ -2187,7 +2558,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.8\", src!=\"10.5.0.16\", src!=\"10.5.0.9\", src!=\"192.168.65.7\", src!=\"192.168.65.254\"}[20s])) + sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.16\", src!=\"192.168.65.1\", src!=\"10.5.0.8\"}[20s]))",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.8\", src=\"10.5.0.19\"}[20s])) + sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.16\", src!=\"10.5.0.21\", src!=\"192.168.65.1\", src!=\"192.168.65.7\", src!=\"10.5.0.8\"}[20s]))",
           "hide": false,
           "instant": false,
           "legendFormat": "SV1 (pool + bitcoin node)",
@@ -2200,7 +2571,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.4\", src=\"10.5.0.17\"}[20s])) + sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.5\", src=\"10.5.0.6\"}[20s])) + sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.2\", src!=\"192.168.65.1\", src!=\"10.5.0.4\", src!=\"10.5.0.5\"}[20s]))",
+          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.4\", src=\"10.5.0.6\"}[20s])) + sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.5\", src=\"10.5.0.6\"}[20s])) + sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.2\", src!=\"192.168.65.1\", src!=\"192.168.65.7\", src!=\"10.5.0.4\", src!=\"10.5.0.5\"}[20s]))",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
@@ -2236,7 +2607,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 82
+        "y": 88
       },
       "id": 50,
       "panels": [],
@@ -2312,7 +2683,7 @@
         "h": 10,
         "w": 6,
         "x": 0,
-        "y": 83
+        "y": 89
       },
       "id": 51,
       "options": {
@@ -2444,7 +2815,7 @@
         "h": 10,
         "w": 6,
         "x": 6,
-        "y": 83
+        "y": 89
       },
       "id": 52,
       "options": {
@@ -2576,7 +2947,7 @@
         "h": 10,
         "w": 6,
         "x": 12,
-        "y": 83
+        "y": 89
       },
       "id": 53,
       "options": {
@@ -2708,7 +3079,7 @@
         "h": 10,
         "w": 6,
         "x": 18,
-        "y": 83
+        "y": 89
       },
       "id": 8,
       "options": {
@@ -2781,7 +3152,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 93
+        "y": 99
       },
       "id": 19,
       "panels": [],
@@ -2866,7 +3237,7 @@
         "h": 10,
         "w": 6,
         "x": 0,
-        "y": 94
+        "y": 100
       },
       "id": 45,
       "options": {
@@ -2982,7 +3353,7 @@
         "h": 10,
         "w": 6,
         "x": 6,
-        "y": 94
+        "y": 100
       },
       "id": 44,
       "options": {
@@ -3098,7 +3469,7 @@
         "h": 10,
         "w": 6,
         "x": 12,
-        "y": 94
+        "y": 100
       },
       "id": 43,
       "options": {
@@ -3214,7 +3585,7 @@
         "h": 10,
         "w": 6,
         "x": 18,
-        "y": 94
+        "y": 100
       },
       "id": 58,
       "options": {
@@ -3330,7 +3701,7 @@
         "h": 10,
         "w": 6,
         "x": 0,
-        "y": 104
+        "y": 110
       },
       "id": 46,
       "options": {
@@ -3446,7 +3817,7 @@
         "h": 10,
         "w": 6,
         "x": 6,
-        "y": 104
+        "y": 110
       },
       "id": 47,
       "options": {
@@ -3587,7 +3958,7 @@
         "h": 10,
         "w": 6,
         "x": 12,
-        "y": 104
+        "y": 110
       },
       "id": 48,
       "options": {
@@ -3703,7 +4074,7 @@
         "h": 10,
         "w": 6,
         "x": 18,
-        "y": 104
+        "y": 110
       },
       "id": 49,
       "options": {
@@ -3760,7 +4131,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 114
+        "y": 120
       },
       "id": 17,
       "panels": [],
@@ -3818,7 +4189,7 @@
         "h": 7,
         "w": 3,
         "x": 0,
-        "y": 115
+        "y": 121
       },
       "id": 15,
       "maxDataPoints": 100,
@@ -3896,7 +4267,7 @@
         "h": 7,
         "w": 3,
         "x": 3,
-        "y": 115
+        "y": 121
       },
       "id": 35,
       "maxDataPoints": 100,
@@ -3981,7 +4352,7 @@
         "h": 7,
         "w": 3,
         "x": 6,
-        "y": 115
+        "y": 121
       },
       "id": 6,
       "maxDataPoints": 100,
@@ -4063,7 +4434,7 @@
         "h": 7,
         "w": 3,
         "x": 9,
-        "y": 115
+        "y": 121
       },
       "id": 37,
       "maxDataPoints": 100,
@@ -4147,7 +4518,7 @@
         "h": 7,
         "w": 3,
         "x": 12,
-        "y": 115
+        "y": 121
       },
       "id": 4,
       "maxDataPoints": 100,
@@ -4233,7 +4604,7 @@
         "h": 7,
         "w": 3,
         "x": 15,
-        "y": 115
+        "y": 121
       },
       "id": 7,
       "maxDataPoints": 100,
@@ -4366,7 +4737,7 @@
         "h": 7,
         "w": 6,
         "x": 18,
-        "y": 115
+        "y": 121
       },
       "id": 27,
       "options": {
@@ -4425,7 +4796,7 @@
     "list": []
   },
   "time": {
-    "from": "now-15m",
+    "from": "now-5m",
     "to": "now"
   },
   "timeRangeUpdatedDuringEditOrView": false,
@@ -4457,6 +4828,6 @@
   "timezone": "browser",
   "title": "SRI benchmarking tool",
   "uid": "64nrElFmk",
-  "version": 9,
+  "version": 20,
   "weekStart": ""
 }
