@@ -50,7 +50,7 @@ services:
     build:
       dockerfile: ./template-provider.dockerfile
     image: sv2-template-provider
-    command: ["/bitcoin/src/bitcoind", "-regtest", "-sv2", "-sv2port=8442", "-sv2interval=60", "-sv2feedelta=0", "-debug=sv2", "-loglevel=sv2:trace", "-sv2bind=0.0.0.0"]   
+    command: ["/bitcoin/src/bitcoind", "-testnet4", "-sv2", "-sv2port=8442", "-sv2interval=60", "-sv2feedelta=0", "-debug=sv2", "-loglevel=sv2:trace", "-sv2bind=0.0.0.0"]   
     ports:
       - "8442:8442"
       - "18333:48333"
@@ -69,7 +69,7 @@ services:
     build:
       dockerfile: ./template-provider.dockerfile
     image: sv2-template-provider
-    command: ["/bitcoin/src/bitcoind", "-regtest", "-sv2", "-sv2port=8443", "-sv2interval=30", "-sv2feedelta=0", "-debug=sv2", "-loglevel=sv2:trace", "-sv2bind=0.0.0.0"]   
+    command: ["/bitcoin/src/bitcoind", "-testnet4", "-sv2", "-sv2port=8443", "-sv2interval=30", "-sv2feedelta=0", "-debug=sv2", "-loglevel=sv2:trace", "-sv2bind=0.0.0.0"]   
     ports:
       - "8443:8443"
       - "28333:18333"
@@ -102,8 +102,8 @@ services:
 
   pool:
     image: sv2-roles-builder-image  
-    command: ["/bin/bash", "-c", "/usr/local/bin/monitor_and_apply_latency.sh 10.5.0.17 1 & exec ./target/release/pool_sv2 -c pool/config-examples/pool-config-a-docker-example.toml"]
-    #command: ["./target/release/pool_sv2", "-c", "pool/config-examples/pool-config-a-docker-example.toml"]
+    #command: ["/bin/bash", "-c", "/usr/local/bin/monitor_and_apply_latency.sh 10.5.0.17 1 & exec ./target/release/pool_sv2 -c pool/config-examples/pool-config-a-docker-example.toml"]
+    command: ["./target/release/pool_sv2", "-c", "pool/config-examples/pool-config-a-docker-example.toml"]
     ports:
       - "34254:34254" 
     container_name: sv2-pool
