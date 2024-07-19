@@ -85,7 +85,6 @@ services:
   pool:
     image: sv2-roles-builder-image  
     command: ["/bin/bash", "-c", "/usr/local/bin/monitor_and_apply_latency.sh 10.5.0.17 2 & exec ./target/release/pool_sv2 -c pool/config-examples/pool-config-c-docker-example.toml"]
-    #command: ["./target/release/pool_sv2", "-c", "pool/config-examples/pool-config-c-docker-example.toml"]
     ports:
       - "34254:34254" 
     container_name: sv2-pool
@@ -103,7 +102,6 @@ services:
 
   translator:
     image: sv2-roles-builder-image
-    #command: ["/bin/bash", "-c", "/usr/local/bin/monitor_and_apply_latency.sh 10.5.0.17 1 & exec ./target/release/translator_sv2 -c translator/config-examples/tproxy-config-c-docker-example.toml"]
     command: ["./target/release/translator_sv2", "-c", "translator/config-examples/tproxy-config-c-docker-example.toml"]
     ports:
       - "34255:34255" 
