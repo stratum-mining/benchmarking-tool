@@ -148,8 +148,8 @@ services:
       - "5678:5678"
     environment:
       - SERVER=10.5.0.2:8442
-      - CLIENT=10.5.0.21:8441
-      - PROM_ADDRESS=10.5.0.21:5678
+      - CLIENT=10.5.0.20:8441
+      - PROM_ADDRESS=10.5.0.20:5678
       - PROXY_TYPE=tp-pool
     container_name: sv2-tp-pool-proxy
     depends_on:
@@ -158,7 +158,7 @@ services:
     restart: unless-stopped
     networks:
       sv2-net:
-          ipv4_address: 10.5.0.21
+          ipv4_address: 10.5.0.20
 
   sv1-pool:
     container_name: sv1-pool
@@ -212,7 +212,7 @@ services:
     environment:
       - SERVER=http://10.5.0.16:18332
       - CLIENT=0.0.0.0:48330
-      - PROM_ADDRESS=10.5.0.20:4567
+      - PROM_ADDRESS=10.5.0.21:4567
       - PROXY_TYPE=node-pool 
     container_name: sv1-node-pool-proxy
     depends_on:
@@ -221,7 +221,7 @@ services:
     restart: unless-stopped
     networks:
       sv2-net:
-          ipv4_address: 10.5.0.20
+          ipv4_address: 10.5.0.21
 
   monitor-traffic-tcpdump:
     image: inzania/network-traffic-metrics:latest
