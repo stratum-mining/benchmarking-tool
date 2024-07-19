@@ -23,4 +23,4 @@ pool_signature = "Stratum v2 SRI Pool"
 
 # Template Provider config
 # Local TP (this is pointing to localhost so you must run a TP locally for this configuration to work)
-tp_address = "10.5.0.21:8441"
+tp_address = "10.5.0.2:8442"
