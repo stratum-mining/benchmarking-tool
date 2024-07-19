@@ -27,8 +27,8 @@ async fn main() {
     let mut valid_shares: Option<Counter> = None;
     let mut stale_shares: Option<Counter> = None;
     let mut share_submission_timestamp: Option<GaugeVec> = None;
-    let mut block_propagation_through_jdc_latency: Option<Gauge> = None;
-    let mut block_propagation_through_pool_latency: Option<Gauge> = None;
+    let mut block_propagation_time_through_sv2_jdc: Option<Gauge> = None;
+    let mut block_propagation_time_through_sv2_pool: Option<Gauge> = None;
     let mut mined_blocks: Option<Counter> = None;
 
     // Initialize metrics based on proxy_type
@@ -37,10 +37,10 @@ async fn main() {
             mined_blocks = Some(
                 register_counter!("sv2_mined_blocks", "Total number of SV2 blocks mined").unwrap(),
             );
-            block_propagation_through_jdc_latency = Some(
+            block_propagation_time_through_sv2_jdc = Some(
                 register_gauge!(
-                    "block_propagation_through_jdc_latency",
-                    "Time to submit a block through JDC in milliseconds",
+                    "block_propagation_time_through_sv2_jdc",
+                    "Time to submit a block through SV2 JDC in milliseconds",
                 )
                 .unwrap(),
             );
@@ -49,10 +49,10 @@ async fn main() {
             mined_blocks = Some(
                 register_counter!("sv2_mined_blocks", "Total number of SV2 blocks mined").unwrap(),
             );
-            block_propagation_through_pool_latency = Some(
+            block_propagation_time_through_sv2_pool = Some(
                 register_gauge!(
-                    "block_propagation_through_pool_latency",
-                    "Time to submit a block through Pool in milliseconds",
+                    "block_propagation_time_through_sv2_pool",
+                    "Time to submit a block through SV1 Pool in milliseconds",
                 )
                 .unwrap(),
             );
@@ -130,14 +130,14 @@ async fn main() {
         }
         "tp-pool" => {
             if let (Some(pool_latency), Some(mined)) =
-                (block_propagation_through_pool_latency, mined_blocks)
+                (block_propagation_time_through_sv2_pool, mined_blocks)
             {
                 intercept_submit_solution(&mut proxy_builder, pool_latency, mined).await;
             }
         }
         "tp-jdc" => {
             if let (Some(jdc_latency), Some(mined)) =
-                (block_propagation_through_jdc_latency, mined_blocks)
+                (block_propagation_time_through_sv2_jdc, mined_blocks)
             {
                 intercept_submit_solution(&mut proxy_builder, jdc_latency, mined).await;
             }
