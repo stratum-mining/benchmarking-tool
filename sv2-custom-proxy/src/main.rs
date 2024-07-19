@@ -52,7 +52,7 @@ async fn main() {
             block_propagation_time_through_sv2_pool = Some(
                 register_gauge!(
                     "block_propagation_time_through_sv2_pool",
-                    "Time to submit a block through SV1 Pool in milliseconds",
+                    "Time to submit a block through SV2 Pool in milliseconds",
                 )
                 .unwrap(),
             );
