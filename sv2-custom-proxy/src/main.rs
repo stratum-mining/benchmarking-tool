@@ -218,7 +218,7 @@ async fn intercept_prev_hash(builder: &mut ProxyBuilder, gauge: GaugeVec) {
             let gauge_clone = gauge.clone();
             gauge_clone.with_label_values(&[&value]).set(current_time);
             tokio::spawn(async move {
-                sleep(Duration::from_secs(10)).await;
+                sleep(Duration::from_secs(1)).await;
                 // Remove the metric from Prometheus
                 let _ = gauge_clone.remove_label_values(&[&value]);
             });
