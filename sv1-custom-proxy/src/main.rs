@@ -457,6 +457,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                     "Time required to complete one tp->pool , translator->node round of new job"
                 )
                 .unwrap());
+        let new_job_time_sv2_jdc = Arc::new(register_gauge!("new_job_jdc_new_template","new job jdc new template").unwrap());
+        let new_job_time_sv2_pool = Arc::new(register_gauge!("new_job_pool_new_template","new job pool new template").unwrap());
 
         let listener = tokio::net::TcpListener::bind("0.0.0.0:34255")
             .await
@@ -467,8 +469,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             let outbound = TcpStream::connect("10.5.0.7:34256").await.unwrap();
             let new_job_jdc = new_job_time_throught_sv2_jdc.clone();
             let new_job_pool = new_job_time_throught_sv2_pool.clone();
+            let new_job_time_sv2_jdc = new_job_time_sv2_jdc.clone();
+            let new_job_time_sv2_pool = new_job_time_sv2_pool.clone();
             tokio::spawn(async move {
-                if let Err(e) = transfer_new_job(inbound, outbound,new_job_jdc,new_job_pool).await {
+                if let Err(e) = transfer_new_job(inbound, outbound,new_job_jdc,new_job_pool, new_job_time_sv2_jdc, new_job_time_sv2_pool).await {
                     println!("Failed to transfer; error = {}", e);
                 }
             });
@@ -482,7 +486,9 @@ async fn transfer_new_job(
     mut inbound: tokio::net::TcpStream,
     mut outbound: tokio::net::TcpStream,
     new_job_time_throught_sv2_jdc: Arc<Gauge>,
-    new_job_time_throught_sv2_pool: Arc<Gauge>
+    new_job_time_throught_sv2_pool: Arc<Gauge>,
+    new_job_time_sv2_jdc: Arc<Gauge>,
+    new_job_time_sv2_pool: Arc<Gauge>
 ) -> std::io::Result<()> {
     let (mut ri, mut wi) = inbound.split();
 
@@ -559,6 +565,16 @@ async fn transfer_new_job(
                                                     let delta = current_timestamp - new_job_timestamp;
                                                     new_job_time_throught_sv2_jdc.set(delta);
                                                     new_job_time_throught_sv2_pool.set(delta);
+                                                } else {
+                                                    println!("No timestamp value found.");
+                                                }
+                                            } else if let Some(_) = line.find("id=") {
+                                                if let Some((_,timestamp)) = line.rsplit_once(" ") {
+                                                    println!("Timestamp: {:?}",timestamp);
+                                                    let new_job_timestamp = timestamp.trim().parse::<f64>().unwrap();
+                                                    let delta = current_timestamp - new_job_timestamp;
+                                                    new_job_time_sv2_jdc.set(delta);
+                                                    new_job_time_sv2_pool.set(delta);
                                                 } else {
                                                     println!("No timestamp value found.");
                                                 }
