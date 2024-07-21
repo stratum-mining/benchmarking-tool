@@ -885,12 +885,120 @@
       "type": "timeseries"
     },
     {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 8,
+            "gradientMode": "opacity",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "smooth",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "fieldMinMax": false,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "ms"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 26
+      },
+      "id": 87,
+      "options": {
+        "legend": {
+          "calcs": [
+            "min",
+            "mean"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "disableTextWrap": false,
+          "editorMode": "builder",
+          "expr": "new_job_jdc_latency",
+          "fullMetaSearch": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "A",
+          "useBackend": false
+        }
+      ],
+      "title": "New Job Latency (JDC)",
+      "type": "timeseries"
+    },
+    {
       "collapsed": false,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 26
+        "y": 34
       },
       "id": 56,
       "panels": [],
@@ -966,7 +1074,7 @@
         "h": 10,
         "w": 12,
         "x": 0,
-        "y": 27
+        "y": 35
       },
       "id": 65,
       "options": {
@@ -1089,7 +1197,7 @@
         "h": 10,
         "w": 12,
         "x": 12,
-        "y": 27
+        "y": 35
       },
       "id": 64,
       "options": {
@@ -1211,7 +1319,7 @@
         "h": 10,
         "w": 12,
         "x": 0,
-        "y": 37
+        "y": 45
       },
       "id": 60,
       "options": {
@@ -1371,7 +1479,7 @@
         "h": 10,
         "w": 12,
         "x": 12,
-        "y": 37
+        "y": 45
       },
       "id": 59,
       "options": {
@@ -1519,7 +1627,7 @@
         "h": 10,
         "w": 12,
         "x": 0,
-        "y": 47
+        "y": 55
       },
       "id": 69,
       "options": {
@@ -1658,7 +1766,7 @@
         "h": 10,
         "w": 12,
         "x": 12,
-        "y": 47
+        "y": 55
       },
       "id": 70,
       "options": {
@@ -1734,7 +1842,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 57
+        "y": 65
       },
       "id": 55,
       "panels": [],
@@ -1810,7 +1918,7 @@
         "h": 10,
         "w": 12,
         "x": 0,
-        "y": 58
+        "y": 66
       },
       "id": 63,
       "options": {
@@ -1946,7 +2054,7 @@
         "h": 10,
         "w": 12,
         "x": 12,
-        "y": 58
+        "y": 66
       },
       "id": 66,
       "options": {
@@ -2081,7 +2189,7 @@
         "h": 10,
         "w": 12,
         "x": 0,
-        "y": 68
+        "y": 76
       },
       "id": 57,
       "options": {
@@ -2235,7 +2343,7 @@
         "h": 10,
         "w": 12,
         "x": 12,
-        "y": 68
+        "y": 76
       },
       "id": 62,
       "options": {
@@ -2383,7 +2491,7 @@
         "h": 10,
         "w": 12,
         "x": 0,
-        "y": 78
+        "y": 86
       },
       "id": 67,
       "options": {
@@ -2531,7 +2639,7 @@
         "h": 10,
         "w": 12,
         "x": 12,
-        "y": 78
+        "y": 86
       },
       "id": 68,
       "options": {
@@ -2607,7 +2715,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 88
+        "y": 96
       },
       "id": 50,
       "panels": [],
@@ -2683,7 +2791,7 @@
         "h": 10,
         "w": 6,
         "x": 0,
-        "y": 89
+        "y": 97
       },
       "id": 51,
       "options": {
@@ -2815,7 +2923,7 @@
         "h": 10,
         "w": 6,
         "x": 6,
-        "y": 89
+        "y": 97
       },
       "id": 52,
       "options": {
@@ -2947,7 +3055,7 @@
         "h": 10,
         "w": 6,
         "x": 12,
-        "y": 89
+        "y": 97
       },
       "id": 53,
       "options": {
@@ -3079,7 +3187,7 @@
         "h": 10,
         "w": 6,
         "x": 18,
-        "y": 89
+        "y": 97
       },
       "id": 8,
       "options": {
@@ -3152,7 +3260,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 99
+        "y": 107
       },
       "id": 19,
       "panels": [],
@@ -3237,7 +3345,7 @@
         "h": 10,
         "w": 6,
         "x": 0,
-        "y": 100
+        "y": 108
       },
       "id": 45,
       "options": {
@@ -3353,7 +3461,7 @@
         "h": 10,
         "w": 6,
         "x": 6,
-        "y": 100
+        "y": 108
       },
       "id": 44,
       "options": {
@@ -3469,7 +3577,7 @@
         "h": 10,
         "w": 6,
         "x": 12,
-        "y": 100
+        "y": 108
       },
       "id": 43,
       "options": {
@@ -3585,7 +3693,7 @@
         "h": 10,
         "w": 6,
         "x": 18,
-        "y": 100
+        "y": 108
       },
       "id": 58,
       "options": {
@@ -3701,7 +3809,7 @@
         "h": 10,
         "w": 6,
         "x": 0,
-        "y": 110
+        "y": 118
       },
       "id": 46,
       "options": {
@@ -3817,7 +3925,7 @@
         "h": 10,
         "w": 6,
         "x": 6,
-        "y": 110
+        "y": 118
       },
       "id": 47,
       "options": {
@@ -3958,7 +4066,7 @@
         "h": 10,
         "w": 6,
         "x": 12,
-        "y": 110
+        "y": 118
       },
       "id": 48,
       "options": {
@@ -4074,7 +4182,7 @@
         "h": 10,
         "w": 6,
         "x": 18,
-        "y": 110
+        "y": 118
       },
       "id": 49,
       "options": {
@@ -4131,7 +4239,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 120
+        "y": 128
       },
       "id": 17,
       "panels": [],
@@ -4189,7 +4297,7 @@
         "h": 7,
         "w": 3,
         "x": 0,
-        "y": 121
+        "y": 129
       },
       "id": 15,
       "maxDataPoints": 100,
@@ -4267,7 +4375,7 @@
         "h": 7,
         "w": 3,
         "x": 3,
-        "y": 121
+        "y": 129
       },
       "id": 35,
       "maxDataPoints": 100,
@@ -4352,7 +4460,7 @@
         "h": 7,
         "w": 3,
         "x": 6,
-        "y": 121
+        "y": 129
       },
       "id": 6,
       "maxDataPoints": 100,
@@ -4434,7 +4542,7 @@
         "h": 7,
         "w": 3,
         "x": 9,
-        "y": 121
+        "y": 129
       },
       "id": 37,
       "maxDataPoints": 100,
@@ -4518,7 +4626,7 @@
         "h": 7,
         "w": 3,
         "x": 12,
-        "y": 121
+        "y": 129
       },
       "id": 4,
       "maxDataPoints": 100,
@@ -4604,7 +4712,7 @@
         "h": 7,
         "w": 3,
         "x": 15,
-        "y": 121
+        "y": 129
       },
       "id": 7,
       "maxDataPoints": 100,
@@ -4737,7 +4845,7 @@
         "h": 7,
         "w": 6,
         "x": 18,
-        "y": 121
+        "y": 129
       },
       "id": 27,
       "options": {

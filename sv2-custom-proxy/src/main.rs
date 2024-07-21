@@ -1,6 +1,7 @@
 use demand_easy_sv2::const_sv2::{
-    MESSAGE_TYPE_SUBMIT_SHARES_ERROR, MESSAGE_TYPE_SUBMIT_SHARES_EXTENDED,
-    MESSAGE_TYPE_SUBMIT_SHARES_SUCCESS, MESSAGE_TYPE_SUBMIT_SOLUTION,
+    MESSAGE_TYPE_SET_NEW_PREV_HASH, MESSAGE_TYPE_SUBMIT_SHARES_ERROR,
+    MESSAGE_TYPE_SUBMIT_SHARES_EXTENDED, MESSAGE_TYPE_SUBMIT_SHARES_SUCCESS,
+    MESSAGE_TYPE_SUBMIT_SOLUTION,
 };
 use demand_easy_sv2::roles_logic_sv2::parsers::{Mining, PoolMessages, TemplateDistribution};
 use demand_easy_sv2::{ProxyBuilder, Remote};
@@ -27,6 +28,8 @@ async fn main() {
     let mut valid_shares: Option<Counter> = None;
     let mut stale_shares: Option<Counter> = None;
     let mut share_submission_timestamp: Option<GaugeVec> = None;
+    let mut share_new_job_timestamp_jdc: Option<GaugeVec> = None;
+    let mut share_new_job_timestamp_pool: Option<GaugeVec> = None;
     let mut block_propagation_time_through_sv2_jdc: Option<Gauge> = None;
     let mut block_propagation_time_through_sv2_pool: Option<Gauge> = None;
     let mut mined_blocks: Option<Counter> = None;
@@ -44,6 +47,14 @@ async fn main() {
                 )
                 .unwrap(),
             );
+            share_new_job_timestamp_jdc = Some(
+                register_gauge_vec!(
+                    "share_new_job_timestamp_jdc",
+                    "Timestamp of new job",
+                    &["prevhash"]
+                )
+                .unwrap(),
+            );
         }
         "tp-pool" => {
             mined_blocks = Some(
@@ -53,6 +64,14 @@ async fn main() {
                 register_gauge!(
                     "block_propagation_time_through_sv2_pool",
                     "Time to submit a block through SV2 Pool in milliseconds",
+                )
+                .unwrap(),
+            );
+            share_new_job_timestamp_pool = Some(
+                register_gauge_vec!(
+                    "share_new_job_timestamp_pool",
+                    "Timestamp of new job jdc",
+                    &["prevhash"]
                 )
                 .unwrap(),
             );
@@ -129,6 +148,9 @@ async fn main() {
             }
         }
         "tp-pool" => {
+            if let Some(new_job_gauge_vec) = share_new_job_timestamp_pool {
+                intercept_prev_hash(&mut proxy_builder, new_job_gauge_vec).await;
+            }
             if let (Some(pool_latency), Some(mined)) =
                 (block_propagation_time_through_sv2_pool, mined_blocks)
             {
@@ -136,6 +158,10 @@ async fn main() {
             }
         }
         "tp-jdc" => {
+            if let Some(new_job_gauge_vec) = share_new_job_timestamp_jdc {
+                println!("Here");
+                intercept_prev_hash(&mut proxy_builder, new_job_gauge_vec).await;
+            }
             if let (Some(jdc_latency), Some(mined)) =
                 (block_propagation_time_through_sv2_jdc, mined_blocks)
             {
@@ -165,6 +191,41 @@ async fn connect_to_server(server_address: &str) -> TcpStream {
     let address = server_address.to_socket_addrs().unwrap().next().unwrap();
     TcpStream::connect(address).await.unwrap()
 }
+
+pub fn encode_hex(bytes: &[u8]) -> String {
+    bytes.iter().map(|b| format!("{:02x}", b)).collect()
+}
+
+async fn intercept_prev_hash(builder: &mut ProxyBuilder, gauge: GaugeVec) {
+    let mut r = builder.add_handler(
+        demand_easy_sv2::Remote::Server,
+        MESSAGE_TYPE_SET_NEW_PREV_HASH,
+    );
+    tokio::spawn(async move {
+        while let Some(PoolMessages::TemplateDistribution(TemplateDistribution::SetNewPrevHash(
+            m,
+        ))) = r.recv().await
+        {
+            println!("Set prev hash received --> {:?}", m);
+            let mut id = m.prev_hash;
+            let current_time = std::time::SystemTime::now()
+                .duration_since(std::time::UNIX_EPOCH)
+                .expect("Time went backwards")
+                .as_millis() as f64;
+            let d= id.inner_as_mut();
+            let value = encode_hex(d);
+
+            let gauge_clone = gauge.clone();
+            gauge_clone.with_label_values(&[&value]).set(current_time);
+            tokio::spawn(async move {
+                sleep(Duration::from_secs(10)).await;
+                // Remove the metric from Prometheus
+                let _ = gauge_clone.remove_label_values(&[&value]);
+            });
+        }
+    });
+}
+
 
 async fn intercept_submit_share_extended(
     builder: &mut ProxyBuilder,

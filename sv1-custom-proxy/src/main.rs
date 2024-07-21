@@ -8,6 +8,7 @@ use serde_json::Value;
 use std::convert::Infallible;
 use std::env;
 use std::net::SocketAddr;
+use std::sync::Arc;
 use tokio::io::{self, AsyncReadExt, AsyncWriteExt};
 use tokio::net::{TcpListener, TcpStream};
 use tokio::time::{sleep, Duration};
@@ -353,7 +354,192 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Err(e) = server.await {
             eprintln!("server error: {}", e);
         }
+    } else if proxy_type == "translator-node" {
+        let new_job_time_throught_sv2_jdc =  Arc::new(register_gauge!(
+                    "new_job_jdc_latency",
+                    "Time required to complete one tp->jdc , translator->node round of new job"
+                )
+                .unwrap());
+        let new_job_time_throught_sv2_pool =  Arc::new(register_gauge!(
+                    "new_job_pool_latency",
+                    "Time required to complete one tp->pool , translator->node round of new job"
+                )
+                .unwrap());
+
+        
+        let listener = tokio::net::TcpListener::bind("0.0.0.0:34255")
+            .await
+            .unwrap();
+        println!("SV2 proxy translation proxy started at 34255");
+        loop {
+            let (inbound, _) = listener.accept().await.unwrap();
+            let outbound = TcpStream::connect("10.5.0.7:34256").await.unwrap();
+            let new_job_jdc = new_job_time_throught_sv2_jdc.clone();
+            let new_job_pool = new_job_time_throught_sv2_pool.clone();
+            tokio::spawn(async move {
+                if let Err(e) = transfer_new_job(inbound, outbound,new_job_jdc,new_job_pool).await {
+                    println!("Failed to transfer; error = {}", e);
+                }
+            });
+        }
     }
+
+    Ok(())
+}
+
+async fn transfer_new_job(
+    mut inbound: tokio::net::TcpStream,
+    mut outbound: tokio::net::TcpStream,
+    new_job_time_throught_sv2_jdc: Arc<Gauge>,
+    new_job_time_throught_sv2_pool: Arc<Gauge>
+) -> std::io::Result<()> {
+    let (mut ri, mut wi) = inbound.split();
+
+    let (mut ro, mut wo) = outbound.split();
+
+    let client_to_server = async {
+        let mut buf = vec![0; 4096];
+
+        let mut client_buf = Vec::new();
+
+        loop {
+            let n = ri.read(&mut buf).await?;
+
+            if n == 0 {
+                break;
+            }
+
+            client_buf.extend_from_slice(&buf[..n]);
+
+            while let Some(pos) = client_buf.iter().position(|&b| b == b'\n') {
+                let line = client_buf.drain(..=pos).collect::<Vec<_>>();
+
+                wo.write_all(&line).await?;
+            }
+        }
+
+        wo.shutdown().await
+    };
+
+    let server_to_client = async {
+        let mut buf = vec![0; 4096];
+
+        let mut server_buf = Vec::new();
+
+        loop {
+            let n = ro.read(&mut buf).await?;
+
+            if n == 0 {
+                break;
+            }
+
+            server_buf.extend_from_slice(&buf[..n]);
+
+            while let Some(pos) = server_buf.iter().position(|&b| b == b'\n') {
+                let line = server_buf.drain(..=pos).collect::<Vec<_>>();
+
+                if let Ok(json) = serde_json::from_slice::<Value>(&line) {
+                    if json["method"] == "mining.notify" {
+                        if let Some(params) = json["params"].as_array() {
+                            if let Some(_prevhash) = params.get(1) {
+                                // let prevhash_response = &prevhash.to_string()[1..65];
+                                let current_timestamp = std::time::SystemTime::now()
+                                    .duration_since(std::time::UNIX_EPOCH)
+                                    .expect("Time went backwards")
+                                    .as_millis() as f64;
+                                let prometheus_url = "http://10.5.0.20:5678/metrics";
+                                let client = reqwest::Client::new();
+                                if let Ok(response) = client.get(prometheus_url).send().await {
+                                    if let Ok(body) = response.text().await {
+                                        for line in body.lines() {
+                                            println!("Line: {:?}",line);
+                                            if let Some(start_index) = line.find("prevhash=") {
+                                                let start = start_index + "prevhash=\"".len();
+                                                let _end = match line[start..].find("\"") {
+                                                    Some(index) => start + index,
+                                                    None => {
+                                                        println!(
+                                                            "Failed to find end quote for nonce in line: {}",
+                                                            line
+                                                        );
+                                                        continue; // Skip to the next line if end quote for nonce is not found
+                                                    }
+                                                };
+                                                if let Some((_,timestamp)) = line.rsplit_once(" ") {
+                                                    println!("The extracted timestamp is: {}", timestamp.trim());
+                                                    let new_job_timestamp = timestamp.trim().parse::<f64>().unwrap();
+                                                    let delta = current_timestamp - new_job_timestamp;
+                                                    new_job_time_throught_sv2_jdc.set(delta);
+                                                    new_job_time_throught_sv2_pool.set(delta);
+                                                } else {
+                                                    println!("No timestamp value found.");
+                                                }
+                                                // let prevhash = &line[start..end];
+                                                // println!("Parsed Prevhash: {:?}",prevhash);
+                                                // println!("Prevhash from mining device: {:?}", prevhash_response.clone());
+                                                // let prev_hash_bytes = hex::decode(prevhash);
+                                                // println!("Bytes {:?}", prev_hash_bytes);
+                                                // let actual_prev_hash_bytes = hex::decode(prevhash_response.clone());
+                                                // println!("Response Bytes: {:?}",actual_prev_hash_bytes);
+                                                // // Decode the nonce hex string into bytes
+                                                // let nonce_bytes_result = hex::decode(&nonce_value);
+                                                // let nonce_bytes = match nonce_bytes_result {
+                                                //     Ok(bytes) => bytes,
+                                                //     Err(e) => {
+                                                //         println!("Failed to parse nonce hex: {}", e);
+                                                //         continue;
+                                                //     }
+                                                // };
+                                                // // Perform bytes swap with the nonce bytes
+                                                // let swapped_bytes: Vec<u8> =
+                                                //     nonce_bytes.iter().rev().cloned().collect();
+                                                // let swapped_nonce =
+                                                //     hex::encode_upper(&swapped_bytes).to_lowercase();
+
+                                                // // Check if the body contains the swapped nonce
+                                                // if body_str.contains(&swapped_nonce) {
+                                                //     let parts: Vec<&str> = line.split_whitespace().collect();
+                                                //     if let Some(timestamp_str) = parts.get(1) {
+                                                //         if let Ok(previous_timestamp) = timestamp_str.parse::<f64>()
+                                                //         {
+                                                //             println!(
+                                                //                 "Previous timestamp: {:?}",
+                                                //                 previous_timestamp
+                                                //             );
+                                                //             println!("Current timestamp: {:?}", current_timestamp);
+                                                //             let latency = current_timestamp - previous_timestamp;
+                                                //             println!("Computed latency: {:?}", latency);
+                                                //         }
+                                                //     }
+                                                //     nonce_found = true;
+                                                //     break;
+                                                // }
+                                            }
+                                        }
+                                    }
+                                }
+
+                            } else {
+                                println!("Prevhash not found in params");
+                            }
+                        } else {
+                            println!("Params is not an array");
+                        }
+
+                        println!("JSON: {:?}",json);
+                    }
+                } else {
+                    println!("Server to Client: {:?}", line);
+                }
+
+                wi.write_all(&line).await?;
+            }
+        }
+
+        wi.shutdown().await
+    };
+
+    tokio::try_join!(client_to_server, server_to_client)?;
 
     Ok(())
 }
