@@ -641,7 +641,8 @@ async fn transfer_new_job(
                                                 } else {
                                                     println!("No timestamp value found.");
                                                 }
-                                            } else if let Some(_) = line.find("id=") {
+                                            }
+                                            if let Some(_) = line.find("id=") {
                                                 if let Some((_, timestamp)) = line.rsplit_once(" ") {
                                                     println!("Timestamp: {:?}", timestamp);
                                                     let new_job_timestamp = timestamp
