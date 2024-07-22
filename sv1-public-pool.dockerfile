@@ -5,17 +5,17 @@
 FROM node:18.16.1-bookworm-slim AS build
 
 # Upgrade all packages and install dependencies
-RUN apt-get update \
-    && apt-get upgrade -y
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-        python3 \
-        build-essential \
-        cmake \
-        git \
-        ca-certificates \
-        iproute2 \
-        iputils-ping \
-        curl \
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+    python3 \
+    build-essential \
+    cmake \
+    git \
+    ca-certificates \
+    iproute2 \
+    iputils-ping \
+    curl \
     && apt clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 RUN git clone https://github.com/benjamin-wilson/public-pool.git
@@ -32,10 +32,11 @@ RUN npm i && npm run build
 FROM node:18.16.1-bookworm-slim
 
 # Install necessary packages in the final image
-RUN apt-get update && apt-get install -y --no-install-recommends \
-        iproute2 \
-        iputils-ping \
-        curl \
+RUN apt-get update && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+    iproute2 \
+    iputils-ping \
+    curl \
     && apt clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Expose ports for Stratum and Bitcoin RPC
