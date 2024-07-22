@@ -534,15 +534,14 @@ async fn transfer_new_job(
 
             while let Some(pos) = server_buf.iter().position(|&b| b == b'\n') {
                 let line = server_buf.drain(..=pos).collect::<Vec<_>>();
-
                 if let Ok(json) = serde_json::from_slice::<Value>(&line) {
+                    let current_timestamp = std::time::SystemTime::now()
+                            .duration_since(std::time::UNIX_EPOCH)
+                            .expect("Time went backwards")
+                            .as_millis() as f64;
                     if json["method"] == "mining.notify" {
                         if let Some(params) = json["params"].as_array() {
                             if let Some(_prevhash) = params.get(1) {
-                                let current_timestamp = std::time::SystemTime::now()
-                                    .duration_since(std::time::UNIX_EPOCH)
-                                    .expect("Time went backwards")
-                                    .as_millis() as f64;
                                 let prometheus_url = "http://10.5.0.20:5678/metrics";
                                 let client = reqwest::Client::new();
                                 if let Ok(response) = client.get(prometheus_url).send().await {

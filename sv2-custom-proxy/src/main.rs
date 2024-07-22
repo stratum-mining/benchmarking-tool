@@ -215,14 +215,13 @@ async fn intercept_prev_hash(builder: &mut ProxyBuilder, gauge: GaugeVec) {
         {
             println!("Set prev hash received --> {:?}", m);
             let mut id = m.prev_hash;
+            let d= id.inner_as_mut();
+            let value = encode_hex(d);
+            let gauge_clone = gauge.clone();
             let current_time = std::time::SystemTime::now()
                 .duration_since(std::time::UNIX_EPOCH)
                 .expect("Time went backwards")
                 .as_millis() as f64;
-            let d= id.inner_as_mut();
-            let value = encode_hex(d);
-
-            let gauge_clone = gauge.clone();
             gauge_clone.with_label_values(&[&value]).set(current_time);
             tokio::spawn(async move {
                 sleep(Duration::from_secs(1)).await;
