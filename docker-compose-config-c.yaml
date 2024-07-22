@@ -185,7 +185,7 @@ services:
       sv2-net:
         ipv4_address: 10.5.0.20
 
-  sv2-tranlator-node-proxy:
+  sv2-translator-miner-proxy:
     image: sv1-custom-proxy-builder-image
     command: ["./target/release/sv1-custom-proxy"]
     ports:
@@ -195,8 +195,8 @@ services:
       - SERVER=0.0.0.0:34255
       - CLIENT=10.5.0.7:34256
       - PROM_ADDRESS=10.5.0.23:5676
-      - PROXY_TYPE=translator-node
-    container_name: sv2-tranlator-node-proxy
+      - PROXY_TYPE=translator-miner
+    container_name: sv2-translator-miner-proxy
     depends_on:
       - sv1-custom-proxy-builder
     restart: unless-stopped
