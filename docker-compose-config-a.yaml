@@ -206,7 +206,7 @@ services:
     container_name: sv2-translator
     depends_on:
       - sv2-jdc-translator-proxy
-      - sv2-tranlator-node-proxy
+      - sv2-translator-miner-proxy
     volumes:
       - ./custom-configs/sri-roles/config-a:/usr/src/stratum/roles/translator/config-examples/
     restart: unless-stopped
@@ -255,27 +255,7 @@ services:
       sv2-net:
         ipv4_address: 10.5.0.20
 
-  sv2-tp-pool-proxy:
-    image: sv2-custom-proxy-builder-image
-    command: ["./target/release/sv2-custom-proxy"]
-    ports:
-      - "8439:8439"
-      - "5677:5677"
-    environment:
-      - SERVER=10.5.0.2:8442
-      - CLIENT=10.5.0.22:8439
-      - PROM_ADDRESS=10.5.0.22:5677
-      - PROXY_TYPE=tp-pool
-    container_name: sv2-tp-pool-proxy
-    depends_on:
-      - sv2-custom-proxy-builder
-      - template-provider-pool-side
-    restart: unless-stopped
-    networks:
-      sv2-net:
-        ipv4_address: 10.5.0.22
-
-  sv2-tranlator-node-proxy:
+  sv2-translator-miner-proxy:
     image: sv1-custom-proxy-builder-image
     command: ["./target/release/sv1-custom-proxy"]
     ports:
@@ -285,8 +265,8 @@ services:
       - SERVER=0.0.0.0:34255
       - CLIENT=10.5.0.7:34256
       - PROM_ADDRESS=10.5.0.23:5676
-      - PROXY_TYPE=translator-node
-    container_name: sv2-tranlator-node-proxy
+      - PROXY_TYPE=translator-miner
+    container_name: sv2-translator-miner-proxy
     depends_on:
       - sv1-custom-proxy-builder
     restart: unless-stopped
