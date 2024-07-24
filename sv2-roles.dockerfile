@@ -9,6 +9,7 @@ COPY --from=builder /usr/src/stratum/roles/ /usr/src/stratum/roles
 RUN apt-get update && apt-get install -y --no-install-recommends \
         iproute2 \
         iputils-ping \
+        iptables \
         curl 
         
 WORKDIR /usr/src/stratum/roles

@@ -94,11 +94,17 @@ services:
 
   pool:
     image: sv2-roles-builder-image
+    #command:
+      #[
+        #"/bin/bash",
+        #"-c",
+        #"/usr/local/bin/monitor_and_apply_latency.sh 10.5.0.17 1 & exec ./target/release/pool_sv2 -c pool/config-examples/pool-config-c-docker-example.toml",
+      #]
     command:
       [
-        "/bin/bash",
+        "./target/release/pool_sv2",
         "-c",
-        "/usr/local/bin/monitor_and_apply_latency.sh 10.5.0.17 2 & exec ./target/release/pool_sv2 -c pool/config-examples/pool-config-c-docker-example.toml",
+        "pool/config-examples/pool-config-c-docker-example.toml",
       ]
     ports:
       - "34254:34254"
@@ -119,10 +125,15 @@ services:
     image: sv2-roles-builder-image
     command:
       [
-        "./target/release/translator_sv2",
+        "/bin/bash",
         "-c",
-        "translator/config-examples/tproxy-config-c-docker-example.toml",
+        "/usr/local/bin/monitor_and_apply_latency.sh 10.5.0.23 2 & exec ./target/release/translator_sv2 -c translator/config-examples/tproxy-config-c-docker-example.toml",
       ]
+      #[
+        #"./target/release/translator_sv2",
+        #"-c",
+        #"translator/config-examples/tproxy-config-c-docker-example.toml",
+      #]
     ports:
       - "34256:34256"
     container_name: sv2-translator
@@ -139,11 +150,12 @@ services:
 
   sv2-pool-translator-proxy:
     image: sv2-custom-proxy-builder-image
+    #command: ["./target/release/sv2-custom-proxy"]
     command:
       [
         "/bin/bash",
         "-c",
-        "/usr/local/bin/monitor_and_apply_latency.sh 10.5.0.4 2 & exec ./target/release/sv2-custom-proxy",
+        "/usr/local/bin/monitor_and_apply_latency.sh 10.5.0.4 2 -proxy-type=pool-translator & exec ./target/release/sv2-custom-proxy",
       ]
     ports:
       - "34253:34254"
