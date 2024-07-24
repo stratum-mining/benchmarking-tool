@@ -1,10 +1,10 @@
-version: '3'
+version: "3"
 
 volumes:
-    prometheus_data_config_c:
-    grafana_data_config_c: 
-    bitcoin_pool_side_data:
-    bitcoin_sv1_pool_side_data:
+  prometheus_data_config_c:
+  grafana_data_config_c:
+  bitcoin_pool_side_data:
+  bitcoin_sv1_pool_side_data:
 
 networks:
   monitor-net:
@@ -16,40 +16,50 @@ networks:
           gateway: 10.5.0.1
 
 services:
-
   sv2-roles-builder:
     build:
       dockerfile: ./sv2-roles.dockerfile
     container_name: sv2-roles-builder
-    image: sv2-roles-builder-image  
-    command: echo "SRI build completed"  
-  
+    image: sv2-roles-builder-image
+    command: echo "SRI build completed"
+
   sv2-custom-proxy-builder:
     build:
       dockerfile: ./sv2-custom-proxy/Dockerfile
     container_name: sv2-custom-proxy-builder
-    image: sv2-custom-proxy-builder-image  
+    image: sv2-custom-proxy-builder-image
     command: echo "sv2-custom-proxy build completed"
 
   sv1-custom-proxy-builder:
     build:
       dockerfile: ./sv1-custom-proxy/Dockerfile
     container_name: sv1-custom-proxy-builder
-    image: sv1-custom-proxy-builder-image  
+    image: sv1-custom-proxy-builder-image
     command: echo "sv1-custom-proxy build completed"
 
   pools-latency-calculator-builder:
     build:
       dockerfile: pools-latency-calculator.dockerfile
     container_name: pools-latency-calculator-builder
-    image: pools-latency-calculator-builder-image 
+    image: pools-latency-calculator-builder-image
     command: echo "pools-latency-calculator build completed"
 
   template-provider-pool-side:
     build:
       dockerfile: ./template-provider.dockerfile
     image: sv2-template-provider
-    command: ["/bitcoin/src/bitcoind", "-testnet4", "-sv2", "-sv2port=8442", "-sv2interval=60", "-sv2feedelta=0", "-debug=sv2", "-loglevel=sv2:trace", "-sv2bind=0.0.0.0"]   
+    command:
+      [
+        "/bitcoin/src/bitcoind",
+        "-testnet4",
+        "-sv2",
+        "-sv2port=8442",
+        "-sv2interval=60",
+        "-sv2feedelta=0",
+        "-debug=sv2",
+        "-loglevel=sv2:trace",
+        "-sv2bind=0.0.0.0",
+      ]
     ports:
       - "8442:8442"
       - "18333:48333"
@@ -62,13 +72,13 @@ services:
     restart: unless-stopped
     networks:
       sv2-net:
-          ipv4_address: 10.5.0.2
+        ipv4_address: 10.5.0.2
 
   sv1-node-pool-side:
     build:
       dockerfile: ./template-provider.dockerfile
     image: sv2-template-provider
-    command: ["/bitcoin/src/bitcoind", "-testnet4"]   
+    command: ["/bitcoin/src/bitcoind", "-testnet4"]
     ports:
       - "38333:18333"
       - "28332:18332"
@@ -80,13 +90,18 @@ services:
     restart: unless-stopped
     networks:
       sv2-net:
-          ipv4_address: 10.5.0.16
+        ipv4_address: 10.5.0.16
 
   pool:
-    image: sv2-roles-builder-image  
-    command: ["/bin/bash", "-c", "/usr/local/bin/monitor_and_apply_latency.sh 10.5.0.17 2 & exec ./target/release/pool_sv2 -c pool/config-examples/pool-config-c-docker-example.toml"]
+    image: sv2-roles-builder-image
+    command:
+      [
+        "/bin/bash",
+        "-c",
+        "/usr/local/bin/monitor_and_apply_latency.sh 10.5.0.17 2 & exec ./target/release/pool_sv2 -c pool/config-examples/pool-config-c-docker-example.toml",
+      ]
     ports:
-      - "34254:34254" 
+      - "34254:34254"
     container_name: sv2-pool
     depends_on:
       - sv2-roles-builder
@@ -96,15 +111,20 @@ services:
     restart: unless-stopped
     networks:
       sv2-net:
-          ipv4_address: 10.5.0.4
+        ipv4_address: 10.5.0.4
     cap_add:
-    - NET_ADMIN
+      - NET_ADMIN
 
   translator:
     image: sv2-roles-builder-image
-    command: ["./target/release/translator_sv2", "-c", "translator/config-examples/tproxy-config-c-docker-example.toml"]
+    command:
+      [
+        "./target/release/translator_sv2",
+        "-c",
+        "translator/config-examples/tproxy-config-c-docker-example.toml",
+      ]
     ports:
-      - "34255:34255" 
+      - "34256:34256"
     container_name: sv2-translator
     depends_on:
       - sv2-pool-translator-proxy
@@ -113,15 +133,20 @@ services:
     restart: unless-stopped
     networks:
       sv2-net:
-          ipv4_address: 10.5.0.7
+        ipv4_address: 10.5.0.7
     cap_add:
-    - NET_ADMIN
+      - NET_ADMIN
 
   sv2-pool-translator-proxy:
-    image: sv2-custom-proxy-builder-image  
-    command: ["/bin/bash", "-c", "/usr/local/bin/monitor_and_apply_latency.sh 10.5.0.4 2 & exec ./target/release/sv2-custom-proxy"]
+    image: sv2-custom-proxy-builder-image
+    command:
+      [
+        "/bin/bash",
+        "-c",
+        "/usr/local/bin/monitor_and_apply_latency.sh 10.5.0.4 2 & exec ./target/release/sv2-custom-proxy",
+      ]
     ports:
-      - "34253:34254" 
+      - "34253:34254"
       - "34251:34251"
       - "3456:3456"
     environment:
@@ -136,14 +161,14 @@ services:
     restart: unless-stopped
     networks:
       sv2-net:
-          ipv4_address: 10.5.0.17
+        ipv4_address: 10.5.0.17
     cap_add:
-    - NET_ADMIN
-  
+      - NET_ADMIN
+
   sv2-tp-pool-proxy:
-    image: sv2-custom-proxy-builder-image  
+    image: sv2-custom-proxy-builder-image
     command: ["./target/release/sv2-custom-proxy"]
-    ports: 
+    ports:
       - "8441:8441"
       - "5678:5678"
     environment:
@@ -158,7 +183,26 @@ services:
     restart: unless-stopped
     networks:
       sv2-net:
-          ipv4_address: 10.5.0.20
+        ipv4_address: 10.5.0.20
+
+  sv2-translator-miner-proxy:
+    image: sv1-custom-proxy-builder-image
+    command: ["./target/release/sv1-custom-proxy"]
+    ports:
+      - "34255:34255"
+      - "5676:5676"
+    environment:
+      - SERVER=0.0.0.0:34255
+      - CLIENT=10.5.0.7:34256
+      - PROM_ADDRESS=10.5.0.23:5676
+      - PROXY_TYPE=translator-miner
+    container_name: sv2-translator-miner-proxy
+    depends_on:
+      - sv1-custom-proxy-builder
+    restart: unless-stopped
+    networks:
+      sv2-net:
+        ipv4_address: 10.5.0.23
 
   sv1-pool:
     container_name: sv1-pool
@@ -171,7 +215,7 @@ services:
     volumes:
       - "./testnet-DB:/public-pool/DB"
       - "./custom-configs/sv1-pool/.env:/public-pool/.env:ro"
-      - "./custom-configs/sv1-pool/rpc.js:/public-pool/node_modules/rpc-bitcoin/build/src/rpc.js" # to fix rpc-version field issue 
+      - "./custom-configs/sv1-pool/rpc.js:/public-pool/node_modules/rpc-bitcoin/build/src/rpc.js" # to fix rpc-version field issue
     restart: unless-stopped
     environment:
       - NODE_ENV=production
@@ -179,11 +223,16 @@ services:
       sv2-net:
         ipv4_address: 10.5.0.8
     cap_add:
-    - NET_ADMIN
+      - NET_ADMIN
 
   sv1-pool-miner-proxy:
-    image: sv1-custom-proxy-builder-image 
-    command: ["/bin/bash", "-c", "/usr/local/bin/monitor_and_apply_latency.sh 10.5.0.8 2 & exec ./target/release/sv1-custom-proxy"] 
+    image: sv1-custom-proxy-builder-image
+    command:
+      [
+        "/bin/bash",
+        "-c",
+        "/usr/local/bin/monitor_and_apply_latency.sh 10.5.0.8 2 & exec ./target/release/sv1-custom-proxy",
+      ]
     ports:
       - "3333:3333"
       - "2345:2345"
@@ -191,7 +240,7 @@ services:
       - SERVER=10.5.0.8:3332
       - CLIENT=0.0.0.0:3333
       - PROM_ADDRESS=10.5.0.19:2345
-      - PROXY_TYPE=pool-miner 
+      - PROXY_TYPE=pool-miner
     container_name: sv1-pool-miner-proxy
     depends_on:
       - sv1-custom-proxy-builder
@@ -199,12 +248,12 @@ services:
     restart: unless-stopped
     networks:
       sv2-net:
-          ipv4_address: 10.5.0.19
+        ipv4_address: 10.5.0.19
     cap_add:
-    - NET_ADMIN
+      - NET_ADMIN
 
   sv1-node-pool-proxy:
-    image: sv1-custom-proxy-builder-image  
+    image: sv1-custom-proxy-builder-image
     command: ["./target/release/sv1-custom-proxy"]
     ports:
       - "48330:48330"
@@ -213,7 +262,7 @@ services:
       - SERVER=http://10.5.0.16:18332
       - CLIENT=0.0.0.0:48330
       - PROM_ADDRESS=10.5.0.21:4567
-      - PROXY_TYPE=node-pool 
+      - PROXY_TYPE=node-pool
     container_name: sv1-node-pool-proxy
     depends_on:
       - sv1-custom-proxy-builder
@@ -221,7 +270,7 @@ services:
     restart: unless-stopped
     networks:
       sv2-net:
-          ipv4_address: 10.5.0.21
+        ipv4_address: 10.5.0.21
 
   monitor-traffic-tcpdump:
     image: inzania/network-traffic-metrics:latest
@@ -237,12 +286,12 @@ services:
       - ./prometheus/:/etc/prometheus/
       - prometheus_data_config_c:/prometheus
     command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
-      - '--storage.tsdb.path=/prometheus'
-      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
-      - '--web.console.templates=/usr/share/prometheus/consoles'
-      - '--web.enable-lifecycle'
-      - '--web.enable-admin-api'
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--web.console.libraries=/usr/share/prometheus/console_libraries"
+      - "--web.console.templates=/usr/share/prometheus/consoles"
+      - "--web.enable-lifecycle"
+      - "--web.enable-admin-api"
     ports:
       - 9090:9090
     container_name: prometheus
@@ -266,9 +315,9 @@ services:
       - /proc:/host/proc:ro
       - /sys:/host/sys:ro
       - /:/rootfs:ro
-    command: 
-      - '--path.procfs=/host/proc' 
-      - '--path.sysfs=/host/sys'
+    command:
+      - "--path.procfs=/host/proc"
+      - "--path.sysfs=/host/sys"
       - --collector.filesystem.ignored-mount-points
       - "^/(sys|proc|dev|host|etc|rootfs/var/lib/docker/containers|rootfs/var/lib/docker/overlay2|rootfs/run/docker/netns|rootfs/var/lib/docker/aufs)($$|/)"
     ports:
@@ -280,7 +329,7 @@ services:
     deploy:
       mode: global
       restart_policy:
-          condition: on-failure   
+        condition: on-failure
 
   cadvisor:
     image: gcr.io/cadvisor/cadvisor
@@ -299,7 +348,7 @@ services:
     deploy:
       mode: global
       restart_policy:
-          condition: on-failure
+        condition: on-failure
 
   grafana:
     image: grafana/grafana
@@ -358,12 +407,12 @@ services:
         ipv4_address: 10.5.0.15
 
   pools-latency-calculator:
-    image: pools-latency-calculator-builder-image  
+    image: pools-latency-calculator-builder-image
     command: ["./target/release/pools-latency-calculator"]
     ports:
-      - "1234:1234" 
+      - "1234:1234"
     container_name: pools-latency-calculator
     restart: unless-stopped
     networks:
       sv2-net:
-          ipv4_address: 10.5.0.18
+        ipv4_address: 10.5.0.18

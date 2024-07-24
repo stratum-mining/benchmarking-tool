@@ -101,4 +101,12 @@ scrape_configs:
     scrape_interval: 5s
 
     static_configs:
-      - targets: ['sv2-tp-pool-proxy:5678'] # The Network Traffic Metrics IP/port
+      - targets: ['sv2-tp-pool-proxy:5677'] # The Network Traffic Metrics IP/port
+
+  - job_name: 'sv2-translator-miner-proxy'
+  
+    # Override the global default and scrape targets from this job every 5 seconds.
+    scrape_interval: 5s
+
+    static_configs:
+      - targets: ['sv2-translator-miner-proxy:5676'] # The Network Traffic Metrics IP/port
