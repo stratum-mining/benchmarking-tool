@@ -191,6 +191,7 @@ async fn handle_rpc_request(
     forward_uri: Uri,
     block_propagation_time: Gauge,
     mined_blocks: Counter,
+    sv1_block_template_value: Gauge,
     sv1_new_job_vec: GaugeVec,
     prev_hash_mutex: Arc<Mutex<VecDeque<String>>>
 ) -> Result<Response<Body>, hyper::Error> {
@@ -345,6 +346,13 @@ async fn handle_rpc_request(
                             // Remove the metric from Prometheus
                             let _ = sv1_new_job_vec.remove_label_values(&[&prev_hash, &flag]);
                         });
+                        // Take the coinbase value and set the block template value metric
+                        if let Some(coinbasevalue) = result.get("coinbasevalue") {
+                            if let Some(block_value) = coinbasevalue.as_i64() {
+                                println!("Block Template Value: {}", block_value);
+                                sv1_block_template_value.set(block_value as f64);
+                            }
+                        }
                     }
                 }
             }
@@ -469,7 +477,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             "sv1_mined_blocks",
             "Total number of SV1 blocks mined"
         )?;
-
+        let sv1_block_template_value = register_gauge!(
+            "sv1_block_template_value",
+            "Total reward of sats contained in the current SV1 block template"
+        )?;
         let sv1_new_job_vec = register_gauge_vec!(
             "sv1_new_job_vec",
             "To store prevhash with time",
@@ -478,8 +489,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
         let make_svc = make_service_fn(move |_conn| {
             let forward_uri = forward_uri.clone();
-            let latency_metric = block_propagation_time_through_sv1_pool.clone();
+            let block_propagation_time_through_sv1_pool = block_propagation_time_through_sv1_pool.clone();
             let blocks_mined_metric = mined_blocks.clone();
+            let sv1_block_template_value = sv1_block_template_value.clone();
             let sv1_new_job_vec = sv1_new_job_vec.clone();
             let prev_hash_clone = prev_hash.clone();
             async move {
@@ -488,8 +500,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                         handle_rpc_request(
                             req,
                             forward_uri.clone(),
-                            latency_metric.clone(),
+                            block_propagation_time_through_sv1_pool.clone(),
                             blocks_mined_metric.clone(),
+                            sv1_block_template_value.clone(),
                             sv1_new_job_vec.clone(),
                             prev_hash_clone.clone()
                         )
@@ -620,6 +633,7 @@ async fn transfer_new_job(
                                 if let Ok(response) = client.get(prometheus_url).send().await {
                                     if let Ok(body) = response.text().await {
                                         for line in body.lines() {
+                                            println!("LINE: {:?}", line);
                                             if let Some(start_index) = line.find("prevhash=") {
                                                 let start = start_index + "prevhash=\"".len();
                                                 let _end = match line[start..].find("\"") {
@@ -634,6 +648,8 @@ async fn transfer_new_job(
                                                         .trim()
                                                         .parse::<f64>()
                                                         .unwrap();
+                                                    println!("Current timestamp: {:?}", current_timestamp);
+                                                    println!("New job timestamp: {:?}", new_job_timestamp);
                                                     let delta =
                                                         current_timestamp - new_job_timestamp;
                                                     new_job_prev_hash_throught_sv2_jdc.set(delta);
@@ -644,7 +660,8 @@ async fn transfer_new_job(
                                             }
                                             if let Some(_) = line.find("id=") {
                                                 if let Some((_, timestamp)) = line.rsplit_once(" ") {
-                                                    println!("Timestamp: {:?}", timestamp);
+                                                    println!("Current timestamp: {:?}", current_timestamp);
+                                                    println!("Read Timestamp: {:?}", timestamp);
                                                     let new_job_timestamp = timestamp
                                                         .trim()
                                                         .parse::<f64>()
