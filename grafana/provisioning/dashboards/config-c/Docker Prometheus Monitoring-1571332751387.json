@@ -46,7 +46,7 @@
       },
       "id": 76,
       "panels": [],
-      "title": "Shares and blocks stats",
+      "title": "Shares, blocks and template stats",
       "type": "row"
     },
     {
@@ -546,12 +546,527 @@
       "type": "stat"
     },
     {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "left",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "opacity",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "smooth",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 1,
+            "pointSize": 1,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "fieldMinMax": false,
+          "links": [],
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "sats"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 11
+      },
+      "id": 75,
+      "options": {
+        "legend": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "maxHeight": 600,
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "10.4.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "sv1_block_template_value",
+          "hide": false,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "SV1 - block template value",
+          "metric": "container_network_receive_bytes_total",
+          "range": true,
+          "refId": "A",
+          "step": 10
+        }
+      ],
+      "title": "SV1 - block template value",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "left",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "opacity",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "smooth",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 1,
+            "pointSize": 1,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "fieldMinMax": false,
+          "links": [],
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "sats"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 11
+      },
+      "id": 93,
+      "options": {
+        "legend": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "maxHeight": 600,
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "10.4.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "sv2_block_template_value",
+          "hide": false,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "SV2 - block template value",
+          "metric": "container_network_receive_bytes_total",
+          "range": true,
+          "refId": "A",
+          "step": 10
+        }
+      ],
+      "title": "SV2 - block template value",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "left",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "opacity",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "smooth",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 1,
+            "pointSize": 1,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "fieldMinMax": false,
+          "links": [],
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "sats"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 24,
+        "x": 0,
+        "y": 19
+      },
+      "id": 94,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "lastNotNull"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "maxHeight": 600,
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "10.4.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "sv1_block_template_value",
+          "hide": false,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "SV1 - block template value",
+          "metric": "container_network_receive_bytes_total",
+          "range": true,
+          "refId": "A",
+          "step": 10
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "sv2_block_template_value",
+          "hide": false,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "SV2 - block template value",
+          "metric": "container_network_receive_bytes_total",
+          "range": true,
+          "refId": "B",
+          "step": 10
+        }
+      ],
+      "title": "SV1 vs SV2 - block template value",
+      "transformations": [
+        {
+          "id": "calculateField",
+          "options": {
+            "alias": "SV2 delta",
+            "mode": "reduceRow",
+            "reduce": {
+              "include": [
+                "SV1 - block template value",
+                "SV2 - block template value"
+              ],
+              "reducer": "diff"
+            }
+          }
+        }
+      ],
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "left",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "opacity",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "smooth",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 1,
+            "pointSize": 1,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "fieldMinMax": false,
+          "links": [],
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "sats"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "SV2 delta %"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percent"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 24,
+        "x": 0,
+        "y": 28
+      },
+      "id": 95,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "lastNotNull"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "maxHeight": 600,
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "10.4.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "last_block_mined_value",
+          "hide": false,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "Network - block template value",
+          "metric": "container_network_receive_bytes_total",
+          "range": true,
+          "refId": "A",
+          "step": 10
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "last_sv2_template_value > 0",
+          "hide": false,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "SV2 - block template value",
+          "metric": "container_network_receive_bytes_total",
+          "range": true,
+          "refId": "B",
+          "step": 10
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "(last_sv2_template_value - last_block_mined_value) / last_block_mined_value * 100",
+          "hide": false,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "SV2 delta %",
+          "metric": "container_network_receive_bytes_total",
+          "range": true,
+          "refId": "C",
+          "step": 10
+        }
+      ],
+      "title": "SV2 - block template value - comparison with mined blocks on the network",
+      "type": "timeseries"
+    },
+    {
       "collapsed": false,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 11
+        "y": 37
       },
       "id": 71,
       "panels": [],
@@ -627,9 +1142,9 @@
         "h": 7,
         "w": 24,
         "x": 0,
-        "y": 12
+        "y": 38
       },
-      "id": 75,
+      "id": 92,
       "options": {
         "legend": {
           "calcs": [
@@ -737,7 +1252,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 19
+        "y": 45
       },
       "id": 83,
       "options": {
@@ -847,7 +1362,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 19
+        "y": 45
       },
       "id": 84,
       "options": {
@@ -957,7 +1472,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 26
+        "y": 52
       },
       "id": 85,
       "options": {
@@ -1067,7 +1582,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 26
+        "y": 52
       },
       "id": 86,
       "options": {
@@ -1177,7 +1692,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 33
+        "y": 59
       },
       "id": 87,
       "options": {
@@ -1287,7 +1802,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 33
+        "y": 59
       },
       "id": 88,
       "options": {
@@ -1397,7 +1912,7 @@
         "h": 10,
         "w": 24,
         "x": 0,
-        "y": 40
+        "y": 66
       },
       "id": 89,
       "options": {
@@ -1456,7 +1971,7 @@
         {
           "id": "calculateField",
           "options": {
-            "alias": "Delta",
+            "alias": "SV2 delta",
             "mode": "reduceRow",
             "reduce": {
               "include": [
@@ -1539,7 +2054,7 @@
         "h": 10,
         "w": 24,
         "x": 0,
-        "y": 50
+        "y": 76
       },
       "id": 90,
       "options": {
@@ -1598,7 +2113,7 @@
         {
           "id": "calculateField",
           "options": {
-            "alias": "Delta",
+            "alias": "SV2 delta",
             "mode": "reduceRow",
             "reduce": {
               "include": [
@@ -1681,7 +2196,7 @@
         "h": 10,
         "w": 24,
         "x": 0,
-        "y": 60
+        "y": 86
       },
       "id": 91,
       "options": {
@@ -1740,7 +2255,7 @@
         {
           "id": "calculateField",
           "options": {
-            "alias": "Delta",
+            "alias": "SV2 delta",
             "mode": "reduceRow",
             "reduce": {
               "include": [
@@ -1760,7 +2275,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 70
+        "y": 96
       },
       "id": 56,
       "panels": [],
@@ -1836,7 +2351,7 @@
         "h": 10,
         "w": 12,
         "x": 0,
-        "y": 71
+        "y": 97
       },
       "id": 65,
       "options": {
@@ -1863,7 +2378,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.8\", src=\"10.5.0.19\"}[20s]))",
+          "expr": "max(\n    sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.8\", src=\"10.5.0.19\"}[20s])) or vector(0)\n)",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
@@ -1959,7 +2474,7 @@
         "h": 10,
         "w": 12,
         "x": 12,
-        "y": 71
+        "y": 97
       },
       "id": 60,
       "options": {
@@ -2082,7 +2597,7 @@
         "h": 10,
         "w": 12,
         "x": 0,
-        "y": 81
+        "y": 107
       },
       "id": 64,
       "options": {
@@ -2109,7 +2624,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.8\", dst=\"10.5.0.19\"}[20s]))",
+          "expr": "max(\n    sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.8\", dst=\"10.5.0.19\"}[20s]))or vector(0)\n)",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
@@ -2204,7 +2719,7 @@
         "h": 10,
         "w": 12,
         "x": 12,
-        "y": 81
+        "y": 107
       },
       "id": 59,
       "options": {
@@ -2320,13 +2835,26 @@
           },
           "unit": "binBps"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "SV2 delta %"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percent"
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 10,
         "w": 24,
         "x": 0,
-        "y": 91
+        "y": 117
       },
       "id": 69,
       "options": {
@@ -2353,7 +2881,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.8\", src=\"10.5.0.19\"}[20s]))",
+          "expr": "max(\n    sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.8\", src=\"10.5.0.19\"}[20s])) or vector(0)\n)",
           "hide": false,
           "instant": false,
           "legendFormat": "SV1 (farm net interface)",
@@ -2375,25 +2903,25 @@
           "range": true,
           "refId": "B",
           "step": 10
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "(\n  (\n    avg_over_time(sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.17\", dst=\"10.5.0.4\"}[20s]))[5m:])\n    -\n    max(\n      avg_over_time(sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.8\", src=\"10.5.0.19\"}[20s]))[5m:]) \n      or \n      vector(0)\n    )\n  )\n  /\n  avg_over_time(sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.8\", src=\"10.5.0.19\"}[20s]))[5m:])\n)\n* 100",
+          "hide": false,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "SV2 delta %",
+          "metric": "container_network_receive_bytes_total",
+          "range": true,
+          "refId": "C",
+          "step": 10
         }
       ],
       "title": "SV1 vs SV2 - Network Tx ",
-      "transformations": [
-        {
-          "id": "calculateField",
-          "options": {
-            "alias": "Delta",
-            "mode": "reduceRow",
-            "reduce": {
-              "include": [
-                "SV1 (farm net interface)",
-                "SV2 (translator)"
-              ],
-              "reducer": "diff"
-            }
-          }
-        }
-      ],
       "type": "timeseries"
     },
     {
@@ -2459,13 +2987,26 @@
           },
           "unit": "binBps"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "SV2 delta %"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percent"
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 10,
         "w": 24,
         "x": 0,
-        "y": 101
+        "y": 127
       },
       "id": 70,
       "options": {
@@ -2492,7 +3033,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.8\", dst=\"10.5.0.19\"}[20s]))",
+          "expr": "max(\n    sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.8\", dst=\"10.5.0.19\"}[20s]))or vector(0)\n)",
           "hide": false,
           "instant": false,
           "legendFormat": "SV1 (farm net interface)",
@@ -2514,25 +3055,25 @@
           "range": true,
           "refId": "B",
           "step": 10
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "(\n  (\n    avg_over_time(sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.17\", src=\"10.5.0.4\"}[20s]))[5m:])\n    -\n    max(\n      avg_over_time(sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.8\", dst=\"10.5.0.19\"}[20s]))[5m:]) \n      or \n      vector(0)\n    )\n  )\n  /\n  avg_over_time(sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.8\", dst=\"10.5.0.19\"}[20s]))[5m:])\n)\n* 100",
+          "hide": false,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "SV2 delta %",
+          "metric": "container_network_receive_bytes_total",
+          "range": true,
+          "refId": "C",
+          "step": 10
         }
       ],
       "title": "SV1 vs SV2 - Network Rx ",
-      "transformations": [
-        {
-          "id": "calculateField",
-          "options": {
-            "alias": "Delta",
-            "mode": "reduceRow",
-            "reduce": {
-              "include": [
-                "SV1 (farm net interface)",
-                "SV2 (translator)"
-              ],
-              "reducer": "diff"
-            }
-          }
-        }
-      ],
       "type": "timeseries"
     },
     {
@@ -2541,7 +3082,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 111
+        "y": 137
       },
       "id": 55,
       "panels": [],
@@ -2617,7 +3158,7 @@
         "h": 10,
         "w": 12,
         "x": 0,
-        "y": 112
+        "y": 138
       },
       "id": 63,
       "options": {
@@ -2757,7 +3298,7 @@
         "h": 10,
         "w": 12,
         "x": 12,
-        "y": 112
+        "y": 138
       },
       "id": 57,
       "options": {
@@ -2899,7 +3440,7 @@
         "h": 10,
         "w": 12,
         "x": 0,
-        "y": 122
+        "y": 148
       },
       "id": 66,
       "options": {
@@ -3038,7 +3579,7 @@
         "h": 10,
         "w": 12,
         "x": 12,
-        "y": 122
+        "y": 148
       },
       "id": 62,
       "options": {
@@ -3171,13 +3712,26 @@
           },
           "unit": "binBps"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "SV2 delta %"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percent"
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 10,
         "w": 24,
         "x": 0,
-        "y": 132
+        "y": 158
       },
       "id": 67,
       "options": {
@@ -3204,7 +3758,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.8\", dst=\"10.5.0.19\"}[20s])) + sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.16\", dst!=\"192.168.65.1\", dst!=\"10.5.0.8\", dst!=\"10.5.0.21\", dst!=\"192.168.65.7\"}[20s]))",
+          "expr": "max(\n    sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.8\", dst=\"10.5.0.19\"}[20s])) or vector(0)\n)\n+ \nsum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.16\", dst!=\"192.168.65.1\", dst!=\"10.5.0.8\", dst!=\"10.5.0.21\", dst!=\"192.168.65.7\"}[20s]))",
           "hide": false,
           "instant": false,
           "legendFormat": "SV1 (pool + bitcoin node)",
@@ -3226,34 +3780,22 @@
           "range": true,
           "refId": "B",
           "step": 10
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "(\n  (\n    avg_over_time(sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.17\", src=\"10.5.0.4\"}[20s]))[5m:])\n    +\n    avg_over_time(sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.2\", dst!=\"192.168.65.1\", dst!=\"10.5.0.4\", dst!=\"10.5.0.5\", dst!=\"10.5.0.20\", dst!=\"192.168.65.7\"}[20s]))[5m:])\n    -\n    (\n    max(\n      avg_over_time(sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.8\", dst=\"10.5.0.19\"}[20s]))[5m:]) \n      or \n      vector(0)\n    )\n    + avg_over_time(sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.16\", dst!=\"192.168.65.1\", dst!=\"10.5.0.8\", dst!=\"10.5.0.21\", dst!=\"192.168.65.7\"}[20s]))[5m:])\n    )\n  )\n  /\n  (\n  avg_over_time(sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.8\", dst=\"10.5.0.19\"}[20s]))[5m:])\n  +\n  avg_over_time(sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.4\", dst=\"10.5.0.17\"}[20s]))[5m:])\n  +\n  avg_over_time(sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.2\", dst!=\"192.168.65.1\", dst!=\"10.5.0.4\", dst!=\"10.5.0.5\", dst!=\"10.5.0.20\", dst!=\"192.168.65.7\"}[20s]))[5m:])\n  )\n)\n* 100",
+          "hide": false,
+          "instant": false,
+          "legendFormat": "SV2 delta %",
+          "range": true,
+          "refId": "C"
         }
       ],
       "title": "SV1 vs SV2 - Network Tx ",
-      "transformations": [
-        {
-          "id": "calculateField",
-          "options": {
-            "alias": "Delta",
-            "binary": {
-              "left": "SV1 (pool + bitcoin node)",
-              "operator": "-",
-              "right": "SV2 (pool + template provider)"
-            },
-            "index": {
-              "asPercentile": true
-            },
-            "mode": "reduceRow",
-            "reduce": {
-              "include": [
-                "SV1 (pool + bitcoin node)",
-                "SV2 (pool + tp)"
-              ],
-              "reducer": "diff"
-            },
-            "replaceFields": false
-          }
-        }
-      ],
       "type": "timeseries"
     },
     {
@@ -3319,13 +3861,26 @@
           },
           "unit": "binBps"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "SV2 delta %"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percent"
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 10,
         "w": 24,
         "x": 0,
-        "y": 142
+        "y": 168
       },
       "id": 68,
       "options": {
@@ -3352,7 +3907,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.8\", src=\"10.5.0.19\"}[20s])) + sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.16\", src!=\"192.168.65.1\", src!=\"10.5.0.8\", src!=\"10.5.0.21\", src!=\"192.168.65.7\"}[20s]))",
+          "expr": "max(\n    sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.8\", src=\"10.5.0.19\"}[20s])) or vector(0)\n)\n+\nsum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.16\", src!=\"192.168.65.1\", src!=\"10.5.0.8\", src!=\"10.5.0.21\", src!=\"192.168.65.7\"}[20s]))",
           "hide": false,
           "instant": false,
           "legendFormat": "SV1 (pool + bitcoin node)",
@@ -3374,25 +3929,22 @@
           "range": true,
           "refId": "B",
           "step": 10
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "(\n  (\n    avg_over_time(sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.17\", dst=\"10.5.0.4\"}[20s]))[5m:])\n    +\n    avg_over_time(sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.2\", src!=\"192.168.65.1\", src!=\"10.5.0.4\", src!=\"10.5.0.5\", src!=\"10.5.0.20\", src!=\"192.168.65.7\"}[20s]))[5m:])\n    -\n    (\n    max(\n      avg_over_time(sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.8\", src=\"10.5.0.19\"}[20s]))[5m:]) \n      or \n      vector(0)\n    )\n    + avg_over_time(sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.16\", src!=\"192.168.65.1\", src!=\"10.5.0.8\", src!=\"10.5.0.21\", src!=\"192.168.65.7\"}[20s]))[5m:])\n    )\n  )\n  /\n  (\n  avg_over_time(sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.8\", src=\"10.5.0.19\"}[20s]))[5m:])\n  +\n  avg_over_time(sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.4\", src=\"10.5.0.17\"}[20s]))[5m:])\n  +\n  avg_over_time(sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.2\", src!=\"192.168.65.1\", src!=\"10.5.0.4\", src!=\"10.5.0.5\", src!=\"10.5.0.20\", src!=\"192.168.65.7\"}[20s]))[5m:])\n  )\n)\n* 100",
+          "hide": false,
+          "instant": false,
+          "legendFormat": "SV2 delta %",
+          "range": true,
+          "refId": "C"
         }
       ],
       "title": "SV1 vs SV2 - Network Rx ",
-      "transformations": [
-        {
-          "id": "calculateField",
-          "options": {
-            "alias": "Delta",
-            "mode": "reduceRow",
-            "reduce": {
-              "include": [
-                "SV1 (pool + bitcoin node)",
-                "SV2 (pool + tp)"
-              ],
-              "reducer": "diff"
-            }
-          }
-        }
-      ],
       "type": "timeseries"
     },
     {
@@ -3401,7 +3953,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 152
+        "y": 178
       },
       "id": 50,
       "panels": [],
@@ -3477,7 +4029,7 @@
         "h": 10,
         "w": 6,
         "x": 0,
-        "y": 153
+        "y": 179
       },
       "id": 51,
       "options": {
@@ -3609,7 +4161,7 @@
         "h": 10,
         "w": 6,
         "x": 6,
-        "y": 153
+        "y": 179
       },
       "id": 52,
       "options": {
@@ -3741,7 +4293,7 @@
         "h": 10,
         "w": 6,
         "x": 12,
-        "y": 153
+        "y": 179
       },
       "id": 53,
       "options": {
@@ -3873,7 +4425,7 @@
         "h": 10,
         "w": 6,
         "x": 18,
-        "y": 153
+        "y": 179
       },
       "id": 8,
       "options": {
@@ -3946,7 +4498,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 163
+        "y": 189
       },
       "id": 19,
       "panels": [],
@@ -4031,7 +4583,7 @@
         "h": 10,
         "w": 6,
         "x": 0,
-        "y": 164
+        "y": 190
       },
       "id": 45,
       "options": {
@@ -4147,7 +4699,7 @@
         "h": 10,
         "w": 6,
         "x": 6,
-        "y": 164
+        "y": 190
       },
       "id": 44,
       "options": {
@@ -4263,7 +4815,7 @@
         "h": 10,
         "w": 6,
         "x": 12,
-        "y": 164
+        "y": 190
       },
       "id": 43,
       "options": {
@@ -4379,7 +4931,7 @@
         "h": 10,
         "w": 6,
         "x": 18,
-        "y": 164
+        "y": 190
       },
       "id": 58,
       "options": {
@@ -4495,7 +5047,7 @@
         "h": 10,
         "w": 6,
         "x": 0,
-        "y": 174
+        "y": 200
       },
       "id": 46,
       "options": {
@@ -4611,7 +5163,7 @@
         "h": 10,
         "w": 6,
         "x": 6,
-        "y": 174
+        "y": 200
       },
       "id": 47,
       "options": {
@@ -4721,38 +5273,13 @@
           },
           "unit": "binBps"
         },
-        "overrides": [
-          {
-            "__systemRef": "hideSeriesFrom",
-            "matcher": {
-              "id": "byNames",
-              "options": {
-                "mode": "exclude",
-                "names": [
-                  "Total"
-                ],
-                "prefix": "All except:",
-                "readOnly": true
-              }
-            },
-            "properties": [
-              {
-                "id": "custom.hideFrom",
-                "value": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": true
-                }
-              }
-            ]
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 10,
         "w": 6,
         "x": 12,
-        "y": 174
+        "y": 200
       },
       "id": 48,
       "options": {
@@ -4868,7 +5395,7 @@
         "h": 10,
         "w": 6,
         "x": 18,
-        "y": 174
+        "y": 200
       },
       "id": 49,
       "options": {
@@ -4925,7 +5452,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 184
+        "y": 210
       },
       "id": 17,
       "panels": [],
@@ -4983,7 +5510,7 @@
         "h": 7,
         "w": 3,
         "x": 0,
-        "y": 185
+        "y": 211
       },
       "id": 15,
       "maxDataPoints": 100,
@@ -5061,7 +5588,7 @@
         "h": 7,
         "w": 3,
         "x": 3,
-        "y": 185
+        "y": 211
       },
       "id": 35,
       "maxDataPoints": 100,
@@ -5146,7 +5673,7 @@
         "h": 7,
         "w": 3,
         "x": 6,
-        "y": 185
+        "y": 211
       },
       "id": 6,
       "maxDataPoints": 100,
@@ -5228,7 +5755,7 @@
         "h": 7,
         "w": 3,
         "x": 9,
-        "y": 185
+        "y": 211
       },
       "id": 37,
       "maxDataPoints": 100,
@@ -5312,7 +5839,7 @@
         "h": 7,
         "w": 3,
         "x": 12,
-        "y": 185
+        "y": 211
       },
       "id": 4,
       "maxDataPoints": 100,
@@ -5398,7 +5925,7 @@
         "h": 7,
         "w": 3,
         "x": 15,
-        "y": 185
+        "y": 211
       },
       "id": 7,
       "maxDataPoints": 100,
@@ -5531,7 +6058,7 @@
         "h": 7,
         "w": 6,
         "x": 18,
-        "y": 185
+        "y": 211
       },
       "id": 27,
       "options": {
@@ -5622,6 +6149,6 @@
   "timezone": "browser",
   "title": "SRI benchmarking tool",
   "uid": "64nrElFmk",
-  "version": 30,
+  "version": 38,
   "weekStart": ""
 }
