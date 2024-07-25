@@ -51,10 +51,10 @@ services:
     command:
       [
         "/bitcoin/src/bitcoind",
-        "-testnet4",
+        "-${NETWORK}",
         "-sv2",
         "-sv2port=8442",
-        "-sv2interval=60",
+        "-sv2interval=${SV2_INTERVAL}",
         "-sv2feedelta=0",
         "-debug=sv2",
         "-loglevel=sv2:trace",
@@ -78,7 +78,7 @@ services:
     build:
       dockerfile: ./template-provider.dockerfile
     image: sv2-template-provider
-    command: ["/bitcoin/src/bitcoind", "-testnet4"]
+    command: ["/bitcoin/src/bitcoind", "-${NETWORK}"]
     ports:
       - "38333:18333"
       - "28332:18332"
@@ -188,10 +188,12 @@ services:
       - CLIENT=10.5.0.20:8441
       - PROM_ADDRESS=10.5.0.20:5678
       - PROXY_TYPE=tp-pool
+      - NETWORK=${NETWORK}
     container_name: sv2-tp-pool-proxy
     depends_on:
       - sv2-custom-proxy-builder
       - template-provider-pool-side
+      - prometheus
     restart: unless-stopped
     networks:
       sv2-net:
