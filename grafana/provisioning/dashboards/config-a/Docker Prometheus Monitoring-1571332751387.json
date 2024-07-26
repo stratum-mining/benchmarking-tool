@@ -2426,7 +2426,7 @@
           "step": 10
         }
       ],
-      "title": "SV1 - Network Tx ",
+      "title": "SV1 - Network Tx (farm level)",
       "transformations": [
         {
           "id": "calculateField",
@@ -2581,7 +2581,7 @@
           "step": 10
         }
       ],
-      "title": "SV2 - Network Tx ",
+      "title": "SV2 - Network Tx (farm level)",
       "transformations": [
         {
           "id": "calculateField",
@@ -2709,7 +2709,7 @@
           "step": 10
         }
       ],
-      "title": "SV1 - Network Rx ",
+      "title": "SV1 - Network Rx (farm level)",
       "transformations": [
         {
           "id": "calculateField",
@@ -2857,7 +2857,7 @@
           "refId": "C"
         }
       ],
-      "title": "SV2 - Network Rx ",
+      "title": "SV2 - Network Rx (farm level)",
       "transformations": [
         {
           "id": "calculateField",
@@ -2935,20 +2935,7 @@
           },
           "unit": "binBps"
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "SV2 delta %"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "percent"
-              }
-            ]
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 10,
@@ -3003,22 +2990,25 @@
           "range": true,
           "refId": "B",
           "step": 10
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "editorMode": "code",
-          "expr": "(\n  (\n    avg_over_time(sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.17\", dst=\"10.5.0.6\"}[20s]))[5m:])\n    +\n    avg_over_time(sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.6\", dst=\"10.5.0.5\"}[20s]))[5m:])\n    +\n    avg_over_time(sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.3\", dst!=\"10.5.0.20\", dst!=\"192.168.65.1\", dst!=\"10.5.0.6\"}[20s]))[5m:])\n    -\n    max(\n      avg_over_time(sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.8\", src=\"10.5.0.19\"}[20s]))[5m:]) \n      or \n      vector(0)\n    )\n  )\n  /\n  avg_over_time(sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.8\", src=\"10.5.0.19\"}[20s]))[5m:])\n)\n* 100",
-          "hide": false,
-          "instant": false,
-          "legendFormat": "SV2 delta %",
-          "range": true,
-          "refId": "C"
         }
       ],
-      "title": "SV1 vs SV2 - Network Tx ",
+      "title": "SV1 vs SV2 - Network Tx (farm level)",
+      "transformations": [
+        {
+          "id": "calculateField",
+          "options": {
+            "alias": "SV2 delta",
+            "mode": "reduceRow",
+            "reduce": {
+              "include": [
+                "SV1 (farm net interface)",
+                "SV2 (translator + jdc + tp)"
+              ],
+              "reducer": "diff"
+            }
+          }
+        }
+      ],
       "type": "timeseries"
     },
     {
@@ -3084,20 +3074,7 @@
           },
           "unit": "binBps"
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "SV2 delta %"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "percent"
-              }
-            ]
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 10,
@@ -3152,22 +3129,25 @@
           "range": true,
           "refId": "B",
           "step": 10
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "editorMode": "code",
-          "expr": "(\n  (\n    avg_over_time(sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.17\", src=\"10.5.0.6\"}[20s]))[5m:])\n    +\n    avg_over_time(sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.6\", src=\"10.5.0.5\"}[20s]))[5m:])\n    +\n    avg_over_time(sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.3\", src!=\"10.5.0.20\", src!=\"192.168.65.1\", src!=\"10.5.0.6\"}[20s]))[5m:])\n    -\n    max(\n      avg_over_time(sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.8\", src=\"10.5.0.19\"}[20s]))[5m:]) \n      or \n      vector(0)\n    )\n  )\n  /\n  avg_over_time(sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.8\", src=\"10.5.0.19\"}[20s]))[5m:])\n)\n* 100",
-          "hide": false,
-          "instant": false,
-          "legendFormat": "SV2 delta %",
-          "range": true,
-          "refId": "C"
         }
       ],
-      "title": "SV1 vs SV2 - Network Rx ",
+      "title": "SV1 vs SV2 - Network Rx (farm level)",
+      "transformations": [
+        {
+          "id": "calculateField",
+          "options": {
+            "alias": "SV2 delta",
+            "mode": "reduceRow",
+            "reduce": {
+              "include": [
+                "SV1 (farm net interface)",
+                "SV2 (translator + jdc + tp)"
+              ],
+              "reducer": "diff"
+            }
+          }
+        }
+      ],
       "type": "timeseries"
     },
     {
@@ -3303,7 +3283,7 @@
           "refId": "B"
         }
       ],
-      "title": "SV1 - Network Tx ",
+      "title": "SV1 - Network Tx (pool level)",
       "transformations": [
         {
           "id": "calculateField",
@@ -3458,7 +3438,7 @@
           "step": 10
         }
       ],
-      "title": "SV2 - Network Tx ",
+      "title": "SV2 - Network Tx (pool level)",
       "transformations": [
         {
           "id": "calculateField",
@@ -3593,7 +3573,7 @@
           "refId": "B"
         }
       ],
-      "title": "SV1 - Network Rx ",
+      "title": "SV1 - Network Rx (pool level) ",
       "transformations": [
         {
           "id": "calculateField",
@@ -3741,7 +3721,7 @@
           "refId": "C"
         }
       ],
-      "title": "SV2 - Network Rx ",
+      "title": "SV2 - Network Rx (pool level)",
       "transformations": [
         {
           "id": "calculateField",
@@ -3819,20 +3799,7 @@
           },
           "unit": "binBps"
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "SV2 delta %"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "percent"
-              }
-            ]
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 10,
@@ -3887,22 +3854,25 @@
           "range": true,
           "refId": "B",
           "step": 10
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "editorMode": "code",
-          "expr": "(\n  (\n    avg_over_time(sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.4\", dst=\"10.5.0.6\"}[20s]))[5m:])\n    +\n    avg_over_time(sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.5\", dst=\"10.5.0.6\"}[20s]))[5m:])\n    +\n    avg_over_time(sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.2\", dst!=\"192.168.65.1\", dst!=\"192.168.65.7\", dst!=\"10.5.0.4\", dst!=\"10.5.0.5\"}[20s]))[5m:])\n    -\n    max(\n      avg_over_time(sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.8\", dst=\"10.5.0.19\"}[20s]))[5m:]) \n      or \n      vector(0)\n    )\n    -\n    avg_over_time(sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.16\", dst!=\"10.5.0.21\", dst!=\"192.168.65.1\", dst!=\"192.168.65.7\", dst!=\"10.5.0.8\"}[20s]))[5m:])\n  )\n  /\n  (\n    max(\n      avg_over_time(sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.8\", dst=\"10.5.0.19\"}[20s]))[5m:]) \n      or \n      vector(0)\n    )\n    +\n    avg_over_time(sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.16\", dst!=\"10.5.0.21\", dst!=\"192.168.65.1\", dst!=\"192.168.65.7\", dst!=\"10.5.0.8\"}[20s]))[5m:])\n  )\n)\n* 100",
-          "hide": false,
-          "instant": false,
-          "legendFormat": "SV2 delta %",
-          "range": true,
-          "refId": "C"
         }
       ],
-      "title": "SV1 vs SV2 - Network Tx ",
+      "title": "SV1 vs SV2 - Network Tx (pool level)",
+      "transformations": [
+        {
+          "id": "calculateField",
+          "options": {
+            "alias": "SV2 delta",
+            "mode": "reduceRow",
+            "reduce": {
+              "include": [
+                "SV1 (pool + bitcoin node)",
+                "SV2 (pool + jds + tp)"
+              ],
+              "reducer": "diff"
+            }
+          }
+        }
+      ],
       "type": "timeseries"
     },
     {
@@ -3968,20 +3938,7 @@
           },
           "unit": "binBps"
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "SV2 delta %"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "percent"
-              }
-            ]
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 10,
@@ -4036,22 +3993,25 @@
           "range": true,
           "refId": "B",
           "step": 10
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "editorMode": "code",
-          "expr": "(\n  (\n    avg_over_time(sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.4\", src=\"10.5.0.6\"}[20s]))[5m:])\n    +\n    avg_over_time(sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.5\", src=\"10.5.0.6\"}[20s]))[5m:])\n    +\n    avg_over_time(sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.2\", src!=\"192.168.65.1\", src!=\"192.168.65.7\", src!=\"10.5.0.4\", src!=\"10.5.0.5\"}[20s]))[5m:])\n    -\n    max(\n      avg_over_time(sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.8\", src=\"10.5.0.19\"}[20s]))[5m:]) \n      or \n      vector(0)\n    )\n    -\n    avg_over_time(sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.16\", src!=\"10.5.0.21\", src!=\"192.168.65.1\", src!=\"192.168.65.7\", src!=\"10.5.0.8\"}[20s]))[5m:])\n  )\n  /\n  (\n    max(\n      avg_over_time(sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.8\", src=\"10.5.0.19\"}[20s]))[5m:]) \n      or \n      vector(0)\n    )\n    +\n    avg_over_time(sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.16\", src!=\"10.5.0.21\", src!=\"192.168.65.1\", src!=\"192.168.65.7\", src!=\"10.5.0.8\"}[20s]))[5m:])\n  )\n)\n* 100",
-          "hide": false,
-          "instant": false,
-          "legendFormat": "SV2 delta %",
-          "range": true,
-          "refId": "C"
         }
       ],
-      "title": "SV1 vs SV2 - Network Rx ",
+      "title": "SV1 vs SV2 - Network Rx (pool level)",
+      "transformations": [
+        {
+          "id": "calculateField",
+          "options": {
+            "alias": "SV2 delta",
+            "mode": "reduceRow",
+            "reduce": {
+              "include": [
+                "SV1 (pool + bitcoin node)",
+                "SV2 (pool + jds + tp)"
+              ],
+              "reducer": "diff"
+            }
+          }
+        }
+      ],
       "type": "timeseries"
     },
     {
@@ -4163,7 +4123,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum(rate(container_cpu_usage_seconds_total{name=~\"sv1-public-pool\"}[1m])) by (id, name) \n",
+          "expr": "sum(rate(container_cpu_usage_seconds_total{name=~\"sv1-pool\"}[1m])) by (id, name) \n",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
@@ -4190,7 +4150,7 @@
           "step": 10
         }
       ],
-      "title": "Pool Roles - CPU Usage ",
+      "title": "Pool Roles (SV1) - CPU Usage ",
       "transformations": [
         {
           "id": "calculateField",
@@ -4295,7 +4255,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "container_memory_usage_bytes{name=~\"sv1-public-pool\"}\n",
+          "expr": "container_memory_usage_bytes{name=~\"sv1-pool\"}\n",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
@@ -4322,7 +4282,7 @@
           "step": 10
         }
       ],
-      "title": "Pool Roles - Memory Usage",
+      "title": "Pool Roles (SV1) - Memory Usage",
       "transformations": [
         {
           "id": "calculateField",
@@ -4427,7 +4387,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (irate(container_network_transmit_bytes_total{name=~\"sv1-public-pool\"}[5m]))\n",
+          "expr": "sum by (id, name) (irate(container_network_transmit_bytes_total{name=~\"sv1-pool\"}[5m]))\n",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
@@ -4454,7 +4414,7 @@
           "step": 10
         }
       ],
-      "title": "Pool Roles - Network Tx",
+      "title": "Pool Roles (SV1) - Network Tx",
       "transformations": [
         {
           "id": "calculateField",
@@ -4559,7 +4519,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (irate(container_network_receive_bytes_total{name=~\"sv1-public-pool\"}[5m]))\n",
+          "expr": "sum by (id, name) (irate(container_network_receive_bytes_total{name=~\"sv1-pool\"}[5m]))\n",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
@@ -4586,7 +4546,7 @@
           "step": 10
         }
       ],
-      "title": "Pool Roles - Network Rx ",
+      "title": "Pool Roles (SV1) - Network Rx ",
       "transformations": [
         {
           "id": "calculateField",
@@ -4618,7 +4578,7 @@
           "refId": "A"
         }
       ],
-      "title": "SV2 roles performances (cAdvisor)",
+      "title": "SV2 roles performances (per container)",
       "type": "row"
     },
     {
@@ -4728,7 +4688,7 @@
           "step": 10
         }
       ],
-      "title": "Pool Roles - CPU Usage ",
+      "title": "Pool Roles (SV2) - CPU Usage ",
       "transformations": [
         {
           "id": "calculateField",
@@ -4844,7 +4804,7 @@
           "step": 10
         }
       ],
-      "title": "Pool Roles - Memory Usage ",
+      "title": "Pool Roles (SV2) - Memory Usage ",
       "transformations": [
         {
           "id": "calculateField",
@@ -4960,7 +4920,7 @@
           "step": 10
         }
       ],
-      "title": "Pool Roles - Network Tx ",
+      "title": "Pool Roles (SV2) - Network Tx ",
       "transformations": [
         {
           "id": "calculateField",
@@ -5076,7 +5036,7 @@
           "step": 10
         }
       ],
-      "title": "Pool Roles - Network Rx ",
+      "title": "Pool Roles (SV2) - Network Rx ",
       "transformations": [
         {
           "id": "calculateField",
@@ -5192,7 +5152,7 @@
           "step": 10
         }
       ],
-      "title": "Miner Roles - CPU Usage",
+      "title": "Miner Roles (SV2) - CPU Usage",
       "transformations": [
         {
           "id": "calculateField",
@@ -5308,7 +5268,7 @@
           "step": 10
         }
       ],
-      "title": "Miner Roles - Memory Usage",
+      "title": "Miner Roles (SV2) - Memory Usage",
       "transformations": [
         {
           "id": "calculateField",
@@ -5424,7 +5384,7 @@
           "step": 10
         }
       ],
-      "title": "Miner Roles - Network Tx",
+      "title": "Miner Roles (SV2) - Network Tx",
       "transformations": [
         {
           "id": "calculateField",
@@ -5540,7 +5500,7 @@
           "step": 10
         }
       ],
-      "title": "Miner Roles - Network Rx",
+      "title": "Miner Roles (SV2) - Network Rx",
       "transformations": [
         {
           "id": "calculateField",
@@ -6256,6 +6216,6 @@
   "timezone": "browser",
   "title": "SRI benchmarking tool",
   "uid": "64nrElFmk",
-  "version": 29,
+  "version": 31,
   "weekStart": ""
 }
