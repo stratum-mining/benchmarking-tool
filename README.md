@@ -72,32 +72,34 @@ If you prefer to set up the benchmarking tool manually, follow these detailed st
 
 2. **Configure the benchmarking parameters**:
     To configure the benchmarking tool, you'll need to update several parameters based on your specific requirements:
- - **Network**: choose between `mainnet`, `testnet3`, or `testnet4`
-   - Edit the `NETWORK` parameter in [.env](.env) and enter the network you want to use for the benchmarks
- - **SV2 block templates refresh interval**: specify frequence in which you will get refreshed block templates for SV2
-   - Edit the `SV2_INTERVAL` parameter in [.env](.env) and enter the number of seconds you desire
-  
-💡 The `SV1 pool` used in the benchmarking tool will generate a new block template every 60 seconds. Note that this value will affect the bandwidth used and tracked (especially in `configuration C`)
- - **Hashrate**: specify the hashrate you're going to point to the tool for SV2
-   - Edit the `min_individual_miner_hashrate` and `channel_nominal_hashrate` parameters placed in:
-     - [custom-configs/config-a/tproxy-config-a-docker-example.toml](custom-configs/config-a/tproxy-config-a-docker-example.toml)
-     - [custom-configs/config-c/tproxy-config-c-docker-example.toml](custom-configs/config-a/tproxy-config-c-docker-example.toml)
-  
-    👉 E.g. for a 100 Th/s machine, you will need to set `100_000_000_000_000.0`
-  
- - **Coinbase tx output**: enter your custom `public key` (or `redeem script`) with the `script_type` to be used as output in the coinbase transaction
-   - Edit the `coinbase_output` parameter placed in:
-     - [custom-configs/config-a/jds-config-a-docker-example.toml](custom-configs/config-a/jds-config-a-docker-example.toml)
-     - [custom-configs/config-a/jdc-config-a-docker-example.toml](custom-configs/config-a/jdc-config-a-docker-example.toml)
-     - [custom-configs/config-c/pool-config-c-docker-example.toml](custom-configs/config-c/pool-config-c-docker-example.toml)
-  
-    💡 If you still don't have a public key, setup a new wallet and extract the extended public key it provides. At this point, you can derive the child public key using this script: https://github.com/stratum-mining/stratum/tree/dev/utils/bip32-key-derivation 
-  
- - **Pool signature**: enter a custom string to be inserted into the coinbase transaction (if you don't like the default one `"Stratum V2 SRI Pool"`)
-   - Edit the `pool_signature` parameter placed in:
-     - [custom-configs/config-a/pool-config-a-docker-example.toml](custom-configs/config-a/pool-config-a-docker-example.toml)
-     - [custom-configs/config-a/jdc-config-a-docker-example.toml](custom-configs/config-a/jdc-config-a-docker-example.toml)
-     - [custom-configs/config-c/pool-config-c-docker-example.toml](custom-configs/config-c/pool-config-c-docker-example.toml)
+   - *Network*: choose between `mainnet`, `testnet3`, or `testnet4`
+     - Edit the `NETWORK` parameter in [.env](.env) and enter the network you want to use for the benchmarks
+    
+   - *SV2 block templates refresh interval*: specify frequence in which you will get refreshed block templates for SV2
+     - Edit the `SV2_INTERVAL` parameter in [.env](.env) and enter the number of seconds you desire
+    
+      🚨 The `SV1 pool` used in the benchmarking tool will generate a new block template every 60 seconds. Note that this value will affect the bandwidth used and tracked (especially in `configuration C`)
+    
+   - *Hashrate*: specify the hashrate you're going to point to the tool for SV2
+     - Edit the `min_individual_miner_hashrate` and `channel_nominal_hashrate` parameters placed in:
+       - [custom-configs/config-a/tproxy-config-a-docker-example.toml](custom-configs/config-a/tproxy-config-a-docker-example.toml)
+       - [custom-configs/config-c/tproxy-config-c-docker-example.toml](custom-configs/config-a/tproxy-config-c-docker-example.toml)
+    
+      👉 E.g. for a 100 Th/s machine, you will need to set `100_000_000_000_000.0`
+    
+   - *Coinbase tx output*: enter your custom `public key` (or `redeem script`) with the `script_type` to be used as output in the coinbase transaction
+     - Edit the `coinbase_output` parameter placed in:
+       - [custom-configs/config-a/jds-config-a-docker-example.toml](custom-configs/config-a/jds-config-a-docker-example.toml)
+       - [custom-configs/config-a/jdc-config-a-docker-example.toml](custom-configs/config-a/jdc-config-a-docker-example.toml)
+       - [custom-configs/config-c/pool-config-c-docker-example.toml](custom-configs/config-c/pool-config-c-docker-example.toml)
+    
+      💡 If you still don't have a public key, setup a new wallet and extract the extended public key it provides. At this point, you can derive the child public key using this script: https://github.com/stratum-mining/stratum/tree/dev/utils/bip32-key-derivation 
+    
+   - *Pool signature*: enter a custom string to be inserted into the coinbase transaction (if you don't like the default one `"Stratum V2 SRI Pool"`)
+     - Edit the `pool_signature` parameter placed in:
+       - [custom-configs/config-a/pool-config-a-docker-example.toml](custom-configs/config-a/pool-config-a-docker-example.toml)
+       - [custom-configs/config-a/jdc-config-a-docker-example.toml](custom-configs/config-a/jdc-config-a-docker-example.toml)
+       - [custom-configs/config-c/pool-config-c-docker-example.toml](custom-configs/config-c/pool-config-c-docker-example.toml)
 
 3. **Start the benchmarking tool**:
    After updating the configuration files, start the benchmarking tool using Docker Compose with the appropriate configuration file.
@@ -112,29 +114,28 @@ If you prefer to set up the benchmarking tool manually, follow these detailed st
    ```
 
 4. **Point miners to the following endpoints**
-  - For Stratum V1:
-    ```bash
-    stratum+tcp://<host-ip-address>:3333
-    ```
-    🚨 For SV1, you should use the address format `[bitcoin_address].[nickname]` as the username in your miner setup.
-    E.g. to correctly run a CPU miner, you need to run it with: `./minerd -a sha256d -o stratum+tcp://127.0.0.1:3333 -q -D -P -u tb1qa0sm0hxzj0x25rh8gw5xlzwlsfvvyz8u96w3p8.sv2-gitgab19`
-
-  - For Stratum V2:
-    ```bash
-    stratum+tcp://<host-ip-address>:34255
-    ```
+    - For Stratum V1:
+      ```bash
+      stratum+tcp://<host-ip-address>:3333
+      ```
+      🚨 For SV1, you should use the address format `[bitcoin_address].[nickname]` as the username in your miner setup.
+      E.g. to correctly run a CPU miner, you need to run it with: `./minerd -a sha256d -o stratum+tcp://127.0.0.1:3333 -q -D -P -u tb1qa0sm0hxzj0x25rh8gw5xlzwlsfvvyz8u96w3p8.sv2-gitgab19`
+  
+    - For Stratum V2:
+      ```bash
+      stratum+tcp://<host-ip-address>:34255
+      ```
   
    💡If you don't have a physical miner, you can do tests with CPUMiner.
   Setup the correct CPUMiner for your OS:
+    - You can download the binary directly from [here](https://sourceforge.net/projects/cpuminer/files/);
+    - Or compile it from [https://github.com/pooler/cpuminer](https://github.com/pooler/cpuminer)
 
-  - You can download the binary directly from [here](https://sourceforge.net/projects/cpuminer/files/);
-  - Or compile it from [https://github.com/pooler/cpuminer](https://github.com/pooler/cpuminer)
-
-  On the CPUMiner directory:
-
-  ```bash
-  ./minerd -a sha256d -o stratum+tcp://<host-ip-address>:34255 -q -D -P
-  ```
+    On the CPUMiner directory:
+  
+    ```bash
+    ./minerd -a sha256d -o stratum+tcp://<host-ip-address>:34255 -q -D -P
+    ```
 
 5. **Access the Grafana dashboard** 📊
    
