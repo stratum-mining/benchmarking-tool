@@ -1,21 +1,12 @@
 use demand_easy_sv2::const_sv2::{
-    MESSAGE_TYPE_NEW_TEMPLATE,
-    MESSAGE_TYPE_SET_NEW_PREV_HASH,
-    MESSAGE_TYPE_SUBMIT_SHARES_ERROR,
-    MESSAGE_TYPE_SUBMIT_SHARES_EXTENDED,
-    MESSAGE_TYPE_SUBMIT_SHARES_SUCCESS,
+    MESSAGE_TYPE_NEW_TEMPLATE, MESSAGE_TYPE_SET_NEW_PREV_HASH, MESSAGE_TYPE_SUBMIT_SHARES_ERROR,
+    MESSAGE_TYPE_SUBMIT_SHARES_EXTENDED, MESSAGE_TYPE_SUBMIT_SHARES_SUCCESS,
     MESSAGE_TYPE_SUBMIT_SOLUTION,
 };
-use demand_easy_sv2::roles_logic_sv2::parsers::{ Mining, PoolMessages, TemplateDistribution };
-use demand_easy_sv2::{ ProxyBuilder, Remote };
+use demand_easy_sv2::roles_logic_sv2::parsers::{Mining, PoolMessages, TemplateDistribution};
+use demand_easy_sv2::{ProxyBuilder, Remote};
 use prometheus::{
-    register_counter,
-    register_gauge,
-    register_gauge_vec,
-    Counter,
-    Encoder,
-    Gauge,
-    GaugeVec,
+    register_counter, register_gauge, register_gauge_vec, Counter, Encoder, Gauge, GaugeVec,
     TextEncoder,
 };
 use reqwest::Client;
@@ -24,7 +15,7 @@ use std::env;
 use std::net::ToSocketAddrs;
 use std::time::SystemTime;
 use tokio::net::TcpStream;
-use tokio::time::{ sleep, Duration };
+use tokio::time::{sleep, Duration};
 use warp::Filter;
 
 #[tokio::main]
@@ -32,9 +23,8 @@ async fn main() {
     let client_address = env::var("CLIENT").expect("CLIENT environment variable not set");
     let server_address = env::var("SERVER").expect("SERVER environment variable not set");
     let proxy_type = env::var("PROXY_TYPE").expect("PROXY_TYPE environment variable not set");
-    let prometheus_exporter_address = env
-        ::var("PROM_ADDRESS")
-        .expect("PROM_ADDRESS environment variable not set");
+    let prometheus_exporter_address =
+        env::var("PROM_ADDRESS").expect("PROM_ADDRESS environment variable not set");
 
     let mut submitted_shares: Option<Counter> = None;
     let mut valid_shares: Option<Counter> = None;
@@ -55,13 +45,14 @@ async fn main() {
     match proxy_type.as_str() {
         "tp-jdc" => {
             mined_blocks = Some(
-                register_counter!("sv2_mined_blocks", "Total number of SV2 blocks mined").unwrap()
+                register_counter!("sv2_mined_blocks", "Total number of SV2 blocks mined").unwrap(),
             );
             block_propagation_time_through_sv2_jdc = Some(
                 register_gauge!(
                     "block_propagation_time_through_sv2_jdc",
                     "Time to submit a block through SV2 JDC in milliseconds"
-                ).unwrap()
+                )
+                .unwrap(),
             );
             sv2_new_job_prev_hash_timestamp_jdc = Some(
                 register_gauge_vec!(
@@ -75,68 +66,78 @@ async fn main() {
                     "sv2_new_job_timestamp_jdc",
                     "Time taken for mining device to get notification of new job via config a",
                     &["id"]
-                ).unwrap()
+                )
+                .unwrap(),
             );
             sv2_block_template_value = Some(
                 register_gauge!(
                     "sv2_block_template_value",
                     "Total reward of sats contained in the current SV2 block template"
-                ).unwrap()
+                )
+                .unwrap(),
             );
             last_block_mined_value = Some(
                 register_gauge!(
                     "last_block_mined_value",
                     "Total reward of sats contained in the last block mined"
-                ).unwrap()
+                )
+                .unwrap(),
             );
             last_sv2_block_template_value = Some(
                 register_gauge!(
                     "last_sv2_template_value",
                     "Total reward of sats contained in the last SV2 block template"
-                ).unwrap()
+                )
+                .unwrap(),
             );
         }
         "tp-pool" => {
             mined_blocks = Some(
-                register_counter!("sv2_mined_blocks", "Total number of SV2 blocks mined").unwrap()
+                register_counter!("sv2_mined_blocks", "Total number of SV2 blocks mined").unwrap(),
             );
             block_propagation_time_through_sv2_pool = Some(
                 register_gauge!(
                     "block_propagation_time_through_sv2_pool",
                     "Time to submit a block through SV2 Pool in milliseconds"
-                ).unwrap()
+                )
+                .unwrap(),
             );
             sv2_new_job_prev_hash_timestamp_pool = Some(
                 register_gauge_vec!(
                     "sv2_new_job_prev_hash_timestamp_pool",
                     "Time taken for mining device to get notification of new prev via config c",
                     &["prevhash"]
-                ).unwrap()
+                )
+                .unwrap(),
             );
             sv2_new_job_timestamp_pool = Some(
                 register_gauge_vec!(
                     "sv2_new_job_timestamp_pool",
                     "Time taken for mining device to get notification of new job via config c",
                     &["id"]
-                ).unwrap()
+                )
+                .unwrap(),
             );
             sv2_block_template_value = Some(
                 register_gauge!(
                     "sv2_block_template_value",
                     "Total reward of sats contained in the current SV2 block template"
-                ).unwrap()
+                )
+                .unwrap(),
             );
             last_block_mined_value = Some(
                 register_gauge!(
                     "last_block_mined_value",
                     "Total reward of sats contained in the last block mined"
-                ).unwrap()
+                )
+                .unwrap(),
             );
             last_sv2_block_template_value = Some(
                 register_gauge!(
                     "last_sv2_template_value",
                     "Total reward of sats contained in the last SV2 block template"
-                ).unwrap()
+                )
+                .unwrap(),
             );
         }
         "pool-translator" | "jdc-translator" => {
@@ -144,20 +145,22 @@ async fn main() {
                 register_counter!(
                     "sv2_submitted_shares",
                     "Total number of SV2 submitted shares"
-                ).unwrap()
+                )
+                .unwrap(),
             );
             valid_shares = Some(
-                register_counter!("sv2_valid_shares", "Total number of SV2 valid shares").unwrap()
+                register_counter!("sv2_valid_shares", "Total number of SV2 valid shares").unwrap(),
             );
             stale_shares = Some(
-                register_counter!("sv2_stale_shares", "Total number of SV2 stale shares").unwrap()
+                register_counter!("sv2_stale_shares", "Total number of SV2 stale shares").unwrap(),
             );
             share_submission_timestamp = Some(
                 register_gauge_vec!(
                     "share_submission_timestamp",
                     "Timestamp of the submitted share",
                     &["nonce"]
-                ).unwrap()
+                )
+                .unwrap(),
             );
         }
         _ => panic!("Invalid PROXY_TYPE"),
@@ -170,8 +173,7 @@ async fn main() {
             let metric_families = prometheus::gather();
             let mut buffer = Vec::new();
             encoder.encode(&metric_families, &mut buffer).unwrap();
-            warp::http::Response
-                ::builder()
+            warp::http::Response::builder()
                 .header("Content-Type", encoder.format_type())
                 .body(buffer)
         });
@@ -183,61 +185,90 @@ async fn main() {
 
     let mut proxy_builder = ProxyBuilder::new();
     proxy_builder
-        .try_add_client(listen_for_client(&client_address).await).await
+        .try_add_client(listen_for_client(&client_address).await)
+        .await
         .unwrap()
-        .try_add_server(connect_to_server(&server_address).await).await
+        .try_add_server(connect_to_server(&server_address).await)
+        .await
         .unwrap();
 
     // Handle proxy type specific logic
     match proxy_type.as_str() {
         "pool-translator" | "jdc-translator" => {
-            if
-                let (Some(shares), Some(valid), Some(stale), Some(timestamp)) = (
-                    submitted_shares,
-                    valid_shares,
-                    stale_shares,
-                    share_submission_timestamp,
-                )
-            {
+            if let (Some(shares), Some(valid), Some(stale), Some(timestamp)) = (
+                submitted_shares,
+                valid_shares,
+                stale_shares,
+                share_submission_timestamp,
+            ) {
                 intercept_submit_share_extended(
                     &mut proxy_builder,
                     shares.clone(),
-                    timestamp.clone()
-                ).await;
+                    timestamp.clone(),
+                )
+                .await;
                 intercept_submit_share_success(&mut proxy_builder, valid.clone()).await;
                 intercept_submit_share_error(&mut proxy_builder, stale.clone()).await;
             }
         }
         "tp-pool" => {
-            if let (Some(new_job_gauge_vec), Some(last_block_mined_value), Some(last_sv2_block_template_value)) = (sv2_new_job_prev_hash_timestamp_pool, last_block_mined_value, last_sv2_block_template_value) {
-                intercept_prev_hash(&mut proxy_builder, new_job_gauge_vec, last_block_mined_value, last_sv2_block_template_value).await;
-            }
-            if
-                let (Some(pool_latency), Some(mined)) = (
-                    block_propagation_time_through_sv2_pool,
-                    mined_blocks,
+            if let (
+                Some(new_job_gauge_vec),
+                Some(last_block_mined_value),
+                Some(last_sv2_block_template_value),
+            ) = (
+                sv2_new_job_prev_hash_timestamp_pool,
+                last_block_mined_value,
+                last_sv2_block_template_value,
+            ) {
+                intercept_prev_hash(
+                    &mut proxy_builder,
+                    new_job_gauge_vec,
+                    last_block_mined_value,
+                    last_sv2_block_template_value,
                 )
+                .await;
+            }
+            if let (Some(pool_latency), Some(mined)) =
+                (block_propagation_time_through_sv2_pool, mined_blocks)
             {
                 intercept_submit_solution(&mut proxy_builder, pool_latency, mined).await;
             }
-            if let (Some(new_job_pool), Some(sv2_block_template_value)) = (sv2_new_job_timestamp_pool, sv2_block_template_value) {
-                intercept_new_template(&mut proxy_builder, new_job_pool, sv2_block_template_value).await;
+            if let (Some(new_job_pool), Some(sv2_block_template_value)) =
+                (sv2_new_job_timestamp_pool, sv2_block_template_value)
+            {
+                intercept_new_template(&mut proxy_builder, new_job_pool, sv2_block_template_value)
+                    .await;
             }
         }
         "tp-jdc" => {
-            if let (Some(new_job_gauge_vec), Some(last_block_mined_value), Some(last_sv2_block_template_value)) = (sv2_new_job_prev_hash_timestamp_jdc, last_block_mined_value, last_sv2_block_template_value) {
-                intercept_prev_hash(&mut proxy_builder, new_job_gauge_vec, last_block_mined_value, last_sv2_block_template_value).await;
-            }
-            if
-                let (Some(jdc_latency), Some(mined)) = (
-                    block_propagation_time_through_sv2_jdc,
-                    mined_blocks,
+            if let (
+                Some(new_job_gauge_vec),
+                Some(last_block_mined_value),
+                Some(last_sv2_block_template_value),
+            ) = (
+                sv2_new_job_prev_hash_timestamp_jdc,
+                last_block_mined_value,
+                last_sv2_block_template_value,
+            ) {
+                intercept_prev_hash(
+                    &mut proxy_builder,
+                    new_job_gauge_vec,
+                    last_block_mined_value,
+                    last_sv2_block_template_value,
                 )
+                .await;
+            }
+            if let (Some(jdc_latency), Some(mined)) =
+                (block_propagation_time_through_sv2_jdc, mined_blocks)
             {
                 intercept_submit_solution(&mut proxy_builder, jdc_latency, mined).await;
             }
-            if let (Some(new_job_jdc), Some(sv2_block_template_value)) = (sv2_new_job_timestamp_jdc, sv2_block_template_value) {
-                intercept_new_template(&mut proxy_builder, new_job_jdc, sv2_block_template_value).await;
+            if let (Some(new_job_jdc), Some(sv2_block_template_value)) =
+                (sv2_new_job_timestamp_jdc, sv2_block_template_value)
+            {
+                intercept_new_template(&mut proxy_builder, new_job_jdc, sv2_block_template_value)
+                    .await;
             }
         }
         _ => {
@@ -265,10 +296,7 @@ async fn connect_to_server(server_address: &str) -> TcpStream {
 }
 
 pub fn encode_hex(bytes: &[u8]) -> String {
-    bytes
-        .iter()
-        .map(|b| format!("{:02x}", b))
-        .collect()
+    bytes.iter().map(|b| format!("{:02x}", b)).collect()
 }
 
 fn reverse_hash(hash: &str) -> String {
@@ -289,6 +317,7 @@ async fn fetch_block_reward(hash: &str) -> Result<u64, String> {
     let client = Client::new();
     let url = match network.as_str() {
         "mainnet" => format!("https://mempool.space/api/block/{}", hash),
+        "testnet3" => format!("https://mempool.space/testnet/api/block/{}", hash),
         "testnet4" => format!("https://mempool.space/testnet4/api/block/{}", hash),
         _ => return Err("Invalid NETWORK environment variable".to_string()),
     };
@@ -303,17 +332,29 @@ async fn fetch_block_reward(hash: &str) -> Result<u64, String> {
                 .as_u64()
                 .ok_or("Failed to parse reward from mainnet response")?;
             Ok(reward)
-        },
-        "testnet4" => {
+        }
+        "testnet3" | "testnet4" => {
             let height = json["height"]
                 .as_u64()
-                .ok_or("Failed to parse height from testnet4 response")?;
+                .ok_or("Failed to parse height from testnet response")?;
             println!("Height: {:?}", height);
-            let reward_stats_url = "https://mempool.space/testnet4/api/v1/mining/reward-stats/1";
-            let reward_stats_response = client.get(reward_stats_url).send().await.map_err(|e| e.to_string())?;
-            let reward_stats_body = reward_stats_response.text().await.map_err(|e| e.to_string())?;
-            let reward_stats_json: Value = serde_json::from_str(&reward_stats_body).map_err(|e| e.to_string())?;
-            
+            let reward_stats_url = match network.as_str() {
+                "testnet3" => "https://mempool.space/testnet/api/v1/mining/reward-stats/1",
+                "testnet4" => "https://mempool.space/testnet4/api/v1/mining/reward-stats/1",
+                _ => unreachable!(),
+            };
+            let reward_stats_response = client
+                .get(reward_stats_url)
+                .send()
+                .await
+                .map_err(|e| e.to_string())?;
+            let reward_stats_body = reward_stats_response
+                .text()
+                .await
+                .map_err(|e| e.to_string())?;
+            let reward_stats_json: Value =
+                serde_json::from_str(&reward_stats_body).map_err(|e| e.to_string())?;
+
             let start_block = reward_stats_json["startBlock"]
                 .as_u64()
                 .ok_or("Failed to parse startBlock from reward stats")?;
@@ -330,7 +371,7 @@ async fn fetch_block_reward(hash: &str) -> Result<u64, String> {
             } else {
                 Err("Block height mismatch".to_string())
             }
-        },
+        }
         _ => Err("Unknown network type".to_string()),
     }
 }
@@ -354,20 +395,23 @@ async fn fetch_last_block_reward_with_retries(
     Err("Failed to fetch block reward after multiple attempts".to_string())
 }
 
-async fn fetch_metric_from_prometheus(prometheus_address: &str, metric_name: &str, timestamp: f64) -> Result<f64, String> {
+async fn fetch_metric_from_prometheus(
+    prometheus_address: &str,
+    metric_name: &str,
+    timestamp: f64,
+) -> Result<f64, String> {
     let client = Client::new();
     let url = format!(
         "{}/api/v1/query?query={} &time={}",
-        prometheus_address,
-        metric_name,
-        timestamp
+        prometheus_address, metric_name, timestamp
     );
     println!("Fetching from URL: {}", url); // Logging dell'URL
     let response = client.get(&url).send().await.map_err(|e| e.to_string())?;
     let body = response.text().await.map_err(|e| e.to_string())?;
     println!("Received response body: {}", body); // Logging della risposta
 
-    let json: Value = serde_json::from_str(&body).map_err(|e| format!("Error parsing JSON: {}", e))?;
+    let json: Value =
+        serde_json::from_str(&body).map_err(|e| format!("Error parsing JSON: {}", e))?;
 
     // Parse the result
     let value = json["data"]["result"]
@@ -382,15 +426,20 @@ async fn fetch_metric_from_prometheus(prometheus_address: &str, metric_name: &st
     Ok(value)
 }
 
-async fn intercept_prev_hash(builder: &mut ProxyBuilder, new_prev_hash_timestamp: GaugeVec, last_block_mined_value: Gauge, last_sv2_block_template_value: Gauge) {
+async fn intercept_prev_hash(
+    builder: &mut ProxyBuilder,
+    new_prev_hash_timestamp: GaugeVec,
+    last_block_mined_value: Gauge,
+    last_sv2_block_template_value: Gauge,
+) {
     let mut r = builder.add_handler(
         demand_easy_sv2::Remote::Server,
-        MESSAGE_TYPE_SET_NEW_PREV_HASH
+        MESSAGE_TYPE_SET_NEW_PREV_HASH,
     );
     tokio::spawn(async move {
-        while
-            let Some(PoolMessages::TemplateDistribution(TemplateDistribution::SetNewPrevHash(m))) =
-                r.recv().await
+        while let Some(PoolMessages::TemplateDistribution(TemplateDistribution::SetNewPrevHash(
+            m,
+        ))) = r.recv().await
         {
             println!("Set prev hash received --> {:?}", m);
             let mut id = m.prev_hash;
@@ -399,24 +448,39 @@ async fn intercept_prev_hash(builder: &mut ProxyBuilder, new_prev_hash_timestamp
             let new_prev_hash_timestamp_clone = new_prev_hash_timestamp.clone();
             let last_block_mined_value_clone = last_block_mined_value.clone();
             let last_sv2_block_template_value_clone = last_sv2_block_template_value.clone();
-            let current_time = std::time::SystemTime
-                ::now()
+            let current_time = std::time::SystemTime::now()
                 .duration_since(std::time::UNIX_EPOCH)
                 .expect("Time went backwards")
                 .as_millis() as f64;
-            new_prev_hash_timestamp_clone.with_label_values(&[&prev_hash_hex]).set(current_time);
+            new_prev_hash_timestamp_clone
+                .with_label_values(&[&prev_hash_hex])
+                .set(current_time);
             tokio::spawn(async move {
                 sleep(Duration::from_secs(1)).await;
                 // Remove the metric from Prometheus
                 let _ = new_prev_hash_timestamp_clone.remove_label_values(&[&prev_hash_hex]);
-                
-                let now = SystemTime::now().duration_since(std::time::UNIX_EPOCH).expect("Time went backwards").as_secs_f64();
+
+                let now = SystemTime::now()
+                    .duration_since(std::time::UNIX_EPOCH)
+                    .expect("Time went backwards")
+                    .as_secs_f64();
                 let timestamp = now - 2.0;
                 // Fetch the previous template value from Prometheus
-                let fetch_metric_result = fetch_metric_from_prometheus("http://10.5.0.9:9090", "sv2_block_template_value", timestamp).await;
+                let fetch_metric_result = fetch_metric_from_prometheus(
+                    "http://10.5.0.9:9090",
+                    "sv2_block_template_value",
+                    timestamp,
+                )
+                .await;
 
                 // Fetch the last block reward and set last_block_mined_value
-                if let Ok(reward) = fetch_last_block_reward_with_retries(&reverse_hash(&prev_hash_hex), 24, Duration::from_secs(5)).await {
+                if let Ok(reward) = fetch_last_block_reward_with_retries(
+                    &reverse_hash(&prev_hash_hex),
+                    24,
+                    Duration::from_secs(5),
+                )
+                .await
+                {
                     let reward_as_f64 = reward as f64;
                     last_block_mined_value_clone.set(reward_as_f64);
 
@@ -428,40 +492,31 @@ async fn intercept_prev_hash(builder: &mut ProxyBuilder, new_prev_hash_timestamp
                         eprintln!("Error fetching metric");
                     }
                 }
-                /* match fetch_metric_from_prometheus("http://10.5.0.9:9090", "sv2_block_template_value", timestamp).await {
-                    Ok(value) => {
-                        println!("Fetched metric value: {}", value);
-                        last_sv2_block_template_value_clone.set(value);
-                    } 
-                    Err(e) => eprintln!("Error fetching metric: {}", e),
-                }
-                
-                let reversed_hash = reverse_hash(&prev_hash_hex);
-                if let Ok(reward) = fetch_last_block_reward_with_retries(&reversed_hash, 24, Duration::from_secs(5)).await {
-                    let reward_as_f64 = reward as f64;
-                    last_block_mined_value_clone.set(reward_as_f64);
-                } */
             });
         }
     });
 }
 
-async fn intercept_new_template(builder: &mut ProxyBuilder, new_job_timestamp: GaugeVec, sv2_block_template_value: Gauge) {
+async fn intercept_new_template(
+    builder: &mut ProxyBuilder,
+    new_job_timestamp: GaugeVec,
+    sv2_block_template_value: Gauge,
+) {
     let mut r = builder.add_handler(demand_easy_sv2::Remote::Server, MESSAGE_TYPE_NEW_TEMPLATE);
     tokio::spawn(async move {
-        while
-            let Some(PoolMessages::TemplateDistribution(TemplateDistribution::NewTemplate(m))) =
-                r.recv().await
+        while let Some(PoolMessages::TemplateDistribution(TemplateDistribution::NewTemplate(m))) =
+            r.recv().await
         {
             println!("Set new template received --> {:?}", m);
             let id = m.template_id;
-            let current_time = std::time::SystemTime
-                ::now()
+            let current_time = std::time::SystemTime::now()
                 .duration_since(std::time::UNIX_EPOCH)
                 .expect("Time went backwards")
                 .as_millis() as f64;
             let new_job_timestamp_clone = new_job_timestamp.clone();
-            new_job_timestamp_clone.with_label_values(&[&id.to_string()]).set(current_time);
+            new_job_timestamp_clone
+                .with_label_values(&[&id.to_string()])
+                .set(current_time);
             tokio::spawn(async move {
                 sleep(Duration::from_secs(1)).await;
                 // Remove the metric from Prometheus
@@ -479,7 +534,7 @@ async fn intercept_new_template(builder: &mut ProxyBuilder, new_job_timestamp: G
 async fn intercept_submit_share_extended(
     builder: &mut ProxyBuilder,
     submitted_shares: Counter,
-    gauge: GaugeVec
+    gauge: GaugeVec,
 ) {
     let mut r = builder.add_handler(Remote::Client, MESSAGE_TYPE_SUBMIT_SHARES_EXTENDED);
     tokio::spawn(async move {
@@ -488,14 +543,15 @@ async fn intercept_submit_share_extended(
             submitted_shares.inc();
 
             let id = m.nonce;
-            let current_time = std::time::SystemTime
-                ::now()
+            let current_time = std::time::SystemTime::now()
                 .duration_since(std::time::UNIX_EPOCH)
                 .expect("Time went backwards")
                 .as_millis() as f64;
 
             let gauge_clone = gauge.clone();
-            gauge_clone.with_label_values(&[&id.to_string()]).set(current_time);
+            gauge_clone
+                .with_label_values(&[&id.to_string()])
+                .set(current_time);
 
             tokio::spawn(async move {
                 sleep(Duration::from_secs(10)).await;
@@ -529,19 +585,18 @@ async fn intercept_submit_share_error(builder: &mut ProxyBuilder, stale_shares: 
 async fn intercept_submit_solution(
     builder: &mut ProxyBuilder,
     block_propagation_time: Gauge,
-    mined_blocks: Counter
+    mined_blocks: Counter,
 ) {
     let mut r = builder.add_handler(Remote::Client, MESSAGE_TYPE_SUBMIT_SOLUTION);
     let client = Client::new();
 
     tokio::spawn(async move {
-        while
-            let Some(PoolMessages::TemplateDistribution(TemplateDistribution::SubmitSolution(m))) =
-                r.recv().await
+        while let Some(PoolMessages::TemplateDistribution(TemplateDistribution::SubmitSolution(
+            m,
+        ))) = r.recv().await
         {
             println!("SubmitSolution received --> {:?}", m);
-            let current_timestamp = std::time::SystemTime
-                ::now()
+            let current_timestamp = std::time::SystemTime::now()
                 .duration_since(std::time::UNIX_EPOCH)
                 .expect("Time went backwards")
                 .as_millis() as f64;
@@ -551,9 +606,8 @@ async fn intercept_submit_solution(
                 if let Ok(body) = response.text().await {
                     // Simple parsing to find the metric for the specific nonce
                     for line in body.lines() {
-                        if
-                            line.starts_with("share_submission_timestamp{nonce=\"") &&
-                            line.contains(&id.to_string())
+                        if line.starts_with("share_submission_timestamp{nonce=\"")
+                            && line.contains(&id.to_string())
                         {
                             let parts: Vec<&str> = line.split_whitespace().collect();
                             if let Some(timestamp_str) = parts.get(1) {

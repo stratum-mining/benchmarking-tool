@@ -1,13 +1,7 @@
-use hyper::service::{ make_service_fn, service_fn };
-use hyper::{ Body, Client, Request, Response, Server, Uri };
+use hyper::service::{make_service_fn, service_fn};
+use hyper::{Body, Client, Request, Response, Server, Uri};
 use prometheus::{
-    register_counter,
-    register_gauge,
-    register_gauge_vec,
-    Counter,
-    Encoder,
-    Gauge,
-    GaugeVec,
+    register_counter, register_gauge, register_gauge_vec, Counter, Encoder, Gauge, GaugeVec,
     TextEncoder,
 };
 use serde_json::Value;
@@ -16,9 +10,9 @@ use std::convert::Infallible;
 use std::env;
 use std::net::SocketAddr;
 use std::sync::{Arc, Mutex};
-use tokio::io::{ self, AsyncReadExt, AsyncWriteExt };
-use tokio::net::{ TcpListener, TcpStream };
-use tokio::time::{ sleep, Duration };
+use tokio::io::{self, AsyncReadExt, AsyncWriteExt};
+use tokio::net::{TcpListener, TcpStream};
+use tokio::time::{sleep, Duration};
 use warp::Filter;
 
 async fn transfer(
@@ -29,7 +23,7 @@ async fn transfer(
     stale_shares: Counter,
     share_submission_timestamp: GaugeVec,
     new_job_gauge: Gauge,
-    new_job_prev_hash_gauge: Gauge
+    new_job_prev_hash_gauge: Gauge,
 ) -> io::Result<()> {
     let (mut ri, mut wi) = inbound.split();
     let (mut ro, mut wo) = outbound.split();
@@ -52,11 +46,11 @@ async fn transfer(
                         if let Some(params) = json["params"].as_array() {
                             if let Some(nonce) = params.get(4) {
                                 let nonce_string = nonce.to_string();
-                                let current_time = std::time::SystemTime
-                                    ::now()
+                                let current_time = std::time::SystemTime::now()
                                     .duration_since(std::time::UNIX_EPOCH)
                                     .expect("Time went backwards")
-                                    .as_millis() as f64;
+                                    .as_millis()
+                                    as f64;
                                 let share_submission_timestamp_clone =
                                     share_submission_timestamp.clone();
                                 share_submission_timestamp_clone
@@ -66,9 +60,8 @@ async fn transfer(
                                 tokio::spawn(async move {
                                     sleep(Duration::from_secs(10)).await;
                                     // Remove the metric from Prometheus
-                                    let _ = share_submission_timestamp_clone.remove_label_values(
-                                        &[&nonce_string]
-                                    );
+                                    let _ = share_submission_timestamp_clone
+                                        .remove_label_values(&[&nonce_string]);
                                 });
                             } else {
                                 println!("Nonce not found in params");
@@ -103,11 +96,11 @@ async fn transfer(
                     if json["method"] == "mining.notify" {
                         if let Some(params) = json["params"].as_array() {
                             if let Some(_prevhash) = params.get(1) {
-                                let current_timestamp = std::time::SystemTime
-                                    ::now()
+                                let current_timestamp = std::time::SystemTime::now()
                                     .duration_since(std::time::UNIX_EPOCH)
                                     .expect("Time went backwards")
-                                    .as_millis() as f64;
+                                    .as_millis()
+                                    as f64;
                                 let prometheus_url = "http://10.5.0.21:4567/metrics";
                                 let client = reqwest::Client::new();
                                 if let Ok(response) = client.get(prometheus_url).send().await {
@@ -118,7 +111,9 @@ async fn transfer(
                                                 let start = start_index + "flag=\"".len();
                                                 if let Some(value) = line.chars().nth(start) {
                                                     if value != 's' {
-                                                        if let Some((_, timestamp)) = line.rsplit_once(" ") {
+                                                        if let Some((_, timestamp)) =
+                                                            line.rsplit_once(" ")
+                                                        {
                                                             println!(
                                                                 "The extracted timestamp is: {}",
                                                                 timestamp.trim()
@@ -127,15 +122,17 @@ async fn transfer(
                                                                 .trim()
                                                                 .parse::<f64>()
                                                                 .unwrap();
-                                                            let delta =
-                                                                current_timestamp - new_job_timestamp;
+                                                            let delta = current_timestamp
+                                                                - new_job_timestamp;
                                                             new_job_prev_hash_gauge.set(delta);
                                                             new_job_gauge.set(delta);
                                                         } else {
                                                             println!("No timestamp value found.");
                                                         }
                                                     } else {
-                                                        if let Some((_, timestamp)) = line.rsplit_once(" ") {
+                                                        if let Some((_, timestamp)) =
+                                                            line.rsplit_once(" ")
+                                                        {
                                                             println!(
                                                                 "The extracted timestamp is: {}",
                                                                 timestamp.trim()
@@ -144,16 +141,15 @@ async fn transfer(
                                                                 .trim()
                                                                 .parse::<f64>()
                                                                 .unwrap();
-                                                            let delta =
-                                                                current_timestamp - new_job_timestamp;
+                                                            let delta = current_timestamp
+                                                                - new_job_timestamp;
                                                             new_job_gauge.set(delta);
                                                         } else {
                                                             println!("No timestamp value found.");
                                                         }
                                                     }
-                                                } 
-                                                
-                                            } 
+                                                }
+                                            }
                                         }
                                     }
                                 }
@@ -193,7 +189,7 @@ async fn handle_rpc_request(
     mined_blocks: Counter,
     sv1_block_template_value: Gauge,
     sv1_new_job_vec: GaugeVec,
-    prev_hash_mutex: Arc<Mutex<VecDeque<String>>>
+    prev_hash_mutex: Arc<Mutex<VecDeque<String>>>,
 ) -> Result<Response<Body>, hyper::Error> {
     let uri = req.uri().clone();
     let method = req.method().clone();
@@ -208,8 +204,7 @@ async fn handle_rpc_request(
         if let Some(method) = json.get("method") {
             if method == "submitblock" {
                 println!("Detected submitblock method.");
-                let current_timestamp = std::time::SystemTime
-                    ::now()
+                let current_timestamp = std::time::SystemTime::now()
                     .duration_since(std::time::UNIX_EPOCH)
                     .expect("Time went backwards")
                     .as_millis() as f64;
@@ -224,7 +219,10 @@ async fn handle_rpc_request(
                                 let end = match line[start..].find("\\\"") {
                                     Some(index) => start + index,
                                     None => {
-                                        println!("Failed to find end quote for nonce in line: {}", line);
+                                        println!(
+                                            "Failed to find end quote for nonce in line: {}",
+                                            line
+                                        );
                                         continue; // Skip to the next line if end quote for nonce is not found
                                     }
                                 };
@@ -239,22 +237,16 @@ async fn handle_rpc_request(
                                     }
                                 };
                                 // Perform bytes swap with the nonce bytes
-                                let swapped_bytes: Vec<u8> = nonce_bytes
-                                    .iter()
-                                    .rev()
-                                    .cloned()
-                                    .collect();
-                                let swapped_nonce = hex
-                                    ::encode_upper(&swapped_bytes)
-                                    .to_lowercase();
+                                let swapped_bytes: Vec<u8> =
+                                    nonce_bytes.iter().rev().cloned().collect();
+                                let swapped_nonce =
+                                    hex::encode_upper(&swapped_bytes).to_lowercase();
 
                                 // Check if the body contains the swapped nonce
                                 if body_str.contains(&swapped_nonce) {
                                     let parts: Vec<&str> = line.split_whitespace().collect();
                                     if let Some(timestamp_str) = parts.get(1) {
-                                        if
-                                            let Ok(previous_timestamp) =
-                                                timestamp_str.parse::<f64>()
+                                        if let Ok(previous_timestamp) = timestamp_str.parse::<f64>()
                                         {
                                             println!(
                                                 "Previous timestamp: {:?}",
@@ -295,12 +287,19 @@ async fn handle_rpc_request(
     // Add authentication header if not already present
     if !new_req.headers().contains_key("authorization") {
         let auth_value = "Basic dXNlcm5hbWU6cGFzc3dvcmQ=";
-        new_req.headers_mut().insert("authorization", auth_value.parse().unwrap());
+        new_req
+            .headers_mut()
+            .insert("authorization", auth_value.parse().unwrap());
     }
 
     // Log the forwarded request
     let forwarded_headers = new_req.headers().clone();
-    println!("Forwarded request: {} {} {:?}", new_req.method(), new_req.uri(), forwarded_headers);
+    println!(
+        "Forwarded request: {} {} {:?}",
+        new_req.method(),
+        new_req.uri(),
+        forwarded_headers
+    );
     println!("Forwarded request body: {}", body_str);
 
     let res = match client.request(new_req).await {
@@ -335,12 +334,13 @@ async fn handle_rpc_request(
                             }
                         }
                         prev_hash_mutex.lock().unwrap().push_back(prev_hash.clone());
-                        let current_timestamp = std::time::SystemTime
-                            ::now()
+                        let current_timestamp = std::time::SystemTime::now()
                             .duration_since(std::time::UNIX_EPOCH)
                             .expect("Time went backwards")
                             .as_millis() as f64;
-                        sv1_new_job_vec.with_label_values(&[&prev_hash, &flag]).set(current_timestamp);
+                        sv1_new_job_vec
+                            .with_label_values(&[&prev_hash, &flag])
+                            .set(current_timestamp);
                         tokio::spawn(async move {
                             sleep(Duration::from_secs(1)).await;
                             // Remove the metric from Prometheus
@@ -378,9 +378,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let proxy_type = env::var("PROXY_TYPE").expect("PROXY_TYPE environment variable not set");
     let client = env::var("CLIENT").expect("CLIENT environment variable not set");
     let server = env::var("SERVER").expect("SERVER environment variable not set");
-    let prometheus_exporter_address = env
-        ::var("PROM_ADDRESS")
-        .expect("PROM_ADDRESS environment variable not set");
+    let prometheus_exporter_address =
+        env::var("PROM_ADDRESS").expect("PROM_ADDRESS environment variable not set");
 
     tokio::spawn(async move {
         let metrics_route = warp::path("metrics").map(move || {
@@ -388,8 +387,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             let metric_families = prometheus::gather();
             let mut buffer = Vec::new();
             encoder.encode(&metric_families, &mut buffer).unwrap();
-            warp::http::Response
-                ::builder()
+            warp::http::Response::builder()
                 .header("Content-Type", encoder.format_type())
                 .body(buffer)
         });
@@ -405,15 +403,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             "Total number of SV1 submitted shares"
         )?;
 
-        let valid_shares = register_counter!(
-            "sv1_valid_shares",
-            "Total number of SV1 valid shares"
-        )?;
+        let valid_shares =
+            register_counter!("sv1_valid_shares", "Total number of SV1 valid shares")?;
 
-        let stale_shares = register_counter!(
-            "sv1_stale_shares",
-            "Total number of SV1 stale shares"
-        )?;
+        let stale_shares =
+            register_counter!("sv1_stale_shares", "Total number of SV1 stale shares")?;
         let share_submission_timestamp = register_gauge_vec!(
             "share_submission_timestamp",
             "Timestamp of the submitted share",
@@ -423,11 +417,13 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         let sv1_new_job_latency = register_gauge!(
             "sv1_new_job_latency",
             "Time taken for mining device to get a new job notification sv1"
-        ).unwrap();
+        )
+        .unwrap();
         let sv1_new_job_prev_hash_latency = register_gauge!(
             "sv1_new_job_prev_hash_latency",
             "Time taken for mining device to get a new prev hash notification sv1"
-        ).unwrap();
+        )
+        .unwrap();
 
         let client_address: SocketAddr = client.parse().expect("Invalid address");
         let server_address: SocketAddr = server.parse().expect("Invalid address");
@@ -446,17 +442,17 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             let new_job_prev_hash_gauge = sv1_new_job_prev_hash_latency.clone();
 
             tokio::spawn(async move {
-                if
-                    let Err(e) = transfer(
-                        inbound,
-                        outbound,
-                        submitted_shares_clone,
-                        valid_shares_clone,
-                        stale_shares_clone,
-                        share_submission_timestamp_clone,
-                        new_job_gauge,
-                        new_job_prev_hash_gauge
-                    ).await
+                if let Err(e) = transfer(
+                    inbound,
+                    outbound,
+                    submitted_shares_clone,
+                    valid_shares_clone,
+                    stale_shares_clone,
+                    share_submission_timestamp_clone,
+                    new_job_gauge,
+                    new_job_prev_hash_gauge,
+                )
+                .await
                 {
                     println!("Failed to transfer; error = {}", e);
                 }
@@ -473,10 +469,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             "block_propagation_time_through_sv1_pool",
             "Time to submit a block through SV1 Pool in milliseconds"
         )?;
-        let mined_blocks = register_counter!(
-            "sv1_mined_blocks",
-            "Total number of SV1 blocks mined"
-        )?;
+        let mined_blocks =
+            register_counter!("sv1_mined_blocks", "Total number of SV1 blocks mined")?;
         let sv1_block_template_value = register_gauge!(
             "sv1_block_template_value",
             "Total reward of sats contained in the current SV1 block template"
@@ -485,29 +479,29 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             "sv1_new_job_vec",
             "To store prevhash with time",
             &["prevhash", "flag"]
-        ).unwrap();
+        )
+        .unwrap();
 
         let make_svc = make_service_fn(move |_conn| {
             let forward_uri = forward_uri.clone();
-            let block_propagation_time_through_sv1_pool = block_propagation_time_through_sv1_pool.clone();
+            let block_propagation_time_through_sv1_pool =
+                block_propagation_time_through_sv1_pool.clone();
             let blocks_mined_metric = mined_blocks.clone();
             let sv1_block_template_value = sv1_block_template_value.clone();
             let sv1_new_job_vec = sv1_new_job_vec.clone();
             let prev_hash_clone = prev_hash.clone();
             async move {
-                Ok::<_, Infallible>(
-                    service_fn(move |req| {
-                        handle_rpc_request(
-                            req,
-                            forward_uri.clone(),
-                            block_propagation_time_through_sv1_pool.clone(),
-                            blocks_mined_metric.clone(),
-                            sv1_block_template_value.clone(),
-                            sv1_new_job_vec.clone(),
-                            prev_hash_clone.clone()
-                        )
-                    })
-                )
+                Ok::<_, Infallible>(service_fn(move |req| {
+                    handle_rpc_request(
+                        req,
+                        forward_uri.clone(),
+                        block_propagation_time_through_sv1_pool.clone(),
+                        blocks_mined_metric.clone(),
+                        sv1_block_template_value.clone(),
+                        sv1_new_job_vec.clone(),
+                        prev_hash_clone.clone(),
+                    )
+                }))
             }
         });
 
@@ -532,13 +526,15 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             ).unwrap()
         );
         let new_job_time_sv2_jdc = Arc::new(
-            register_gauge!("new_job_jdc_new_template", "new job jdc new template").unwrap()
+            register_gauge!("new_job_jdc_new_template", "new job jdc new template").unwrap(),
         );
         let new_job_time_sv2_pool = Arc::new(
-            register_gauge!("new_job_pool_new_template", "new job pool new template").unwrap()
+            register_gauge!("new_job_pool_new_template", "new job pool new template").unwrap(),
         );
 
-        let listener = tokio::net::TcpListener::bind("0.0.0.0:34255").await.unwrap();
+        let listener = tokio::net::TcpListener::bind("0.0.0.0:34255")
+            .await
+            .unwrap();
         println!("SV2 proxy translation proxy started at 34255");
         loop {
             let (inbound, _) = listener.accept().await.unwrap();
@@ -548,15 +544,15 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             let new_job_time_sv2_jdc = new_job_time_sv2_jdc.clone();
             let new_job_time_sv2_pool = new_job_time_sv2_pool.clone();
             tokio::spawn(async move {
-                if
-                    let Err(e) = transfer_new_job(
-                        inbound,
-                        outbound,
-                        new_job_jdc,
-                        new_job_pool,
-                        new_job_time_sv2_jdc,
-                        new_job_time_sv2_pool
-                    ).await
+                if let Err(e) = transfer_new_job(
+                    inbound,
+                    outbound,
+                    new_job_jdc,
+                    new_job_pool,
+                    new_job_time_sv2_jdc,
+                    new_job_time_sv2_pool,
+                )
+                .await
                 {
                     println!("Failed to transfer; error = {}", e);
                 }
@@ -573,7 +569,7 @@ async fn transfer_new_job(
     new_job_prev_hash_throught_sv2_jdc: Arc<Gauge>,
     new_job_prev_hash_through_sv2_pool: Arc<Gauge>,
     new_job_time_sv2_jdc: Arc<Gauge>,
-    new_job_time_sv2_pool: Arc<Gauge>
+    new_job_time_sv2_pool: Arc<Gauge>,
 ) -> std::io::Result<()> {
     let (mut ri, mut wi) = inbound.split();
 
@@ -620,8 +616,7 @@ async fn transfer_new_job(
             while let Some(pos) = server_buf.iter().position(|&b| b == b'\n') {
                 let line = server_buf.drain(..=pos).collect::<Vec<_>>();
                 if let Ok(json) = serde_json::from_slice::<Value>(&line) {
-                    let current_timestamp = std::time::SystemTime
-                        ::now()
+                    let current_timestamp = std::time::SystemTime::now()
                         .duration_since(std::time::UNIX_EPOCH)
                         .expect("Time went backwards")
                         .as_millis() as f64;
@@ -643,13 +638,18 @@ async fn transfer_new_job(
                                                         continue;
                                                     }
                                                 };
-                                                if let Some((_, timestamp)) = line.rsplit_once(" ") {
-                                                    let new_job_timestamp = timestamp
-                                                        .trim()
-                                                        .parse::<f64>()
-                                                        .unwrap();
-                                                    println!("Current timestamp: {:?}", current_timestamp);
-                                                    println!("New job timestamp: {:?}", new_job_timestamp);
+                                                if let Some((_, timestamp)) = line.rsplit_once(" ")
+                                                {
+                                                    let new_job_timestamp =
+                                                        timestamp.trim().parse::<f64>().unwrap();
+                                                    println!(
+                                                        "Current timestamp: {:?}",
+                                                        current_timestamp
+                                                    );
+                                                    println!(
+                                                        "New job timestamp: {:?}",
+                                                        new_job_timestamp
+                                                    );
                                                     let delta =
                                                         current_timestamp - new_job_timestamp;
                                                     new_job_prev_hash_throught_sv2_jdc.set(delta);
@@ -659,13 +659,15 @@ async fn transfer_new_job(
                                                 }
                                             }
                                             if let Some(_) = line.find("id=") {
-                                                if let Some((_, timestamp)) = line.rsplit_once(" ") {
-                                                    println!("Current timestamp: {:?}", current_timestamp);
+                                                if let Some((_, timestamp)) = line.rsplit_once(" ")
+                                                {
+                                                    println!(
+                                                        "Current timestamp: {:?}",
+                                                        current_timestamp
+                                                    );
                                                     println!("Read Timestamp: {:?}", timestamp);
-                                                    let new_job_timestamp = timestamp
-                                                        .trim()
-                                                        .parse::<f64>()
-                                                        .unwrap();
+                                                    let new_job_timestamp =
+                                                        timestamp.trim().parse::<f64>().unwrap();
                                                     let delta =
                                                         current_timestamp - new_job_timestamp;
                                                     new_job_time_sv2_jdc.set(delta);
