@@ -4,6 +4,8 @@
 DEFAULT_CONFIG="A"
 DEFAULT_NETWORK="testnet4"
 DEFAULT_HASHRATE="10_000_000_000_000.0"
+DEFAULT_SCRIPT_TYPE="P2WPKH"
+DEFAULT_POOL_SIGNATURE="Stratum v2 SRI Pool"
 
 # Default interval based on configuration
 DEFAULT_INTERVAL_A="30"
@@ -22,7 +24,7 @@ echo "Please have a look at https://stratumprotocol.org to better understand the
 echo ""
 
 # Prompt user to select configuration (A or C) with default value
-read -p "Do you want to use configuration A or C? (Enter 'A' or 'C', default is 'A'): " CONFIG
+read -p "Which Stratum V2 configuration do you want to benchmark? (Enter 'A' or 'C', default is 'A'): " CONFIG
 CONFIG=${CONFIG:-$DEFAULT_CONFIG}
 CONFIG=$(echo "$CONFIG" | tr '[:lower:]' '[:upper:]')
 
@@ -54,6 +56,50 @@ if ! [[ "$hashrate" =~ ^[0-9_]+\.0$ ]]; then
     exit 1
 fi
 
+# Prompt user to check if the custom public key is already configured
+echo ""
+echo -e "🚨 To customize the coinbase transaction output, a custom public key (or redeem script) is required."
+echo ""
+read -p "Have you already configured your custom public key for the coinbase transaction? (yes/no, default is 'no'): " KEY_CONFIGURED
+KEY_CONFIGURED=${KEY_CONFIGURED:-"no"}
+
+# Validate the KEY_CONFIGURED input
+if [[ "$KEY_CONFIGURED" != "yes" && "$KEY_CONFIGURED" != "no" ]]; then
+    echo "Invalid input. Please enter 'yes' or 'no'."
+    exit 1
+fi
+
+# If the user has not configured the key, prompt for public key and script type
+if [[ "$KEY_CONFIGURED" == "no" ]]; then
+    echo ""
+    echo -e "If you still don't have a public key, setup a new wallet and extract the extended public key it provides. At this point, you can derive the child public key using this script: https://github.com/stratum-mining/stratum/tree/dev/utils/bip32-key-derivation"
+    echo ""
+    read -p "Now enter the public key (or redeem script) to use for generating the address in the coinbase transaction: " PUBLIC_KEY
+    echo ""
+    read -p "Enter the script type (P2PK, P2PKH, P2SH, P2WSH, P2WPKH, P2TR, default is 'P2WPKH'): " SCRIPT_TYPE
+    SCRIPT_TYPE=${SCRIPT_TYPE:-$DEFAULT_SCRIPT_TYPE}
+
+    # Validate the script type
+    VALID_SCRIPT_TYPES=("P2PK" "P2PKH" "P2SH" "P2WSH" "P2WPKH" "P2TR")
+    if [[ ! " ${VALID_SCRIPT_TYPES[@]} " =~ " ${SCRIPT_TYPE} " ]]; then
+        echo "Invalid script type. Please enter one of the following: P2PK, P2PKH, P2SH, P2WSH, P2WPKH, P2TR."
+        exit 1
+    fi
+fi
+
+# Prompt user to customize the pool signature
+echo ""
+read -p "Default pool signature inscribed in coinbase tx is 'Stratum v2 SRI Pool'. Do you want to customize it? (yes/no, default is 'no'): " CUSTOMIZE_SIGNATURE
+CUSTOMIZE_SIGNATURE=${CUSTOMIZE_SIGNATURE:-"no"}
+
+if [[ "$CUSTOMIZE_SIGNATURE" == "yes" ]]; then
+    echo ""
+    read -p "Enter the custom pool signature to use (default is 'Stratum v2 SRI Pool'): " POOL_SIGNATURE
+    POOL_SIGNATURE=${POOL_SIGNATURE:-$DEFAULT_POOL_SIGNATURE}
+else
+    POOL_SIGNATURE=$DEFAULT_POOL_SIGNATURE
+fi
+
 # Inform the user about the block template update interval and get the interval
 echo ""
 if [[ "$CONFIG" == "A" ]]; then
@@ -79,16 +125,52 @@ CONFIG=$(echo "$CONFIG" | tr '[:upper:]' '[:lower:]')
 
 # Determine the correct TOML file based on configuration
 config_file="./custom-configs/sri-roles/config-${CONFIG}/tproxy-config-${CONFIG}-docker-example.toml"
+jdc_config_file="./custom-configs/sri-roles/config-${CONFIG}/jdc-config-${CONFIG}-docker-example.toml"
+pool_config_file="./custom-configs/sri-roles/config-${CONFIG}/pool-config-${CONFIG}-docker-example.toml"
 
-# Update the TOML file with the new hashrate value, keeping underscores
+# Update the TOML files with the new hashrate value, keeping underscores
 if [[ "$OSTYPE" == "darwin"* ]]; then
     # macOS uses -i '' for in-place editing
     sed -i '' "s/min_individual_miner_hashrate = [0-9_]*\.0/min_individual_miner_hashrate = $hashrate/" "$config_file"
     sed -i '' "s/channel_nominal_hashrate = [0-9_]*\.0/channel_nominal_hashrate = $hashrate/" "$config_file"
+    sed -i '' "s/min_individual_miner_hashrate = [0-9_]*\.0/min_individual_miner_hashrate = $hashrate/" "$pool_config_file"
+    sed -i '' "s/channel_nominal_hashrate = [0-9_]*\.0/channel_nominal_hashrate = $hashrate/" "$pool_config_file"
+    
+    if [[ "$KEY_CONFIGURED" == "no" ]]; then
+        # Update the jdc and pool config files with the new public key and script type
+        sed -i '' "s/\(output_script_type = \"$SCRIPT_TYPE\", output_script_value = \)\"[^\"]*\"/\1\"$PUBLIC_KEY\"/" "$jdc_config_file"
+        sed -i '' "s/\(output_script_type = \"$SCRIPT_TYPE\", output_script_value = \)\"[^\"]*\"/\1\"$PUBLIC_KEY\"/" "$pool_config_file"
+    fi
+    
+    # Update pool signature
+    sed -i '' "s/pool_signature = \"[^\"]*\"/pool_signature = \"$POOL_SIGNATURE\"/" "$jdc_config_file"
+    sed -i '' "s/pool_signature = \"[^\"]*\"/pool_signature = \"$POOL_SIGNATURE\"/" "$pool_config_file"
+    
+    if [[ "$CONFIG" == "A" ]]; then
+        # Configuration A specific file
+        sed -i '' "s/pool_signature = \"[^\"]*\"/pool_signature = \"$POOL_SIGNATURE\"/" "$pool_config_file"
+    fi
 else
     # Linux uses -i for in-place editing
     sed -i "s/min_individual_miner_hashrate = [0-9_]*\.0/min_individual_miner_hashrate = $hashrate/" "$config_file"
     sed -i "s/channel_nominal_hashrate = [0-9_]*\.0/channel_nominal_hashrate = $hashrate/" "$config_file"
+    sed -i "s/min_individual_miner_hashrate = [0-9_]*\.0/min_individual_miner_hashrate = $hashrate/" "$pool_config_file"
+    sed -i "s/channel_nominal_hashrate = [0-9_]*\.0/channel_nominal_hashrate = $hashrate/" "$pool_config_file"
+    
+    if [[ "$KEY_CONFIGURED" == "no" ]]; then
+        # Update the jdc and pool config files with the new public key and script type
+        sed -i "s/\(output_script_type = \"$SCRIPT_TYPE\", output_script_value = \)\"[^\"]*\"/\1\"$PUBLIC_KEY\"/" "$jdc_config_file"
+        sed -i "s/\(output_script_type = \"$SCRIPT_TYPE\", output_script_value = \)\"[^\"]*\"/\1\"$PUBLIC_KEY\"/" "$pool_config_file"
+    fi
+    
+    # Update pool signature
+    sed -i "s/pool_signature = \"[^\"]*\"/pool_signature = \"$POOL_SIGNATURE\"/" "$jdc_config_file"
+    sed -i "s/pool_signature = \"[^\"]*\"/pool_signature = \"$POOL_SIGNATURE\"/" "$pool_config_file"
+    
+    if [[ "$CONFIG" == "A" ]]; then
+        # Configuration A specific file
+        sed -i "s/pool_signature = \"[^\"]*\"/pool_signature = \"$POOL_SIGNATURE\"/" "$pool_config_file"
+    fi
 fi
 
 # Export environment variables
@@ -100,10 +182,14 @@ docker compose -f "docker-compose-config-${CONFIG}.yaml" up -d
 
 # Display final messages
 echo ""
-echo "⛏️ ${underline}Now point your miner(s) to the SV1 setup:${reset} stratum+tcp://<host-ip-address>:3333"
-echo "⛏️ ${underline}And point your miner(s) to the SV2 setup:${reset} stratum+tcp://<host-ip-address>:34255"
+echo "${underline}Now point your miner(s) to the SV1 setup:${reset} stratum+tcp://<host-ip-address>:3333 ⛏️"
+echo "${underline}And point your miner(s) to the SV2 setup:${reset} stratum+tcp://<host-ip-address>:34255 ⛏️"
 echo ""
-echo "You can access Grafana dashboard at the following link: http://localhost:3000/d/64nrElFmk/sri-benchmarking-tool 📊"
+echo "🚨 For SV1, you should use the address format [address].[nickname] as the username in your miner setup."
+echo "💡 For example, to configure a CPU miner, you can use: ./minerd -a sha256d -o stratum+tcp://127.0.0.1:3333 -q -D -P -u tb1qa0sm0hxzj0x25rh8gw5xlzwlsfvvyz8u96w3p8.sv2-gitgab19"
 echo ""
-echo "Remember to click on the \"Report\" button placed in the right corner to download a detailed PDF containing your benchmarks data 📄"
+echo "📊 You can access the Grafana dashboard at the following link: http://localhost:3000/d/64nrElFmk/sri-benchmarking-tool"
+echo ""
+echo "📄 Remember to click on the \"Report\" button placed in the top right corner to download a detailed PDF containing your benchmarks data"
+echo "↪️ (it will take some minutes to generate a complete PDF, so please be patient :) )"
 echo ""
