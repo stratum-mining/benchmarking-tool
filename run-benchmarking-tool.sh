@@ -94,7 +94,7 @@ export NETWORK
 export SV2_INTERVAL
 
 # Run docker-compose with the appropriate configuration file
-docker-compose -f "docker-compose-config-${CONFIG}.yaml" up -d
+docker compose -f "docker-compose-config-${CONFIG}.yaml" up -d
 
 # Display final messages
 echo ""
