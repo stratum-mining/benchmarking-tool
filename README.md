@@ -39,55 +39,116 @@ To promote the adoption of Stratum V2, a comprehensive benchmarking tool is need
 ## 🐳 Prerequisites
 
 1. Install Docker on your system: https://docs.docker.com/engine/install/
+  
 
-## ⛏️ Getting started
+## ⛏️ Getting Started
 
-1. Clone the repository
+### 🚀 Quick Start with the Script
+
+For the easiest setup, use the provided script to automatically configure and start the benchmarking tool:
+
+1. **Download or clone the repository** if you haven't already:
     ```bash
     git clone https://github.com/stratum-mining/benchmarking-tool.git
     cd benchmarking-tool
     ```
 
-2. Choose what Stratum V2 configuration to benchmark
-   - **Configuration A**: it runs **every** role, selecting txs and mining on custom jobs
-   - **Configuration C**: it doesn't run [Job Declaration Protocol](https://github.com/stratum-mining/sv2-spec/blob/main/06-Job-Declaration-Protocol.md), so it will mine on Pool's block template
+2. **Run the benchmarking tool setup script**:
+    ```bash
+    ./run-benchmarking-tool
+    ```
+
+    The script will guide you through the process, allowing you to select configurations, networks, and other parameters interactively.
+
+### 🛠 Manual Setup
+
+If you prefer to set up the benchmarking tool manually, follow these detailed steps:
+
+1. **Clone the repository**:
+    ```bash
+    git clone https://github.com/stratum-mining/benchmarking-tool.git
+    cd benchmarking-tool
+    ```
+
+2. **Configure the benchmarking parameters**:
+    To configure the benchmarking tool, you'll need to update several parameters based on your specific requirements:
+ - **Network**: choose between `mainnet`, `testnet3`, or `testnet4`
+   - Edit the `NETWORK` parameter in [.env](.env) and enter the network you want to use for the benchmarks
+ - **SV2 block templates refresh interval**: specify frequence in which you will get refreshed block templates for SV2
+   - Edit the `SV2_INTERVAL` parameter in [.env](.env) and enter the number of seconds you desire
   
-    Please have a look at https://stratumprotocol.org to better understand the Stratum V2 configurations and decide which one to benchmark.
+💡 The `SV1 pool` used in the benchmarking tool will generate a new block template every 60 seconds. Note that this value will affect the bandwidth used and tracked (especially in `configuration C`)
+ - **Hashrate**: specify the hashrate you're going to point to the tool for SV2
+   - Edit the `min_individual_miner_hashrate` and `channel_nominal_hashrate` parameters placed in:
+     - [custom-configs/config-a/tproxy-config-a-docker-example.toml](custom-configs/config-a/tproxy-config-a-docker-example.toml)
+     - [custom-configs/config-c/tproxy-config-c-docker-example.toml](custom-configs/config-a/tproxy-config-c-docker-example.toml)
+  
+    👉 E.g. for a 100 Th/s machine, you will need to set `100_000_000_000_000.0`
+  
+ - **Coinbase tx output**: enter your custom `public key` (or `redeem script`) with the `script_type` to be used as output in the coinbase transaction
+   - Edit the `coinbase_output` parameter placed in:
+     - [custom-configs/config-a/jds-config-a-docker-example.toml](custom-configs/config-a/jds-config-a-docker-example.toml)
+     - [custom-configs/config-a/jdc-config-a-docker-example.toml](custom-configs/config-a/jdc-config-a-docker-example.toml)
+     - [custom-configs/config-c/pool-config-c-docker-example.toml](custom-configs/config-c/pool-config-c-docker-example.toml)
+  
+    💡 If you still don't have a public key, setup a new wallet and extract the extended public key it provides. At this point, you can derive the child public key using this script: https://github.com/stratum-mining/stratum/tree/dev/utils/bip32-key-derivation 
+  
+ - **Pool signature**: enter a custom string to be inserted into the coinbase transaction (if you don't like the default one `"Stratum V2 SRI Pool"`)
+   - Edit the `pool_signature` parameter placed in:
+     - [custom-configs/config-a/pool-config-a-docker-example.toml](custom-configs/config-a/pool-config-a-docker-example.toml)
+     - [custom-configs/config-a/jdc-config-a-docker-example.toml](custom-configs/config-a/jdc-config-a-docker-example.toml)
+     - [custom-configs/config-c/pool-config-c-docker-example.toml](custom-configs/config-c/pool-config-c-docker-example.toml)
 
-3. Run the tool using Docker Compose
-- To run Configuration A:
-     ```bash
-     docker compose -f docker-compose-config-a.yaml up -d
-     ```
-- To run Configuration C:
-     ```bash
-     docker compose -f docker-compose-config-c.yaml up -d
-     ```
+3. **Start the benchmarking tool**:
+   After updating the configuration files, start the benchmarking tool using Docker Compose with the appropriate configuration file.
 
-4. Point miners to the following endpoints
-   - Stratum V1:
+   To run `configuration A`:
    ```bash
-      stratum+tcp://<host-ip-address>:3333
+   docker compose -f docker-compose-config-a.yaml up -d
    ```
-   - Stratum V2:
+   To run `configuration C`:
    ```bash
-      stratum+tcp://<host-ip-address>:34255
+   docker compose -f docker-compose-config-c.yaml up -d
    ```
-   If you don't have a physical miner, you can do tests with CPUMiner.
+
+4. **Point miners to the following endpoints**
+  - For Stratum V1:
+    ```bash
+    stratum+tcp://<host-ip-address>:3333
+    ```
+    🚨 For SV1, you should use the address format `[bitcoin_address].[nickname]` as the username in your miner setup.
+    E.g. to correctly run a CPU miner, you need to run it with: `./minerd -a sha256d -o stratum+tcp://127.0.0.1:3333 -q -D -P -u tb1qa0sm0hxzj0x25rh8gw5xlzwlsfvvyz8u96w3p8.sv2-gitgab19`
+
+  - For Stratum V2:
+    ```bash
+    stratum+tcp://<host-ip-address>:34255
+    ```
+  
+   💡If you don't have a physical miner, you can do tests with CPUMiner.
   Setup the correct CPUMiner for your OS:
-    - You can download the binary directly from [here](https://sourceforge.net/projects/cpuminer/files/);
-    - Or compile it from [https://github.com/pooler/cpuminer](https://github.com/pooler/cpuminer)
 
-    On the CPUMiner directory:
-    
-    `./minerd -a sha256d -o stratum+tcp://<host-ip-address>:34255 -q -D -P`
+  - You can download the binary directly from [here](https://sourceforge.net/projects/cpuminer/files/);
+  - Or compile it from [https://github.com/pooler/cpuminer](https://github.com/pooler/cpuminer)
 
-5. Open your browser and navigate to http://localhost:3000/
-6. Click on dashboard, selecting the one called "SRI benchmarking tool"
+  On the CPUMiner directory:
+
+  ```bash
+  ./minerd -a sha256d -o stratum+tcp://<host-ip-address>:34255 -q -D -P
+  ```
+
+5. **Access the Grafana dashboard** 📊
+   
+    Open your browser and navigate to http://localhost:3000/d/64nrElFmk/sri-benchmarking-tool 
    
 <img src="./docs/images/grafana-dashboard.png" alt="grafana-dashboard">
    
-7. Explore data, and click on **Report** button (placed in the upper right corner) to download a PDF containing plots and data for the desired timeframe selected.
+<br>
+
+6. **Explore and export data** 📄
+
+    Navigate between your charts, and click the `Report` button placed in the top right corner to download a PDF containing plots and data for the desired timeframe selected 
+
+    👉 it will take some minutes to generate a complete PDF, so please be patient :) 
 
 
 ## 🛣 Roadmap 
