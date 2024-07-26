@@ -459,7 +459,7 @@ services:
 
   reporter:
     image: izakmarais/grafana-reporter:${gr_version:-latest}
-    command: "-ip grafana:3000"
+    command: "-ip grafana:3000 -grid-layout=1"
     container_name: reporter
     depends_on:
       - grafana
