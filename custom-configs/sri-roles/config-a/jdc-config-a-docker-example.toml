@@ -61,4 +61,4 @@ pool_signature = "Stratum v2 SRI Pool"
 # pool_address = "10.5.0.3:34254"
 # jd_address = "10.5.0.4:34264"
 # Pool signature (string to be included in coinbase tx)
-# pool_signature = "Stratum v2 SRI Pool"
+# pool_signature = "Stratum V2 SRI Pool"
