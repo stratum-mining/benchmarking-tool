@@ -55,7 +55,7 @@ For the easiest setup, use the provided script to automatically configure and st
 
 2. **Run the benchmarking tool setup script**:
     ```bash
-    ./run-benchmarking-tool
+    ./run-benchmarking-tool.sh
     ```
 
     The script will guide you through the process, allowing you to select configurations, networks, and other parameters interactively.
