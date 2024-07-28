@@ -5,7 +5,7 @@ DEFAULT_CONFIG="A"
 DEFAULT_NETWORK="testnet4"
 DEFAULT_HASHRATE="10_000_000_000_000.0"
 DEFAULT_SCRIPT_TYPE="P2WPKH"
-DEFAULT_POOL_SIGNATURE="Stratum v2 SRI Pool"
+DEFAULT_POOL_SIGNATURE="Stratum V2 SRI Pool"
 
 # Default interval based on configuration
 DEFAULT_INTERVAL_A="30"
@@ -89,12 +89,12 @@ fi
 
 # Prompt user to customize the pool signature
 echo ""
-read -p "Default pool signature inscribed in coinbase tx is 'Stratum v2 SRI Pool'. Do you want to customize it? (yes/no, default is 'no'): " CUSTOMIZE_SIGNATURE
+read -p "Default pool signature inscribed in coinbase tx is 'Stratum V2 SRI Pool'. Do you want to customize it? (yes/no, default is 'no'): " CUSTOMIZE_SIGNATURE
 CUSTOMIZE_SIGNATURE=${CUSTOMIZE_SIGNATURE:-"no"}
 
 if [[ "$CUSTOMIZE_SIGNATURE" == "yes" ]]; then
     echo ""
-    read -p "Enter the custom pool signature to use (default is 'Stratum v2 SRI Pool'): " POOL_SIGNATURE
+    read -p "Enter the custom pool signature to use (default is 'Stratum V2 SRI Pool'): " POOL_SIGNATURE
     POOL_SIGNATURE=${POOL_SIGNATURE:-$DEFAULT_POOL_SIGNATURE}
 else
     POOL_SIGNATURE=$DEFAULT_POOL_SIGNATURE
