@@ -54,7 +54,7 @@ authority_pubkey = "9auqWEzQDVyd2oe1JVGFLMLHZtCo2FFqZwtKA5gd9xbuEu7PH72"
 pool_address = "10.5.0.4:34254"
 jd_address = "10.5.0.5:34264"
 # Pool signature (string to be included in coinbase tx)
-pool_signature = "Stratum v2 SRI Pool"
+pool_signature = "Stratum V2 SRI Pool"
  
 # [[upstreams]]
 # authority_pubkey = "2di19GHYQnAZJmEpoUeP7C3Eg9TCcksHr23rZCC83dvUiZgiDL"

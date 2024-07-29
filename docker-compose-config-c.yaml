@@ -50,7 +50,7 @@ services:
     image: sv2-template-provider
     command:
       [
-        "/bitcoin/src/bitcoind",
+        "/bitcoin/bin/bitcoind",
         "-${NETWORK}",
         "-sv2",
         "-sv2port=8442",
@@ -78,7 +78,7 @@ services:
     build:
       dockerfile: ./template-provider.dockerfile
     image: sv2-template-provider
-    command: ["/bitcoin/src/bitcoind", "-${NETWORK}"]
+    command: ["/bitcoin/bin/bitcoind", "-${NETWORK}"]
     ports:
       - "38333:18333"
       - "28332:18332"
