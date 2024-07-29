@@ -75,6 +75,8 @@ if ! [[ "$SV2_INTERVAL" =~ ^[0-9]+$ ]]; then
     exit 1
 fi
 
+CONFIG=$(echo "$CONFIG" | tr '[:upper:]' '[:lower:]')
+
 # Determine the correct TOML file based on configuration
 config_file="./custom-configs/sri-roles/config-${CONFIG}/tproxy-config-${CONFIG}-docker-example.toml"
 
