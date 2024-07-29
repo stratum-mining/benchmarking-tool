@@ -51,7 +51,7 @@ services:
     image: sv2-template-provider
     command:
       [
-        "/bitcoin/src/bitcoind",
+        "/bitcoin/bin/bitcoind",
         "-testnet4",
         "-sv2",
         "-sv2port=8442",
@@ -81,7 +81,7 @@ services:
     image: sv2-template-provider
     command:
       [
-        "/bitcoin/src/bitcoind",
+        "/bitcoin/bin/bitcoind",
         "-${NETWORK}",
         "-sv2",
         "-sv2port=8443",
@@ -107,7 +107,7 @@ services:
     build:
       dockerfile: ./template-provider.dockerfile
     image: sv2-template-provider
-    command: ["/bitcoin/src/bitcoind", "-${NETWORK}"]
+    command: ["/bitcoin/bin/bitcoind", "-${NETWORK}"]
     ports:
       - "38333:18333"
       - "28332:18332"
@@ -206,7 +206,6 @@ services:
     container_name: sv2-translator
     depends_on:
       - sv2-jdc-translator-proxy
-      - sv2-translator-miner-proxy
     volumes:
       - ./custom-configs/sri-roles/config-a:/usr/src/stratum/roles/translator/config-examples/
     restart: unless-stopped
@@ -271,6 +270,7 @@ services:
     container_name: sv2-translator-miner-proxy
     depends_on:
       - sv1-custom-proxy-builder
+      - translator
     restart: unless-stopped
     networks:
       sv2-net:
