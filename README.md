@@ -43,7 +43,7 @@ To promote the adoption of Stratum V2, a comprehensive benchmarking tool is need
 
 ## ⛏️ Getting Started
 
-### 🚀 Quick Start with the Script
+### Automatic Setup 🚀 
 
 For the easiest setup, use the provided script to automatically configure and start the benchmarking tool:
 
@@ -60,7 +60,7 @@ For the easiest setup, use the provided script to automatically configure and st
 
     The script will guide you through the process, allowing you to select configurations, networks, and other parameters interactively.
 
-### 🛠 Manual Setup
+### Manual Setup 🛠
 
 If you prefer to set up the benchmarking tool manually, follow these detailed steps:
 
@@ -154,7 +154,9 @@ If you prefer to set up the benchmarking tool manually, follow these detailed st
 
 ## 🛣 Roadmap 
 
-The roadmap of this project can be found here: https://docs.google.com/document/d/1CqcvsxGugFjWy4e4Yf6PjxCs2O4puwlFBO6M0TRL4qE/edit#heading=h.h9x57vygfk4q
+The roadmap of this project can be found [here](https://docs.google.com/document/d/1CqcvsxGugFjWy4e4Yf6PjxCs2O4puwlFBO6M0TRL4qE/edit#heading=h.h9x57vygfk4q).
+
+A GitHub project board is also used for defining specific milestones and prioritizing tasks: https://github.com/orgs/stratum-mining/projects/10 
 
 ## 📖 License
 
