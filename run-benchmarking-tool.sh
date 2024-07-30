@@ -56,21 +56,21 @@ if ! [[ "$hashrate" =~ ^[0-9_]+\.0$ ]]; then
     exit 1
 fi
 
-# Prompt user to check if the custom public key is already configured
+# Prompt user to check if they want to configure the custom public key
 echo ""
 echo -e "🚨 To customize the coinbase transaction output, a custom public key (or redeem script) is required."
 echo ""
-read -p "Have you already configured your custom public key for the coinbase transaction? (yes/no, default is 'no'): " KEY_CONFIGURED
-KEY_CONFIGURED=${KEY_CONFIGURED:-"no"}
+read -p "Do you want to configure your custom public key for the coinbase transaction? (yes/no, default is 'no'): " CONFIGURE_KEY
+CONFIGURE_KEY=${CONFIGURE_KEY:-"no"}
 
-# Validate the KEY_CONFIGURED input
-if [[ "$KEY_CONFIGURED" != "yes" && "$KEY_CONFIGURED" != "no" ]]; then
+# Validate the CONFIGURE_KEY input
+if [[ "$CONFIGURE_KEY" != "yes" && "$CONFIGURE_KEY" != "no" ]]; then
     echo "Invalid input. Please enter 'yes' or 'no'."
     exit 1
 fi
 
-# If the user has not configured the key, prompt for public key and script type
-if [[ "$KEY_CONFIGURED" == "no" ]]; then
+# If the user wants to configure the key, prompt for public key and script type
+if [[ "$CONFIGURE_KEY" == "yes" ]]; then
     echo ""
     echo -e "If you still don't have a public key, setup a new wallet and extract the extended public key it provides. At this point, you can derive the child public key using this script: https://github.com/stratum-mining/stratum/tree/dev/utils/bip32-key-derivation"
     echo ""
@@ -136,7 +136,7 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
     sed -i '' "s/min_individual_miner_hashrate = [0-9_]*\.0/min_individual_miner_hashrate = $hashrate/" "$pool_config_file"
     sed -i '' "s/channel_nominal_hashrate = [0-9_]*\.0/channel_nominal_hashrate = $hashrate/" "$pool_config_file"
     
-    if [[ "$KEY_CONFIGURED" == "no" ]]; then
+    if [[ "$CONFIGURE_KEY" == "yes" ]]; then
         # Update the jdc and pool config files with the new public key and script type
         sed -i '' "s/\(output_script_type = \"$SCRIPT_TYPE\", output_script_value = \)\"[^\"]*\"/\1\"$PUBLIC_KEY\"/" "$jdc_config_file"
         sed -i '' "s/\(output_script_type = \"$SCRIPT_TYPE\", output_script_value = \)\"[^\"]*\"/\1\"$PUBLIC_KEY\"/" "$pool_config_file"
@@ -157,7 +157,7 @@ else
     sed -i "s/min_individual_miner_hashrate = [0-9_]*\.0/min_individual_miner_hashrate = $hashrate/" "$pool_config_file"
     sed -i "s/channel_nominal_hashrate = [0-9_]*\.0/channel_nominal_hashrate = $hashrate/" "$pool_config_file"
     
-    if [[ "$KEY_CONFIGURED" == "no" ]]; then
+    if [[ "$CONFIGURE_KEY" == "yes" ]]; then
         # Update the jdc and pool config files with the new public key and script type
         sed -i "s/\(output_script_type = \"$SCRIPT_TYPE\", output_script_value = \)\"[^\"]*\"/\1\"$PUBLIC_KEY\"/" "$jdc_config_file"
         sed -i "s/\(output_script_type = \"$SCRIPT_TYPE\", output_script_value = \)\"[^\"]*\"/\1\"$PUBLIC_KEY\"/" "$pool_config_file"
