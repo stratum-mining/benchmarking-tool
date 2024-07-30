@@ -52,7 +52,7 @@ services:
     command:
       [
         "/bitcoin/bin/bitcoind",
-        "-testnet4",
+        "-${NETWORK}",
         "-sv2",
         "-sv2port=8442",
         "-sv2interval=${SV2_INTERVAL}",
