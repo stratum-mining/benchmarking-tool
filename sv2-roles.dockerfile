@@ -1,6 +1,7 @@
 FROM rust:1.75 as builder
 WORKDIR usr/src/stratum/
 RUN git clone https://github.com/stratum-mining/stratum.git .
+RUN git checkout main
 WORKDIR /usr/src/stratum/roles/
 RUN cargo build --release
 
