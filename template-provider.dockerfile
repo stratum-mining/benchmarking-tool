@@ -1,10 +1,10 @@
-FROM debian:stable-slim as build
+FROM --platform=linux/amd64 debian:stable-slim as build
 
 # Install & update base system
 RUN apt-get update && apt-get upgrade -y
 
 # Install necessary tools
-RUN apt-get install -y wget tar
+RUN apt-get install -y wget tar curl jq
 
 # Set environment variables for Bitcoin Core version and installation directory
 ENV BITCOIN_VERSION=sv2-tp-0.1.3
