@@ -132,6 +132,12 @@ services:
     networks:
       sv2-net:
         ipv4_address: 10.5.0.16
+    healthcheck:
+      test: ["CMD-SHELL", "curl --silent --user username:password --data-binary '{\"jsonrpc\":\"1.0\",\"id\":\"healthcheck\",\"method\":\"getblockchaininfo\",\"params\":[]}' -H 'Content-Type: application/json' http://10.5.0.16:18332/ | jq -e '.result.initialblockdownload == false' || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+      start_period: 1m
 
   pool:
     image: sv2-roles-builder-image
@@ -361,8 +367,11 @@ services:
       - PROXY_TYPE=node-pool
     container_name: sv1-node-pool-proxy
     depends_on:
-      - sv1-custom-proxy-builder
-      - sv1-node-pool-side
+      sv1-custom-proxy-builder: 
+        condition: service_started
+      sv1-node-pool-side:
+        condition: service_healthy
+        restart: true
     restart: unless-stopped
     networks:
       sv2-net:
