@@ -1,4 +1,4 @@
-FROM debian:stable-slim as build
+FROM --platform=linux/amd64 debian:stable-slim as build
 
 # Install & update base system
 RUN apt-get update && apt-get upgrade -y
