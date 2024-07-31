@@ -74,6 +74,12 @@ services:
     networks:
       sv2-net:
         ipv4_address: 10.5.0.2
+    healthcheck:
+      test: ["CMD-SHELL", "curl --silent --user username:password --data-binary '{\"jsonrpc\":\"1.0\",\"id\":\"healthcheck\",\"method\":\"getblockchaininfo\",\"params\":[]}' -H 'Content-Type: application/json' http://10.5.0.2:18332/ | jq -e '.result.initialblockdownload == false' || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+      start_period: 1m
 
   template-provider-miner-side:
     build:
@@ -102,6 +108,12 @@ services:
     networks:
       sv2-net:
         ipv4_address: 10.5.0.3
+    healthcheck:
+      test: ["CMD-SHELL", "curl --silent --user username:password --data-binary '{\"jsonrpc\":\"1.0\",\"id\":\"healthcheck\",\"method\":\"getblockchaininfo\",\"params\":[]}' -H 'Content-Type: application/json' http://10.5.0.3:18332/ | jq -e '.result.initialblockdownload == false' || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+      start_period: 1m
 
   sv1-node-pool-side:
     build:
@@ -134,8 +146,11 @@ services:
       - "34254:34254"
     container_name: sv2-pool
     depends_on:
-      - sv2-roles-builder
-      - template-provider-pool-side
+      template-provider-pool-side: 
+        condition: service_healthy
+        restart: true
+      sv2-roles-builder:
+        condition: service_started
     volumes:
       - ./custom-configs/sri-roles/config-a:/usr/src/stratum/roles/pool/config-examples/
     restart: unless-stopped
@@ -158,8 +173,11 @@ services:
       - "34264:34264"
     container_name: sv2-jds
     depends_on:
-      - sv2-roles-builder
-      - template-provider-pool-side
+      template-provider-pool-side: 
+        condition: service_healthy
+        restart: true
+      sv2-roles-builder:
+        condition: service_started
     volumes:
       - ./custom-configs/sri-roles/config-a:/usr/src/stratum/roles/jd-server/config-examples/
     restart: unless-stopped
@@ -248,9 +266,13 @@ services:
       - NETWORK=${NETWORK}
     container_name: sv2-tp-jdc-proxy
     depends_on:
-      - sv2-custom-proxy-builder
-      - template-provider-miner-side
-      - prometheus
+      template-provider-miner-side: 
+        condition: service_healthy
+        restart: true
+      sv2-custom-proxy-builder:
+        condition: service_started
+      prometheus:
+        condition: service_started
     restart: unless-stopped
     networks:
       sv2-net:
