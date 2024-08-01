@@ -326,53 +326,45 @@ async fn fetch_block_reward(hash: &str) -> Result<u64, String> {
     let body = response.text().await.map_err(|e| e.to_string())?;
     let json: Value = serde_json::from_str(&body).map_err(|e| e.to_string())?;
 
-    match network.as_str() {
-        "mainnet" => {
-            let reward = json["extras"]["reward"]
-                .as_u64()
-                .ok_or("Failed to parse reward from mainnet response")?;
-            Ok(reward)
-        }
-        "testnet3" | "testnet4" => {
-            let height = json["height"]
-                .as_u64()
-                .ok_or("Failed to parse height from testnet response")?;
-            println!("Height: {:?}", height);
-            let reward_stats_url = match network.as_str() {
-                "testnet3" => "https://mempool.space/testnet/api/v1/mining/reward-stats/1",
-                "testnet4" => "https://mempool.space/testnet4/api/v1/mining/reward-stats/1",
-                _ => unreachable!(),
-            };
-            let reward_stats_response = client
-                .get(reward_stats_url)
-                .send()
-                .await
-                .map_err(|e| e.to_string())?;
-            let reward_stats_body = reward_stats_response
-                .text()
-                .await
-                .map_err(|e| e.to_string())?;
-            let reward_stats_json: Value =
-                serde_json::from_str(&reward_stats_body).map_err(|e| e.to_string())?;
+    let height = json["height"]
+        .as_u64()
+        .ok_or("Failed to parse height from response")?;
+    println!("Height: {:?}", height);
 
-            let start_block = reward_stats_json["startBlock"]
-                .as_u64()
-                .ok_or("Failed to parse startBlock from reward stats")?;
-            println!("start_block: {:?}", start_block);
-            let end_block = reward_stats_json["endBlock"]
-                .as_u64()
-                .ok_or("Failed to parse endBlock from reward stats")?;
+    let reward_stats_url = match network.as_str() {
+        "mainnet" => "https://mempool.space/api/v1/mining/reward-stats/1",
+        "testnet3" => "https://mempool.space/testnet/api/v1/mining/reward-stats/1",
+        "testnet4" => "https://mempool.space/testnet4/api/v1/mining/reward-stats/1",
+        _ => unreachable!(),
+    };
 
-            if start_block == end_block && end_block == height {
-                let total_reward = reward_stats_json["totalReward"]
-                    .as_str()
-                    .ok_or("Failed to parse totalReward from reward stats")?;
-                total_reward.parse::<u64>().map_err(|e| e.to_string())
-            } else {
-                Err("Block height mismatch".to_string())
-            }
-        }
-        _ => Err("Unknown network type".to_string()),
+    let reward_stats_response = client
+        .get(reward_stats_url)
+        .send()
+        .await
+        .map_err(|e| e.to_string())?;
+    let reward_stats_body = reward_stats_response
+        .text()
+        .await
+        .map_err(|e| e.to_string())?;
+    let reward_stats_json: Value =
+        serde_json::from_str(&reward_stats_body).map_err(|e| e.to_string())?;
+
+    let start_block = reward_stats_json["startBlock"]
+        .as_u64()
+        .ok_or("Failed to parse startBlock from reward stats")?;
+    println!("start_block: {:?}", start_block);
+    let end_block = reward_stats_json["endBlock"]
+        .as_u64()
+        .ok_or("Failed to parse endBlock from reward stats")?;
+
+    if start_block == end_block && end_block == height {
+        let total_reward = reward_stats_json["totalReward"]
+            .as_str()
+            .ok_or("Failed to parse totalReward from reward stats")?;
+        total_reward.parse::<u64>().map_err(|e| e.to_string())
+    } else {
+        Err("Block height mismatch".to_string())
     }
 }
 
