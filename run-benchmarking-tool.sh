@@ -174,10 +174,11 @@ else
 fi
 
 # Export environment variables
-export NETWORK
 export SV2_INTERVAL
+if [[ "$NETWORK" != "mainnet" ]]; then
+    export NETWORK
+fi
 
-# Run docker-compose with the appropriate configuration file
 docker compose -f "docker-compose-config-${CONFIG}.yaml" up -d
 
 # Display final messages
