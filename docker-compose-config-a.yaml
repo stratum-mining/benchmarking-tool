@@ -79,7 +79,7 @@ services:
       interval: 30s
       timeout: 10s
       retries: 10
-      start_period: 1m
+      start_period: 10s
 
   template-provider-miner-side:
     build:
@@ -113,7 +113,7 @@ services:
       interval: 30s
       timeout: 10s
       retries: 10
-      start_period: 1m
+      start_period: 10s
 
   sv1-node-pool-side:
     build:
@@ -137,7 +137,7 @@ services:
       interval: 30s
       timeout: 10s
       retries: 10
-      start_period: 1m
+      start_period: 10s
 
   pool:
     image: sv2-roles-builder-image
