@@ -74,11 +74,13 @@ If you prefer to set up the benchmarking tool manually, follow these detailed st
     To configure the benchmarking tool, you'll need to update several parameters based on your specific requirements:
    - *Network*: choose between `mainnet`, `testnet3`, or `testnet4`
      - Edit the `NETWORK` parameter in [.env](.env) and enter the network you want to use for the benchmarks
+  
+      🚨 If you are going to use `mainnet`, you need to leave an empty string there --> `NETWORK=`
     
    - *SV2 block templates refresh interval*: specify frequence in which you will get refreshed block templates for SV2
      - Edit the `SV2_INTERVAL` parameter in [.env](.env) and enter the number of seconds you desire
     
-      🚨 The `SV1 pool` used in the benchmarking tool will generate a new block template every 60 seconds. Note that this value will affect the bandwidth used and tracked (especially in `configuration C`)
+      🚨 The `SV1 Pool` used in the benchmarking tool will generate a new block template every 60 seconds. Note that this value will affect the bandwidth used and tracked (especially in `configuration C`)
     
    - *Hashrate*: specify the hashrate you're going to point to the tool for SV2
      - Edit the `min_individual_miner_hashrate` and `channel_nominal_hashrate` parameters placed in:
