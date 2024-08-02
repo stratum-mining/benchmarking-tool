@@ -84,24 +84,24 @@ If you prefer to set up the benchmarking tool manually, follow these detailed st
     
    - *Hashrate*: specify the hashrate you're going to point to the tool for SV2
      - Edit the `min_individual_miner_hashrate` and `channel_nominal_hashrate` parameters placed in:
-       - [custom-configs/config-a/tproxy-config-a-docker-example.toml](custom-configs/config-a/tproxy-config-a-docker-example.toml)
-       - [custom-configs/config-c/tproxy-config-c-docker-example.toml](custom-configs/config-a/tproxy-config-c-docker-example.toml)
+       - [custom-configs/config-a/sri-roles/tproxy-config-a-docker-example.toml](custom-configs/sri-roles/config-a/tproxy-config-a-docker-example.toml)
+       - [custom-configs/config-c/sri-roles/tproxy-config-c-docker-example.toml](custom-configs/sri-roles/config-c/tproxy-config-c-docker-example.toml)
     
       👉 E.g. for a 100 Th/s machine, you will need to set `100_000_000_000_000.0`
     
    - *Coinbase tx output*: enter your custom `public key` (or `redeem script`) with the `script_type` to be used as output in the coinbase transaction
      - Edit the `coinbase_output` parameter placed in:
-       - [custom-configs/config-a/jds-config-a-docker-example.toml](custom-configs/config-a/jds-config-a-docker-example.toml)
-       - [custom-configs/config-a/jdc-config-a-docker-example.toml](custom-configs/config-a/jdc-config-a-docker-example.toml)
-       - [custom-configs/config-c/pool-config-c-docker-example.toml](custom-configs/config-c/pool-config-c-docker-example.toml)
+       - [custom-configs/sri-roles/config-a/jds-config-a-docker-example.toml](custom-configs/sri-roles/config-a/jds-config-a-docker-example.toml)
+       - [custom-configs/sri-roles/config-a/jdc-config-a-docker-example.toml](custom-configs/sri-roles/config-a/jdc-config-a-docker-example.toml)
+       - [custom-configs/sri-roles/config-c/pool-config-c-docker-example.toml](custom-configs/sri-roles/config-c/pool-config-c-docker-example.toml)
     
       💡 If you still don't have a public key, setup a new wallet and extract the extended public key it provides. At this point, you can derive the child public key using this script: https://github.com/stratum-mining/stratum/tree/dev/utils/bip32-key-derivation 
     
    - *Pool signature*: enter a custom string to be inserted into the coinbase transaction (if you don't like the default one `"Stratum V2 SRI Pool"`)
      - Edit the `pool_signature` parameter placed in:
-       - [custom-configs/config-a/pool-config-a-docker-example.toml](custom-configs/config-a/pool-config-a-docker-example.toml)
-       - [custom-configs/config-a/jdc-config-a-docker-example.toml](custom-configs/config-a/jdc-config-a-docker-example.toml)
-       - [custom-configs/config-c/pool-config-c-docker-example.toml](custom-configs/config-c/pool-config-c-docker-example.toml)
+       - [custom-configs/sri-roles/config-a/pool-config-a-docker-example.toml](custom-configs/sri-roles/config-a/pool-config-a-docker-example.toml)
+       - [custom-configs/sri-roles/config-a/jdc-config-a-docker-example.toml](custom-configs/sri-roles/config-a/jdc-config-a-docker-example.toml)
+       - [custom-configs/sri-roles/config-c/pool-config-c-docker-example.toml](custom-configs/sri-roles/config-c/pool-config-c-docker-example.toml)
 
 3. **Start the benchmarking tool**:
    After updating the configuration files, start the benchmarking tool using Docker Compose with the appropriate configuration file.
