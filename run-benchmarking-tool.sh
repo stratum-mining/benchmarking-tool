@@ -11,6 +11,9 @@ DEFAULT_POOL_SIGNATURE="Stratum V2 SRI Pool"
 DEFAULT_INTERVAL_A="30"
 DEFAULT_INTERVAL_C="60"
 
+# Path to .env file
+ENV_FILE=".env"
+
 # Display a note about the configurations
 bold=$(tput bold)
 underline=$(tput smul)
@@ -121,64 +124,65 @@ if ! [[ "$SV2_INTERVAL" =~ ^[0-9]+$ ]]; then
     exit 1
 fi
 
-CONFIG=$(echo "$CONFIG" | tr '[:upper:]' '[:lower:]')
-
-# Determine the correct TOML file based on configuration
-config_file="./custom-configs/sri-roles/config-${CONFIG}/tproxy-config-${CONFIG}-docker-example.toml"
-jdc_config_file="./custom-configs/sri-roles/config-${CONFIG}/jdc-config-${CONFIG}-docker-example.toml"
-pool_config_file="./custom-configs/sri-roles/config-${CONFIG}/pool-config-${CONFIG}-docker-example.toml"
+# Define all the configuration files to update
+CONFIG_FILES=(
+    "custom-configs/sri-roles/config-a/jds-config-a-docker-example.toml"
+    "custom-configs/sri-roles/config-a/jdc-config-a-docker-example.toml"
+    "custom-configs/sri-roles/config-c/pool-config-c-docker-example.toml"
+)
 
 # Update the TOML files with the new hashrate value, keeping underscores
-if [[ "$OSTYPE" == "darwin"* ]]; then
-    # macOS uses -i '' for in-place editing
-    sed -i '' "s/min_individual_miner_hashrate = [0-9_]*\.0/min_individual_miner_hashrate = $hashrate/" "$config_file"
-    sed -i '' "s/channel_nominal_hashrate = [0-9_]*\.0/channel_nominal_hashrate = $hashrate/" "$config_file"
-    sed -i '' "s/min_individual_miner_hashrate = [0-9_]*\.0/min_individual_miner_hashrate = $hashrate/" "$pool_config_file"
-    sed -i '' "s/channel_nominal_hashrate = [0-9_]*\.0/channel_nominal_hashrate = $hashrate/" "$pool_config_file"
-    
-    if [[ "$CONFIGURE_KEY" == "yes" ]]; then
-        # Update the jdc and pool config files with the new public key and script type
-        sed -i '' "s/\(output_script_type = \"$SCRIPT_TYPE\", output_script_value = \)\"[^\"]*\"/\1\"$PUBLIC_KEY\"/" "$jdc_config_file"
-        sed -i '' "s/\(output_script_type = \"$SCRIPT_TYPE\", output_script_value = \)\"[^\"]*\"/\1\"$PUBLIC_KEY\"/" "$pool_config_file"
+for config_file in "${CONFIG_FILES[@]}"; do
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        # macOS uses -i '' for in-place editing
+        sed -i '' "s/min_individual_miner_hashrate = [0-9_]*\.0/min_individual_miner_hashrate = $hashrate/" "$config_file"
+        sed -i '' "s/channel_nominal_hashrate = [0-9_]*\.0/channel_nominal_hashrate = $hashrate/" "$config_file"
+    else
+        # Linux uses -i for in-place editing
+        sed -i "s/min_individual_miner_hashrate = [0-9_]*\.0/min_individual_miner_hashrate = $hashrate/" "$config_file"
+        sed -i "s/channel_nominal_hashrate = [0-9_]*\.0/channel_nominal_hashrate = $hashrate/" "$config_file"
     fi
-    
-    # Update pool signature
-    sed -i '' "s/pool_signature = \"[^\"]*\"/pool_signature = \"$POOL_SIGNATURE\"/" "$jdc_config_file"
-    sed -i '' "s/pool_signature = \"[^\"]*\"/pool_signature = \"$POOL_SIGNATURE\"/" "$pool_config_file"
-    
-    if [[ "$CONFIG" == "A" ]]; then
-        # Configuration A specific file
-        sed -i '' "s/pool_signature = \"[^\"]*\"/pool_signature = \"$POOL_SIGNATURE\"/" "$pool_config_file"
+done
+
+# Update JDC and Pool configs for custom public key and script type
+if [[ "$CONFIGURE_KEY" == "yes" ]]; then
+    for config_file in "${CONFIG_FILES[@]}"; do
+        awk -v script_type="$SCRIPT_TYPE" -v new_value="$PUBLIC_KEY" '
+        BEGIN { in_coinbase_outputs = 0 }
+        /coinbase_outputs = \[/ { in_coinbase_outputs = 1 }
+        in_coinbase_outputs && /\{ output_script_type =/ {
+            if ($0 ~ "output_script_type = \"" script_type "\"") {
+                print "    { output_script_type = \"" script_type "\", output_script_value = \"" new_value "\" },"
+            } else {
+                print "#" $0
+            }
+            next
+        }
+        /]/ { in_coinbase_outputs = 0 }
+        { print }
+        ' "$config_file" > temp_config && mv temp_config "$config_file"
+    done
+fi
+
+# Update pool signature
+for config_file in "${CONFIG_FILES[@]}"; do
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        # macOS uses -i '' for in-place editing
+        sed -i '' "s/pool_signature = \"[^\"]*\"/pool_signature = \"$POOL_SIGNATURE\"/" "$config_file"
+    else
+        # Linux uses -i for in-place editing
+        sed -i "s/pool_signature = \"[^\"]*\"/pool_signature = \"$POOL_SIGNATURE\"/" "$config_file"
     fi
+done
+
+# Update the .env file with the selected values
+if [[ "$NETWORK" == "mainnet" ]]; then
+    echo -e "NETWORK=\nSV2_INTERVAL=$SV2_INTERVAL" > "$ENV_FILE"
 else
-    # Linux uses -i for in-place editing
-    sed -i "s/min_individual_miner_hashrate = [0-9_]*\.0/min_individual_miner_hashrate = $hashrate/" "$config_file"
-    sed -i "s/channel_nominal_hashrate = [0-9_]*\.0/channel_nominal_hashrate = $hashrate/" "$config_file"
-    sed -i "s/min_individual_miner_hashrate = [0-9_]*\.0/min_individual_miner_hashrate = $hashrate/" "$pool_config_file"
-    sed -i "s/channel_nominal_hashrate = [0-9_]*\.0/channel_nominal_hashrate = $hashrate/" "$pool_config_file"
-    
-    if [[ "$CONFIGURE_KEY" == "yes" ]]; then
-        # Update the jdc and pool config files with the new public key and script type
-        sed -i "s/\(output_script_type = \"$SCRIPT_TYPE\", output_script_value = \)\"[^\"]*\"/\1\"$PUBLIC_KEY\"/" "$jdc_config_file"
-        sed -i "s/\(output_script_type = \"$SCRIPT_TYPE\", output_script_value = \)\"[^\"]*\"/\1\"$PUBLIC_KEY\"/" "$pool_config_file"
-    fi
-    
-    # Update pool signature
-    sed -i "s/pool_signature = \"[^\"]*\"/pool_signature = \"$POOL_SIGNATURE\"/" "$jdc_config_file"
-    sed -i "s/pool_signature = \"[^\"]*\"/pool_signature = \"$POOL_SIGNATURE\"/" "$pool_config_file"
-    
-    if [[ "$CONFIG" == "A" ]]; then
-        # Configuration A specific file
-        sed -i "s/pool_signature = \"[^\"]*\"/pool_signature = \"$POOL_SIGNATURE\"/" "$pool_config_file"
-    fi
+    echo -e "NETWORK=$NETWORK\nSV2_INTERVAL=$SV2_INTERVAL" > "$ENV_FILE"
 fi
 
-# Export environment variables
-export SV2_INTERVAL
-if [[ "$NETWORK" != "mainnet" ]]; then
-    export NETWORK
-fi
-
+# Start docker container with the appropriate compose file
 docker compose -f "docker-compose-config-${CONFIG}.yaml" up -d
 
 # Display final messages
