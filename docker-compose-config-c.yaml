@@ -37,6 +37,13 @@ services:
     image: sv1-custom-proxy-builder-image
     command: echo "sv1-custom-proxy build completed"
 
+  log-server-builder:
+    build:
+      dockerfile: ./log-server/Dockerfile
+    container_name: log-server-builder
+    image: log-server-builder-image
+    command: echo "log-server-builder build completed"
+
   pools-latency-calculator-builder:
     build:
       dockerfile: pools-latency-calculator.dockerfile
@@ -500,3 +507,18 @@ services:
         ipv4_address: 10.5.0.31
         aliases:
           - promtail
+  
+  # log-server:
+  #   image: log-server-builder-image
+  #   # command: ["./target/release/log-server"]
+  #   ports:
+  #     - "7420:7420"
+  #   environment:
+  #     - LOG_LABEL=config-c
+  #   container_name: log-server
+  #   depends_on:
+  #     - log-server-builder
+  #   restart: unless-stopped
+  #   networks:
+  #     sv2-net:
+  #       ipv4_address: 10.5.0.32

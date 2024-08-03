@@ -2,7 +2,7 @@
 
 resolver="2"
 
-members = [
+members = [ "log-server",
     'pools-latency-calculator',
     'sv1-custom-proxy',
     'sv2-custom-proxy',
