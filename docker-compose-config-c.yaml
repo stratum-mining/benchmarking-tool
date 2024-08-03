@@ -508,17 +508,19 @@ services:
         aliases:
           - promtail
   
-  # log-server:
-  #   image: log-server-builder-image
-  #   # command: ["./target/release/log-server"]
-  #   ports:
-  #     - "7420:7420"
-  #   environment:
-  #     - LOG_LABEL=config-c
-  #   container_name: log-server
-  #   depends_on:
-  #     - log-server-builder
-  #   restart: unless-stopped
-  #   networks:
-  #     sv2-net:
-  #       ipv4_address: 10.5.0.32
+  log-server:
+    image: log-server-builder-image
+    command: ["./target/release/log-server"]
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - "7420:7420"
+    environment:
+      - LOG_LABEL=config-c
+    container_name: log-server
+    depends_on:
+      - log-server-builder
+    restart: unless-stopped
+    networks:
+      sv2-net:
+        ipv4_address: 10.5.0.32
