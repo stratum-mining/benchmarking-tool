@@ -517,6 +517,7 @@ services:
       - "7420:7420"
     environment:
       - LOG_LABEL=config-c
+      - RUST_LOG=info
     container_name: log-server
     depends_on:
       - log-server-builder

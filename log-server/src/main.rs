@@ -9,27 +9,27 @@ use tar::Builder;
 use warp::{Filter, Rejection, Reply};
 use warp::hyper::Body;
 use warp::http::Response;
-use log::error;
+use log::{error, info};
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Debug)]
 struct LokiResponse {
     data: Data,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Debug)]
 struct Data {
     result: Vec<ResultItem>,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Debug)]
 struct ResultItem {
-    _stream: Stream,
+    stream: Stream,
     values: Vec<(String, String)>,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Debug)]
 struct Stream {
-    _container: String,
+    container: String,
 }
 
 #[tokio::main]
@@ -39,7 +39,7 @@ async fn main() {
 
     let log_label = env::var("LOG_LABEL").expect("LOG_LABEL must be set");
     let log_label = format!("logging={}",log_label);
-    println!("Starting server with LOG_LABEL: {}", log_label);
+    info!("Starting server with LOG_LABEL: {}", log_label);
 
     let route = warp::path::end()
         .and(warp::get())
@@ -52,11 +52,11 @@ async fn main() {
 }
 
 async fn fetch_and_package_logs(log_label: &str) -> Result<impl Reply, Rejection> {
-    println!("Fetching logs for label: {}", log_label);
+    info!("Fetching logs for label: {}", log_label);
 
     match fetch_and_package_logs_impl(log_label).await {
         Ok(file) => {
-            println!("Successfully fetched and packaged logs.");
+            info!("Successfully fetched and packaged logs.");
             let response = Response::builder()
                 .header("Content-Disposition", "attachment; filename=\"logs.tar\"")
                 .header("Content-Type", "application/x-tar")
@@ -78,10 +78,10 @@ async fn fetch_and_package_logs(log_label: &str) -> Result<impl Reply, Rejection
 }
 
 async fn fetch_and_package_logs_impl(log_label: &str) -> Result<Body, Box<dyn std::error::Error>> {
-    println!("Fetching logs for label: {}", log_label);
+    info!("Fetching logs for label: {}", log_label);
 
     let containers = get_containers(log_label).await?;
-    println!("Found containers: {:?}", containers);
+    info!("Found containers: {:?}", containers);
 
     let client = Client::new();
     let mut tar_data = Vec::new();
@@ -89,7 +89,7 @@ async fn fetch_and_package_logs_impl(log_label: &str) -> Result<Body, Box<dyn st
         let mut tar_builder = Builder::new(&mut tar_data);
 
         for container in containers {
-            println!("Fetching logs for container: {}", container);
+            info!("Fetching logs for container: {}", container);
             match fetch_logs(&client, &container).await {
                 Ok(logs) => {
                     let mut header = tar::Header::new_gnu();
@@ -108,7 +108,7 @@ async fn fetch_and_package_logs_impl(log_label: &str) -> Result<Body, Box<dyn st
 
         tar_builder.finish()?;
     }
-    println!("Logs successfully packaged into tar file.");
+    info!("Logs successfully packaged into tar file.");
 
     let tar_file = Body::from(tar_data);
     Ok(tar_file)
@@ -116,7 +116,7 @@ async fn fetch_and_package_logs_impl(log_label: &str) -> Result<Body, Box<dyn st
 
 
 async fn get_containers(log_label: &str) -> Result<Vec<String>, Box<dyn std::error::Error>> {
-    println!("Getting containers with label: {}", log_label);
+    info!("Getting containers with label: {}", log_label);
 
     let docker = Docker::connect_with_local_defaults()?;
     let mut filters = HashMap::new();
@@ -137,11 +137,11 @@ async fn get_containers(log_label: &str) -> Result<Vec<String>, Box<dyn std::err
 
 async fn fetch_logs(client: &Client, container: &str) -> Result<String, Box<dyn std::error::Error>> {
     let url = format!("http://loki:3100/loki/api/v1/query_range?query={{container=\"{}\"}}", container);
-    println!("Fetching logs from Loki: {}", url);
+    info!("Fetching logs from Loki: {}", url);
 
     let response: LokiResponse = client.get(&url).send().await?.json().await?;
     let logs: String = response.data.result.into_iter().flat_map(|item| item.values.into_iter().map(|(_, v)| v)).collect();
 
-    println!("Fetched logs for container: {}", container);
+    info!("Fetched logs for container: {}", container);
     Ok(logs)
 }
