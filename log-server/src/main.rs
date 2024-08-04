@@ -61,7 +61,7 @@ async fn fetch_and_package_logs(log_label: &str) -> Result<impl Reply, Rejection
                 .header("Content-Disposition", "attachment; filename=\"logs.tar\"")
                 .header("Content-Type", "application/x-tar")
                 .body(file)
-                .unwrap();  // Handle unwrap carefully in production code
+                .unwrap();
 
             Ok(response)
         },
@@ -70,7 +70,7 @@ async fn fetch_and_package_logs(log_label: &str) -> Result<impl Reply, Rejection
             let response = Response::builder()
                 .status(warp::http::StatusCode::INTERNAL_SERVER_ERROR)
                 .body(Body::from(e.to_string()))
-                .unwrap();  // Handle unwrap carefully in production code
+                .unwrap();
 
             Ok(response)
         }
@@ -136,12 +136,23 @@ async fn get_containers(log_label: &str) -> Result<Vec<String>, Box<dyn std::err
 }
 
 async fn fetch_logs(client: &Client, container: &str) -> Result<String, Box<dyn std::error::Error>> {
-    let url = format!("http://loki:3100/loki/api/v1/query_range?query={{container=\"{}\"}}", container);
+    let url = format!("http://loki:3100/loki/api/v1/query_range?query={{container=\"{}\"}}&limit=100000000", container);
     info!("Fetching logs from Loki: {}", url);
 
     let response: LokiResponse = client.get(&url).send().await?.json().await?;
-    let logs: String = response.data.result.into_iter().flat_map(|item| item.values.into_iter().map(|(_, v)| v)).collect();
+    let mut logs: Vec<(String, String)> = response
+        .data
+        .result
+        .into_iter()
+        .flat_map(|item| item.values.into_iter())
+        .collect();
+
+    logs.sort_by(|a, b| a.0.cmp(&b.0));
+
+    let formatted_logs: String = logs.into_iter()
+        .map(|(_, message)| format!("{}\n", message))
+        .collect();
 
     info!("Fetched logs for container: {}", container);
-    Ok(logs)
+    Ok(formatted_logs)
 }
