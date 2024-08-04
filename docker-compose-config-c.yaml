@@ -480,16 +480,19 @@ services:
         ipv4_address: 10.5.0.18
 
   loki:
-      image: grafana/loki
-      container_name: loki
-      ports:
-        - "3100:3100"
-      restart: unless-stopped
-      networks:
-        sv2-net:
-          ipv4_address: 10.5.0.30
-          aliases:
-            - loki
+    image: grafana/loki
+    container_name: loki
+    ports:
+      - "3100:3100"
+    restart: unless-stopped
+    networks:
+      sv2-net:
+        ipv4_address: 10.5.0.30
+        aliases:
+          - loki
+    volumes:
+      - ./loki-config.yaml:/etc/loki/loki-config.yaml
+    command: -config.file=/etc/loki/loki-config.yaml
 
   promtail:
     image: grafana/promtail
