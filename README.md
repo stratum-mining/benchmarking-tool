@@ -153,6 +153,18 @@ If you prefer to set up the benchmarking tool manually, follow these detailed st
 
     👉 it will take some minutes to generate a complete PDF, so please be patient :) 
 
+  <br>
+
+7.  **Download Logs from the Grafana Dashboard**
+
+    We’ve added a feature that allows you to download logs of all containers directly from the Grafana dashboard. Here’s how to use it:
+
+      1. Navigate to the Grafana dashboard.
+      2. Look for the 'Download Logs' button and click on it.
+      3. The logs will be downloaded as a .tar file.
+
+    To check logs of the containers and if facing any issues and want help, kindly share the logs in the [benchmarking channel on Discord](https://discord.com/channels/950687892169195530/1107964065936060467).
+
 
 ## 🛣 Roadmap 
 
