@@ -78,7 +78,6 @@ services:
     volumes:
       - bitcoin_pool_side_data:/root/.bitcoin
       - ./custom-configs/sri-roles/bitcoin-tp-pool.conf:/root/.bitcoin/bitcoin.conf
-      - ./logs:/var/logs
     restart: unless-stopped
     networks:
       sv2-net:
