@@ -164,11 +164,11 @@ Following the grafana dashboard structure, the following lists measurements with
     * <span style="text-decoration:underline;">Pool roles - Network Tx</span>
         * _Description_: Amount of data transmitted from the SV1 roles running as Pool’s infrastructure (SV1 Pool and SV1 Bitcoin node)
         * _Data Collection Method_: [cadvisor](https://github.com/google/cadvisor) is used to constantly track the bandwidth usage of every Docker container 
-        * _Data_: since cadvisor tracks metrics on a container level, the total amount of bandwidth measured even includes the one consumed between SV1 Pool and Bitcoin node, which are typically ran in the same network, so it’s not meaningful
+        * _Data_: since cadvisor tracks metrics on a container level, the total amount of bandwidth measured even includes the one consumed between SV1 Pool and Bitcoin node, which are typically ran in the same network, so it’s not meaningful. Infrastructure run on separate networks should observe this metric more closely.
     * <span style="text-decoration:underline;">Pool roles - Network Rx</span> 
         * _Description_: amount of data received by the SV1 roles running as Pool’s infrastructure (SV1 Pool and SV1 Bitcoin node)
         * _Data Collection Method_: [cadvisor](https://github.com/google/cadvisor) is used to constantly track the bandwidth usage of every Docker container 
-        * _Data_: since cadvisor tracks metrics on a container level, the total amount of bandwidth measured even includes the one consumed between SV1 Pool and Bitcoin node, which are typically ran in the same network, so it’s not meaningful
+        * _Data_: since cadvisor tracks metrics on a container level, the total amount of bandwidth measured even includes the one consumed between SV1 Pool and Bitcoin node, which are typically ran in the same network, so it’s not meaningful. Infrastructure run on separate networks should observe this metric more closely.
 * **SV2 roles performances**
     * <span style="text-decoration:underline;">Pool roles - CPU usage</span>
         * _Description_: CPU usage (percentage) due to SV2 roles running as Pool’s infrastructure (SV2 Pool, SV2 Bitcoin node (TP), SV2 Job Declarator Server)
@@ -179,11 +179,11 @@ Following the grafana dashboard structure, the following lists measurements with
     * <span style="text-decoration:underline;">Pool roles - Network Tx</span>
         * _Description_: Amount of data transmitted from the SV2 roles running as Pool’s infrastructure (SV2 Pool, SV2 Bitcoin node (TP), SV2 Job Declarator Server)
         * _Data Collection Method_: [cadvisor](https://github.com/google/cadvisor) is used to constantly track the bandwidth usage of every Docker container 
-        * _Data_: since cadvisor tracks metrics on a container level, the total amount of bandwidth measured even includes the one consumed between SV2 Pool and Bitcoin node (TP), which are typically ran in the same network, so it’s not meaningful
+        * _Data_: since cadvisor tracks metrics on a container level, the total amount of bandwidth measured even includes the one consumed between SV2 Pool and Bitcoin node (TP), which are typically ran in the same network, so it’s not meaningful. Infrastructure run on separate networks should observe this metric more closely.
     * <span style="text-decoration:underline;">Pool roles - Network Rx</span> 
         * _Description_: Amount of data received by the SV2 roles running as Pool’s infrastructure (SV2 Pool, SV2 Bitcoin node (TP), SV2 Job Declarator Server)
         * _Data Collection Method_: [cadvisor](https://github.com/google/cadvisor) is used to constantly track the bandwidth usage of every Docker container 
-        * _Data_: since cadvisor tracks metrics on a container level, the total amount of bandwidth measured even includes the one consumed between SV2 Pool and Bitcoin node (TP), which are typically ran in the same network, so it’s not meaningful
+        * _Data_: since cadvisor tracks metrics on a container level, the total amount of bandwidth measured even includes the one consumed between SV2 Pool and Bitcoin node (TP), which are typically ran in the same network, so it’s not meaningful. Infrastructure run on separate networks should observe this metric more closely.
     * <span style="text-decoration:underline;">Miner roles - CPU usage</span>
         * _Description_: CPU usage (percentage) due to SV2 roles running as Miner’s infrastructure (SV2 Job Declarator Client, SV2 Bitcoin node (TP), SV2 Translator)
         * _Data Collection Method_: [cadvisor](https://github.com/google/cadvisor) is used to constantly track the CPU usage of every Docker container
@@ -193,11 +193,11 @@ Following the grafana dashboard structure, the following lists measurements with
     * <span style="text-decoration:underline;">Miner roles - Network Tx</span>
         * _Description_: amount of data transmitted from the SV2 roles running as Miner’s infrastructure (SV2 Job Declarator Client, SV2 Bitcoin node (TP), SV2 Translator)
         * _Data Collection Method_: [cadvisor](https://github.com/google/cadvisor) is used to constantly track the bandwidth usage of every Docker container 
-        * _Data_: since cadvisor tracks metrics on a container level, the total amount of bandwidth measured even includes the one consumed between SV2 Job Declarator Client and Bitcoin node (TP), which are typically ran in the same network, so it’s not meaningful
+        * _Data_: since cadvisor tracks metrics on a container level, the total amount of bandwidth measured even includes the one consumed between SV2 Job Declarator Client and Bitcoin node (TP), which are typically ran in the same network, so it’s not meaningful. Infrastructure run on separate networks should observe this metric more closely.
     * <span style="text-decoration:underline;">Miner roles - Network Rx</span> 
         * _Description_: amount of data received by the SV2 roles running as Miner’s infrastructure (SV2 Job Declarator Client, SV2 Bitcoin node (TP), SV2 Translator)
         * _Data Collection Method_: [cadvisor](https://github.com/google/cadvisor) is used to constantly track the bandwidth usage of every Docker container 
-        * _Data_: since cadvisor tracks metrics on a container level, the total amount of bandwidth measured even includes the one consumed between SV2 Job Declarator Client and Bitcoin node (TP), which are typically ran in the same network, so it’s not meaningful
+        * _Data_: since cadvisor tracks metrics on a container level, the total amount of bandwidth measured even includes the one consumed between SV2 Job Declarator Client and Bitcoin node (TP), which are typically ran in the same network, so it’s not meaningful. Infrastructure run on separate networks should observe this metric more closely.
 * **Host info**
 
     The following metrics are relative to the host machine where the benchmarking tool is running:
