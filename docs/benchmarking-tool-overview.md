@@ -39,6 +39,28 @@ These components are responsible for collecting all defined metrics, providing i
     * **reporter by @IzakMarais:** Used for generating PDF reports from Grafana data and dashboards.[ More Info](https://github.com/IzakMarais/reporter)
 
 
+## Integration and Automation 🐳
+
+**Tool Workflow:** The benchmarking tool's architecture ensures seamless integration and smooth data collection across various components. The workflow is organized as follows:
+
+1. **Initialization:** All Docker containers, including those for SV1 and SV2 roles, metrics collectors, and supporting tools, are initiated.
+2. **Data Collection:** Custom proxies, cadvisor, Prometheus, and other data collectors start monitoring and gathering metrics as defined in the configurations. These tools capture detailed performance data related to shares, blocks, latency, propagation times, bandwidth usage, and resource consumption.
+3. **Metrics Aggregation:** Prometheus collects and organizes metrics from various collectors into a time-series database. Node Exporter provides additional hardware and kernel-level data to Prometheus.
+4. **Visualization:** Grafana interfaces with Prometheus to present the collected data in interactive and customizable dashboards, allowing users to analyze performance metrics in real-time.
+5. **Report Generation:** The reporter tool fetches data from Grafana dashboards and generates comprehensive PDF reports summarizing the performance insights.
+
+**Automation:** To streamline the benchmarking process, automation is employed at various stages:
+
+1. **Container Management:** Docker Compose scripts are used to manage the lifecycle of all Docker containers, ensuring they are correctly started, stopped, and restarted as necessary.
+2. **Data Collection Automation:** Custom scripts and Prometheus configuration files automate the data collection process. These scripts ensure continuous and accurate monitoring by scheduling regular data pulls and pushing metrics into the Prometheus database.
+3. **Latency Measurement:** A script automatically computes average latency with major public pools by periodically subscribing to these pools and recording round trip times (RTT).
+4. **Data Analysis Automation:** Prometheus rules and alerting configurations automatically analyze collected metrics, identifying trends, anomalies, and key performance indicators.
+5. **Report Automation:** The reporter tool is configured to automatically generate PDF reports at predefined intervals or upon completion of specific benchmarking scenarios, ensuring timely delivery of insights.
+6. **Network Emulation:** Traffic control (tc) configurations enforce network latency between containerized components, simulating real-world conditions for accurate benchmarking.
+
+By leveraging these automation techniques, the benchmarking tool minimizes manual intervention, ensuring a reliable and efficient benchmarking process that provides consistent and accurate performance insights for both Stratum V1 and Stratum V2 protocols.
+
+
 ## Metrics analyzed 📐
 
 Following the grafana dashboard structure, the following lists measurements with related explanation. All metrics currently captured by the benchmarking tool are visible on the dashboard.
@@ -189,42 +211,15 @@ Following the grafana dashboard structure, the following lists measurements with
     * <span style="text-decoration:underline;">Node Memory</span>
 
 
-## Integration and Automation 🐳
-
-**Tool Workflow:** The benchmarking tool's architecture ensures seamless integration and smooth data collection across various components. The workflow is organized as follows:
-
-
-
-1. **Initialization:** All Docker containers, including those for SV1 and SV2 roles, metrics collectors, and supporting tools, are initiated.
-2. **Data Collection:** Custom proxies, cadvisor, Prometheus, and other data collectors start monitoring and gathering metrics as defined in the configurations. These tools capture detailed performance data related to shares, blocks, latency, propagation times, bandwidth usage, and resource consumption.
-3. **Metrics Aggregation:** Prometheus collects and organizes metrics from various collectors into a time-series database. Node Exporter provides additional hardware and kernel-level data to Prometheus.
-4. **Visualization:** Grafana interfaces with Prometheus to present the collected data in interactive and customizable dashboards, allowing users to analyze performance metrics in real-time.
-5. **Report Generation:** The reporter tool fetches data from Grafana dashboards and generates comprehensive PDF reports summarizing the performance insights.
-
-**Automation:** To streamline the benchmarking process, automation is employed at various stages:
-
-
-
-1. **Container Management:** Docker Compose scripts are used to manage the lifecycle of all Docker containers, ensuring they are correctly started, stopped, and restarted as necessary.
-2. **Data Collection Automation:** Custom scripts and Prometheus configuration files automate the data collection process. These scripts ensure continuous and accurate monitoring by scheduling regular data pulls and pushing metrics into the Prometheus database.
-3. **Latency Measurement:** A script automatically computes average latency with major public pools by periodically subscribing to these pools and recording round trip times (RTT).
-4. **Data Analysis Automation:** Prometheus rules and alerting configurations automatically analyze collected metrics, identifying trends, anomalies, and key performance indicators.
-5. **Report Automation:** The reporter tool is configured to automatically generate PDF reports at predefined intervals or upon completion of specific benchmarking scenarios, ensuring timely delivery of insights.
-6. **Network Emulation:** Traffic control (tc) configurations enforce network latency between containerized components, simulating real-world conditions for accurate benchmarking.
-
-By leveraging these automation techniques, the benchmarking tool minimizes manual intervention, ensuring a reliable and efficient benchmarking process that provides consistent and accurate performance insights for both Stratum V1 and Stratum V2 protocols.
-
-
 ## Results and Interpretation 📊
 
-<span style="text-decoration:underline;">Setup for Benchmarking:</span> For the benchmarking, Configuration A and Configuration C were utilized, each running for a duration of **16.5 hours**. In both cases, **two CPU miners** were connected to the **SV1 endpoint** and **two CPU miners** to the **SV2 endpoint**, all operating on the **testnet4** network. Both SV1 Pool and SV2 Job Declarator Client (JDC) were producing new block **templates every 60 seconds**. All the system was running on a mac equipped with a 4GHz Quad-Core Intel Core i7 processor and a 16 GB 1600 MHz DDR3 memory.
+<span style="text-decoration:underline;">Recommended Context:</span> When analyzing results, it is important to also note which Sv2 configuration(s) were used (Config A or C), as well as the length of the test, what devices outside of the benchmarking tool were used (ASICs vs CPU miners), what bitcoin network was used (i.e. mainnet, testnet4), as well as specification for the machine running the suite of benchmarking tools (i.e. MacOS on a 4GHz Quad-Core Intel Core i7 processor with 16 GB 1600 MHz DDR3 memory)
 
-<span style="text-decoration:underline;">Interpretation of Results:</span> To make informed decisions based on the presented results, consider the following analysis which can be used as guidelines for future benchmarks.
+<span style="text-decoration:underline;">Example Context:</span> For the benchmarking, Configuration A and Configuration C were utilized, each running for a duration of **16.5 hours**. In both cases, **two CPU miners** were connected to the **SV1 endpoint** and **two CPU miners** to the **SV2 endpoint**, all operating on the **testnet4** network. Both SV1 Pool and SV2 Job Declarator Client (JDC) were producing new block **templates every 60 seconds**. All the system was running on a mac equipped with a 4GHz Quad-Core Intel Core i7 processor and a 16 GB 1600 MHz DDR3 memory.
 
-
+<span style="text-decoration:underline;">Interpretation of Results:</span> To make informed decisions based on the presented results, consider the following analysis which can be used as guidelines for future benchmarks. The example context above was used to generate the following results.
 
 ## **Configuration A Analysis:**
-
 
 ### **_Shares, blocks and templates stats_**
 
@@ -311,7 +306,7 @@ Considering a **template refresh interval** of **60s** (as in this benchmark), i
 
 **Analysis**: 
 
-No blocks have been found by both SV1 and SV2 pools, so no particular comment for this benchmark. A more specific analysis on this comparison will be done in a future more specific benchmark done with asic miners.
+No blocks have been found by both SV1 and SV2 pools, so no particular comment for this benchmark. A more specific analysis on this comparison will be done in a future more specific benchmark done with ASIC miners.
 
 
 ### **_Bandwidth Usage - Mining Farm Level_**
@@ -369,8 +364,6 @@ The presence of proxies which aggregates downstream connections miner side drast
 
 
 ## **Configuration C Analysis:**
-
-
 
 ### **_Shares, blocks and templates stats_**
 
