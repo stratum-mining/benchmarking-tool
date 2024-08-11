@@ -32,6 +32,18 @@
       "tooltip": "",
       "type": "link",
       "url": "http://localhost:8686/api/v5/report/64nrElFmk"
+    },
+    {
+      "asDropdown": false,
+      "icon": "external link",
+      "includeVars": false,
+      "keepTime": false,
+      "tags": [],
+      "targetBlank": false,
+      "title": "Download logs",
+      "tooltip": "",
+      "type": "link",
+      "url": "http://localhost:7420"
     }
   ],
   "liveNow": false,
@@ -275,7 +287,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.0.0",
+      "pluginVersion": "11.1.3",
       "targets": [
         {
           "datasource": {
@@ -6032,7 +6044,6 @@
     "from": "now-1h",
     "to": "now"
   },
-  "timeRangeUpdatedDuringEditOrView": false,
   "timepicker": {
     "refresh_intervals": [
       "5s",

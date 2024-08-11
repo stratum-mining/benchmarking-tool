@@ -24,6 +24,13 @@ services:
     image: sv2-roles-builder-image
     command: echo "SRI build completed"
 
+  log-server-builder:
+    build:
+      dockerfile: ./log-server/Dockerfile
+    container_name: log-server-builder
+    image: log-server-builder-image
+    command: echo "log-server-builder build completed"
+
   sv2-custom-proxy-builder:
     build:
       dockerfile: ./sv2-custom-proxy/Dockerfile
@@ -48,6 +55,8 @@ services:
   template-provider-pool-side:
     build:
       dockerfile: ./template-provider.dockerfile
+    labels:
+      logging: "config-a"
     image: sv2-template-provider
     command:
       [
@@ -84,6 +93,8 @@ services:
   template-provider-miner-side:
     build:
       dockerfile: ./template-provider.dockerfile
+    labels:
+      logging: "config-a"
     image: sv2-template-provider
     command:
       [
@@ -118,6 +129,8 @@ services:
   sv1-node-pool-side:
     build:
       dockerfile: ./template-provider.dockerfile
+    labels:
+      logging: "config-a"
     image: sv2-template-provider
     command: ["/bitcoin/bin/bitcoind", "-${NETWORK}"]
     ports:
@@ -141,6 +154,8 @@ services:
 
   pool:
     image: sv2-roles-builder-image
+    labels:
+      logging: "config-a"
     command: ["/bin/bash", "-c", "/usr/local/bin/monitor_and_apply_latency.sh 10.5.0.6 2 & exec ./target/release/pool_sv2 -c pool/config-examples/pool-config-a-docker-example.toml"]
     #command:
       #[
@@ -168,6 +183,8 @@ services:
 
   jd-server:
     image: sv2-roles-builder-image
+    labels:
+      logging: "config-a"
     command:
       [
         "/bin/bash",
@@ -195,6 +212,8 @@ services:
 
   jd-client:
     image: sv2-roles-builder-image
+    labels:
+      logging: "config-a"
     command:
       [
         "/bin/bash",
@@ -219,6 +238,8 @@ services:
 
   translator:
     image: sv2-roles-builder-image
+    labels:
+      logging: "config-a"
     command:
       [
         "./target/release/translator_sv2",
@@ -239,6 +260,8 @@ services:
 
   sv2-jdc-translator-proxy:
     image: sv2-custom-proxy-builder-image
+    labels:
+      logging: "config-a"
     command: ["./target/release/sv2-custom-proxy"]
     ports:
       - "34253:34254"
@@ -260,6 +283,8 @@ services:
 
   sv2-tp-jdc-proxy:
     image: sv2-custom-proxy-builder-image
+    labels:
+      logging: "config-a"
     command: ["./target/release/sv2-custom-proxy"]
     ports:
       - "8440:8440"
@@ -286,6 +311,8 @@ services:
 
   sv2-translator-miner-proxy:
     image: sv1-custom-proxy-builder-image
+    labels:
+      logging: "config-a"
     command: ["./target/release/sv1-custom-proxy"]
     ports:
       - "34255:34255"
@@ -306,6 +333,8 @@ services:
 
   sv1-pool:
     container_name: sv1-pool
+    labels:
+      logging: "config-a"
     build:
       context: .
       dockerfile: ./sv1-public-pool.dockerfile
@@ -329,6 +358,8 @@ services:
 
   sv1-pool-miner-proxy:
     image: sv1-custom-proxy-builder-image
+    labels:
+      logging: "config-a"
     command:
       [
         "/bin/bash",
@@ -356,6 +387,8 @@ services:
 
   sv1-node-pool-proxy:
     image: sv1-custom-proxy-builder-image
+    labels:
+      logging: "config-a"
     command: ["./target/release/sv1-custom-proxy"]
     ports:
       - "48330:48330"
@@ -521,3 +554,54 @@ services:
     networks:
       sv2-net:
         ipv4_address: 10.5.0.18
+
+  loki:
+      image: grafana/loki
+      container_name: loki
+      ports:
+        - "3100:3100"
+      restart: unless-stopped
+      networks:
+        sv2-net:
+          ipv4_address: 10.5.0.30
+          aliases:
+            - loki
+      volumes:
+        - ./loki-config.yaml:/etc/loki/loki-config.yaml
+      command: -config.file=/etc/loki/loki-config.yaml
+
+  promtail:
+    image: grafana/promtail
+    container_name: promtail
+    volumes:
+      - ./promtail/config/config-a/promtail-local-config.yaml:/etc/promtail/config.yaml
+      - /var/lib/docker/containers:/var/lib/docker/containers
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: -config.file=/etc/promtail/config.yaml
+    restart: unless-stopped
+    depends_on:
+      - loki
+    networks:
+      sv2-net:
+        ipv4_address: 10.5.0.31
+        aliases:
+          - promtail
+
+  
+  log-server:
+    image: log-server-builder-image
+    command: ["./target/release/log-server"]
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - "7420:7420"
+    environment:
+      - LOG_LABEL=config-a
+      - RUST_LOG=info
+    container_name: log-server
+    depends_on:
+      - log-server-builder
+    restart: unless-stopped
+    networks:
+      sv2-net:
+        ipv4_address: 10.5.0.32

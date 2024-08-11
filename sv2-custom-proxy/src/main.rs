@@ -313,10 +313,10 @@ fn reverse_hash(hash: &str) -> String {
 }
 
 async fn fetch_block_reward(hash: &str) -> Result<u64, String> {
-    let network = env::var("NETWORK").unwrap_or_else(|_| "mainnet".to_string());
+    let network = env::var("NETWORK").unwrap_or_else(|_| "".to_string());
     let client = Client::new();
     let url = match network.as_str() {
-        "mainnet" => format!("https://mempool.space/api/block/{}", hash),
+        "" => format!("https://mempool.space/api/block/{}", hash),
         "testnet3" => format!("https://mempool.space/testnet/api/block/{}", hash),
         "testnet4" => format!("https://mempool.space/testnet4/api/block/{}", hash),
         _ => return Err("Invalid NETWORK environment variable".to_string()),
@@ -332,7 +332,7 @@ async fn fetch_block_reward(hash: &str) -> Result<u64, String> {
     println!("Height: {:?}", height);
 
     let reward_stats_url = match network.as_str() {
-        "mainnet" => "https://mempool.space/api/v1/mining/reward-stats/1",
+        "" => "https://mempool.space/api/v1/mining/reward-stats/1",
         "testnet3" => "https://mempool.space/testnet/api/v1/mining/reward-stats/1",
         "testnet4" => "https://mempool.space/testnet4/api/v1/mining/reward-stats/1",
         _ => unreachable!(),

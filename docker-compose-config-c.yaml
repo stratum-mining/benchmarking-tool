@@ -37,6 +37,13 @@ services:
     image: sv1-custom-proxy-builder-image
     command: echo "sv1-custom-proxy build completed"
 
+  log-server-builder:
+    build:
+      dockerfile: ./log-server/Dockerfile
+    container_name: log-server-builder
+    image: log-server-builder-image
+    command: echo "log-server-builder build completed"
+
   pools-latency-calculator-builder:
     build:
       dockerfile: pools-latency-calculator.dockerfile
@@ -47,6 +54,8 @@ services:
   template-provider-pool-side:
     build:
       dockerfile: ./template-provider.dockerfile
+    labels:
+      logging: "config-c"
     image: sv2-template-provider
     command:
       [
@@ -83,6 +92,8 @@ services:
   sv1-node-pool-side:
     build:
       dockerfile: ./template-provider.dockerfile
+    labels:
+      logging: "config-c"  
     image: sv2-template-provider
     command: ["/bitcoin/bin/bitcoind", "-${NETWORK}"]
     ports:
@@ -106,6 +117,8 @@ services:
 
   pool:
     image: sv2-roles-builder-image
+    labels:
+      logging: "config-c"
     #command:
       #[
         #"/bin/bash",
@@ -135,6 +148,8 @@ services:
 
   translator:
     image: sv2-roles-builder-image
+    labels:
+      logging: "config-c"
     command:
       [
         "/bin/bash",
@@ -162,6 +177,8 @@ services:
 
   sv2-pool-translator-proxy:
     image: sv2-custom-proxy-builder-image
+    labels:
+      logging: "config-c" 
     #command: ["./target/release/sv2-custom-proxy"]
     command:
       [
@@ -191,6 +208,8 @@ services:
 
   sv2-tp-pool-proxy:
     image: sv2-custom-proxy-builder-image
+    labels:
+      logging: "config-c"
     command: ["./target/release/sv2-custom-proxy"]
     ports:
       - "8441:8441"
@@ -217,6 +236,8 @@ services:
 
   sv2-translator-miner-proxy:
     image: sv1-custom-proxy-builder-image
+    labels:
+      logging: "config-c"  
     command: ["./target/release/sv1-custom-proxy"]
     ports:
       - "34255:34255"
@@ -236,6 +257,8 @@ services:
 
   sv1-pool:
     container_name: sv1-pool
+    labels:
+      logging: "config-c" 
     build:
       context: .
       dockerfile: ./sv1-public-pool.dockerfile
@@ -257,6 +280,8 @@ services:
 
   sv1-pool-miner-proxy:
     image: sv1-custom-proxy-builder-image
+    labels:
+      logging: "config-c" 
     command:
       [
         "/bin/bash",
@@ -284,6 +309,8 @@ services:
 
   sv1-node-pool-proxy:
     image: sv1-custom-proxy-builder-image
+    labels:
+      logging: "config-c"
     command: ["./target/release/sv1-custom-proxy"]
     ports:
       - "48330:48330"
@@ -387,6 +414,7 @@ services:
     image: grafana/grafana
     depends_on:
       - prometheus
+      - loki
     ports:
       - 3000:3000
     environment:
@@ -449,3 +477,53 @@ services:
     networks:
       sv2-net:
         ipv4_address: 10.5.0.18
+
+  loki:
+    image: grafana/loki
+    container_name: loki
+    ports:
+      - "3100:3100"
+    restart: unless-stopped
+    networks:
+      sv2-net:
+        ipv4_address: 10.5.0.30
+        aliases:
+          - loki
+    volumes:
+      - ./loki-config.yaml:/etc/loki/loki-config.yaml
+    command: -config.file=/etc/loki/loki-config.yaml
+
+  promtail:
+    image: grafana/promtail
+    container_name: promtail
+    volumes:
+      - ./promtail/config/config-c/promtail-local-config.yaml:/etc/promtail/config.yaml
+      - /var/lib/docker/containers:/var/lib/docker/containers
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: -config.file=/etc/promtail/config.yaml
+    restart: unless-stopped
+    depends_on:
+      - loki
+    networks:
+      sv2-net:
+        ipv4_address: 10.5.0.31
+        aliases:
+          - promtail
+  
+  log-server:
+    image: log-server-builder-image
+    command: ["./target/release/log-server"]
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - "7420:7420"
+    environment:
+      - LOG_LABEL=config-c
+      - RUST_LOG=info
+    container_name: log-server
+    depends_on:
+      - log-server-builder
+    restart: unless-stopped
+    networks:
+      sv2-net:
+        ipv4_address: 10.5.0.32
