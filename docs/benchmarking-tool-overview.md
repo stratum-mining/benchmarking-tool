@@ -3,36 +3,32 @@
 
 ## Introduction
 
-The purpose of this document is to describe the objective, design, and functionality of a benchmarking tool developed to evaluate and compare the performance of the current Stratum mining protocol with Stratum V2. This tool is intended to facilitate the adoption of Stratum V2 by providing comprehensive performance metrics and insights across various mining scenarios. By enabling industry professionals to assess the improvements in decentralization, security, and efficiency brought by SV2, this tool plays a crucial role in promoting a smoother transition to the upgraded protocol, ultimately strengthening the Bitcoin network.
+This document describes the objective, design, and functionality of a benchmarking tool for evaluating performance of the original Stratum mining protocol as compared to Stratum V2 protocol. This tool helps facilitate the adoption of Stratum V2 by providing comprehensive performance metrics and insights across various mining scenarios. By enabling industry professionals and the mining community to assess the improvements in security, and efficiency brought by SV2, this tool is crucial in promoting transition to the upgraded protocol, ultimately strengthening the Bitcoin network.
 
 
 ## Overview of the Benchmarking Tool 👁️
 
-The benchmarking tool is composed of several core components and metrics collectors, each designed to operate as Docker containers for streamlined networking and precise metric measurement. The tool covers the so-called [Configuration A and C](https://stratumprotocol.org) for the Stratum V2 part, always together with the SV1 scenario to compare with. Below an overview of the components needed for this and their roles.
+The Benchmarking Tool is composed of several core components and metrics collectors. Each component is a Docker container which enables streamlined networking and precise metric measurement. The tool covers [Configuration A and C](https://stratumprotocol.org) for Stratum V2. These two configurations are coupled with a Stratum solo mining pool for comparison. Below is an overview of each component and its role in benchmarking.
 
 
 #### _Core Components_
 
-The following components form the backbone of the system and are crucial for running benchmarking scenarios for both Stratum V1 (SV1) and Stratum V2 (SV2):
+The following components form the backbone of the system
 
-
-
-* **SRI (SV2) Roles:** This includes Docker images for every role available in the Stratum V2 Reference Implementation (SRI) stack:
-    * SV2 Pool
-    * SV2 Job Declarator Server
-    * SV2 Job Declarator Client
-    * Translator Proxy
-    * Template Provider - Pool Side
-    * Template Provider - Miner Side
+* **SRI (SV2) Roles:** Docker images for [every role](https://github.com/stratum-mining/stratum/tree/dev/roles) available in the Stratum V2 Reference Implementation (SRI) stack:
+    * [SV2 Pool](https://github.com/stratum-mining/stratum/tree/dev/roles/pool)
+    * [SV2 Job Declarator Server](https://github.com/stratum-mining/stratum/tree/dev/roles/jd-server)
+    * [SV2 Job Declarator Client](https://github.com/stratum-mining/stratum/tree/dev/roles/jd-client)
+    * [Translator Proxy](https://github.com/stratum-mining/stratum/tree/dev/roles/translator)
+    * [Template Provider - Pool Side](https://github.com/Sjors/bitcoin/releases)
+    * [Template Provider - Miner Side](https://github.com/Sjors/bitcoin/releases)
 * **SV1 Pool:** This is the service that will be used to benchmark SV1 scenarios:
     * Public Pool by @benjamin-wilson: [ GitHub Repository](https://github.com/benjamin-wilson/public-pool)
 
 
 #### _Metrics Collectors and Observers_
 
-These components are responsible for collecting all defined metrics, providing insights into system performance, and are also run as Docker containers:
-
-
+These components are responsible for collecting all defined metrics, providing insights into system performance
 
 * **Custom Proxies:** Collect specific time measurements and latency metrics in particular scenarios, developed using the library by @fi3:[ Demand Easy SV2](https://github.com/demand-open-source/demand-easy-sv2)
 * **Cadvisor:** Captures fundamental metrics at a container level, such as CPU, memory, and networking usage. Metrics are exposed for collection by Prometheus. [More info](https://github.com/google/cadvisor) 
@@ -43,91 +39,112 @@ These components are responsible for collecting all defined metrics, providing i
     * **reporter by @IzakMarais:** Used for generating PDF reports from Grafana data and dashboards.[ More Info](https://github.com/IzakMarais/reporter)
 
 
+## Integration and Automation 🐳
+
+**Tool Workflow:** The benchmarking tool's architecture ensures seamless integration and smooth data collection across various components. The workflow is organized as follows:
+
+1. **Initialization:** All Docker containers, including those for SV1 and SV2 roles, metrics collectors, and supporting tools, are initiated.
+2. **Data Collection:** Custom proxies, cadvisor, Prometheus, and other data collectors start monitoring and gathering metrics as defined in the configurations. These tools capture detailed performance data related to shares, blocks, latency, propagation times, bandwidth usage, and resource consumption.
+3. **Metrics Aggregation:** Prometheus collects and organizes metrics from various collectors into a time-series database. Node Exporter provides additional hardware and kernel-level data to Prometheus.
+4. **Visualization:** Grafana interfaces with Prometheus to present the collected data in interactive and customizable dashboards, allowing users to analyze performance metrics in real-time.
+5. **Report Generation:** The reporter tool fetches data from Grafana dashboards and generates comprehensive PDF reports summarizing the performance insights.
+
+**Automation:** To streamline the benchmarking process, automation is employed at various stages:
+
+1. **Container Management:** Docker Compose scripts are used to manage the lifecycle of all Docker containers, ensuring they are correctly started, stopped, and restarted as necessary.
+2. **Data Collection Automation:** Custom scripts and Prometheus configuration files automate the data collection process. These scripts ensure continuous and accurate monitoring by scheduling regular data pulls and pushing metrics into the Prometheus database.
+3. **Latency Measurement:** A script automatically computes average latency with major public pools by periodically subscribing to these pools and recording round trip times (RTT).
+4. **Data Analysis Automation:** Prometheus rules and alerting configurations automatically analyze collected metrics, identifying trends, anomalies, and key performance indicators.
+5. **Report Automation:** The reporter tool is configured to automatically generate PDF reports at predefined intervals or upon completion of specific benchmarking scenarios, ensuring timely delivery of insights.
+6. **Network Emulation:** Traffic control (tc) configurations enforce network latency between containerized components, simulating real-world conditions for accurate benchmarking.
+
+By leveraging these automation techniques, the benchmarking tool minimizes manual intervention, ensuring a reliable and efficient benchmarking process that provides consistent and accurate performance insights for both Stratum V1 and Stratum V2 protocols.
+
+
 ## Metrics analyzed 📐
 
-Following the grafana dashboard structure, which wraps all the metrics currently captured by the benchmarking tool, here’s the list of measurements, with related explanation.
-
-
+Following the grafana dashboard structure, the following lists measurements with related explanation. All metrics currently captured by the benchmarking tool are visible on the dashboard.
 
 * **Shares, blocks and templates stats**
     * <span style="text-decoration:underline;">SV1 shares</span>
-        * _Description_: it tracks metrics about shares submitted by the miner(s) used to benchmark SV1
-        * _Data Collection Method_: a SV1 custom proxy located between the miner and the SV1 Pool forwards all the traffic and analyze it, extracting the shares metrics
-        * _Data Analysis and usage_: shares are analyzed and tracked as
+        * _Description_: Shares submitted by the miner(s) used to benchmark SV1
+        * _Data Collection Method_: SV1 custom proxy located between the miner and the SV1 Pool forwards all traffic and extracts shares
+        * _Data_: shares are analyzed and tracked as
             * number of submitted shares
             * number of valid shares
             * number of stale shares
             * acceptance rate percentage
     * <span style="text-decoration:underline;">SV1 mined blocks</span>
-        * _Description_: it tracks metrics about blocks mined by the miner(s) used to benchmark SV1
-        * _Data Collection Method_: a SV1 custom proxy located between the Bitcoin node and the SV1 Pool forwards all the traffic and analyzes it, extracting the blocks submissions to the network
-        * _Data Analysis and usage_: blocks mined are added to a counter
+        * _Description_: Blocks mined by the miner(s) used to benchmark SV1
+        * _Data Collection Method_: SV1 custom proxy located between the Bitcoin node and the SV1 Pool forwards all traffic and extracts blocks submissions to the network
+        * _Data_: count of blocks mined
     * <span style="text-decoration:underline;">SV2 shares</span>
-        * _Description_: it tracks metrics about shares submitted by the miner(s) used to benchmark SV2
-        * _Data Collection Method_: a SV2 custom proxy located between the miner and the SV2 Pool or SV2 Job Declarator Client (JDC) forwards all the traffic and analyze it, extracting the shares metrics
-        * _Data Analysis and usage_: shares are analyzed and tracked as
+        * _Description_: Shares submitted by the miner(s) used to benchmark SV2
+        * _Data Collection Method_: SV2 custom proxy located between the miner and the SV2 Pool or SV2 Job Declarator Client (JDC) forwards all the traffic and extracts shares
+        * _Data_: shares are analyzed and tracked as
             * number of submitted shares
             * number of valid shares
             * number of stale shares
             * acceptance rate percentage  
     * <span style="text-decoration:underline;">SV2 mined blocks</span>
-        * _Description_: it tracks metrics about blocks mined by the miner(s) used to benchmark SV2
-        * _Data Collection Method_: a SV2 custom proxy located between the miner and SV2 Pool or SV2 Job Declarator Client (JDC) forwards all the traffic and analyze it, extracting the blocks submission
-        * _Data Analysis and usage_: blocks mined are added to a counter
+        * _Description_: Blocks mined by the miner(s) used to benchmark SV2
+        * _Data Collection Method_: SV2 custom proxy located between the miner and SV2 Pool or SV2 Job Declarator Client (JDC) forwards all the traffic and extracts block submissions
+        * _Data_: count of blocks mined
     * <span style="text-decoration:underline;">SV1 - block templates value</span>
-        * _Description_: it tracks metrics about block templates value extracted while mining on SV1 block templates
-        * _Data Collection Method_: a SV1 custom proxy located between the Bitcoin node and SV1 Pool forwards all the traffic and analyze it, extracting the block templates value
-        * _Data Analysis and usage_: block templates value is used to compare it with the SV2 ones
+        * _Description_: Block templates value extracted while mining on SV1 block templates
+        * _Data Collection Method_: SV1 custom proxy located between the Bitcoin node and SV1 Pool forwards all the traffic and extracts the block templates value
+        * _Data_: total value (subsidy + fees) of a block template in sats
     * <span style="text-decoration:underline;">SV2 - block templates value</span>
-        * _Description_: it tracks metrics about block templates value extracted while mining on SV2 block templates
-        * _Data Collection Method_: a SV2 custom proxy located between the Bitcoin node (TP) and SV2 Pool or SV2 Job Declarator Client (JDC) forwards all the traffic and analyze it, extracting the block templates value
-        * _Data Analysis and usage_: block templates value is used to compare it with the SV1 ones and with the current blocks mined on the network
+        * _Description_: Block templates value extracted while mining on SV2 block templates
+        * _Data Collection Method_: SV2 custom proxy located between the Bitcoin node (TP) and SV2 Pool or SV2 Job Declarator Client (JDC) forwards all the traffic and extracts the block templates value
+        * _Data_: total value (subsidy + fees) of a block template in sats
 * **Latency and time measurements**
     * <span style="text-decoration:underline;">Average latency with major pools (RTT)</span>
-        * _Description_: it tracks the average latency with major public pools
-        * _Data Collection Method_: a script automatically computes the latency (round trip time, RTT) by subscribing to a list of public pools, computing the average value, every minute
-        * _Data Analysis and usage_: the computed average latency is read by prometheus, and this value is used to enforce the latency between containerized Pool roles (Pool, Job Declarator Server) and Miner roles (Job Declarator Client, Translator) by using [tc](https://man7.org/linux/man-pages/man8/tc.8.html)
+        * _Description_: Average latency with major public pools
+        * _Data Collection Method_: Every minute a script automatically computes the average latency (round trip time, RTT) for a list of public pools
+        * _Data_: 
+            - computed average latency - used to enforce the latency between containerized Pool roles (Pool, Job Declarator Server) and Miner roles (Job Declarator Client, Translator) by using [tc](https://man7.org/linux/man-pages/man8/tc.8.html)
     * <span style="text-decoration:underline;">SV1 - time to get a new job from Pool</span>
-        * _Description_: it tracks the time it takes to receive a new job from the SV1 Pool
-        * _Data Collection Method_: a SV1 custom proxy located between the miner and the SV1 Pool forwards all the traffic and analyzes it, extracting the new job notifications,  tracking the timestamp. Another custom proxy between the Bitcoin node and the SV1 Pool forwards all the traffic and analyzes it, extracting the new templates sent to the SV1 Pool
-        * _Data Analysis and usage_: the new templates timestamp is read by prometheus, and this value is used to compute the time it took to receive the updated job by the miner
+        * _Description_: Time to receive a new job from the SV1 Pool
+        * _Data Collection Method_: SV1 custom proxy located between the miner and the SV1 Pool extracts new job notifications,  tracking the timestamp. Another custom proxy between the Bitcoin node and the SV1 Pool extracts the new templates sent to the SV1 Pool, tracking the timestamp. The delta of these two times is used to calculate the time to get a new job from Pool
+        * _Data_: time to get new job in milliseconds
     * <span style="text-decoration:underline;">SV2 - time to get a new job from Pool or JDC</span>
-        * _Description_: it tracks the time it takes to receive a new job from the SV2 Pool or SV2 Job Declarator Client (JDC)
-        * _Data Collection Method_: a SV2 custom proxy located between the miner and the SV2 Pool or SV2 Job Declarator Client (JDC) forwards all the traffic and analyzes it, extracting the new job notifications,  tracking the timestamp. Another custom proxy between the Bitcoin node (TP) and the SV2 Pool or SV2 Job Declarator Client (JDC) forwards all the traffic and analyzes it, extracting the NewTemplate message sent to the SV2 Pool or SV2 Job Declarator Client (JDC)
-        * _Data Analysis and usage_: the new templates timestamp is read by prometheus, and this value is used to compute the time it took to receive the updated job by the miner
+        * _Description_: Time to receive a new job from the SV2 Pool or SV2 Job Declarator Client (JDC)
+        * _Data Collection Method_: SV2 custom proxy located between the miner and the SV2 Pool or SV2 Job Declarator Client (JDC) extracts the new job notifications,  tracking the timestamp. Another custom proxy between the Bitcoin node (TP) and the SV2 Pool or SV2 Job Declarator Client (JDC) extracts the NewTemplate message sent to the SV2 Pool or SV2 Job Declarator Client (JDC). The delta of this time is used for measurement.
+        * _Data_: time to get new job in milliseconds
     * <span style="text-decoration:underline;">SV1 - time to get a new job (after a new block found) from Pool</span>
-        * _Description_: it tracks the time it takes to receive a new job from the SV1 Pool
-        * _Data Collection Method_: a SV1 custom proxy located between the miner and the SV1 Pool forwards all the traffic and analyzes it, extracting the new job notifications,  tracking the timestamp. Another custom proxy between the Bitcoin node and the SV1 Pool forwards all the traffic and analyzes it, extracting the new templates (based on a new prev-hash) sent to the SV1 Pool
-        * _Data Analysis and usage_: the new templates timestamp is read by prometheus, and this value is used to compute the time it took to receive the updated job by the miner
+        * _Description_: Time it takes to receive a new job from the SV1 Pool with a new block
+        * _Data Collection Method_: SV1 custom proxy located between the miner and the SV1 Pool extracts new job notifications,  tracking the timestamp. Another custom proxy between the Bitcoin node and the SV1 Pool extracts the new templates (based on a new prev-hash) sent to the SV1 Pool. The delta is recorded and displayed
+        * _Data_: time to get new job in milliseconds
     * <span style="text-decoration:underline;">SV2 - time to get a new job (after a new block found) from Pool or JDC</span>
-        * _Description_: it tracks the time it takes to receive a new job based on a new prev-hash (so after a new block is found in the network) from the SV2 Pool or SV2 Job Declarator Client (JDC)
-        * _Data Collection Method_: a SV2 custom proxy located between the miner and the SV2 Pool or SV2 Job Declarator Client (JDC) forwards all the traffic and analyzes it, extracting the new job notifications,  tracking the timestamp. Another custom proxy between the Bitcoin node (TP) and the SV2 Pool or SV2 Job Declarator Client (JDC) forwards all the traffic and analyzes it, extracting the SetNewPrevHash message sent to the SV2 Pool or SV2 Job Declarator Client (JDC)
-        * _Data Analysis and usage_: the new templates timestamp is read by prometheus, and this value is used to compute the time it took to receive the updated job by the miner
+        * _Description_: time it takes to receive a new job based on a new prev-hash (so after a new block is found in the network) from the SV2 Pool or SV2 Job Declarator Client (JDC)
+        * _Data Collection Method_: SV2 custom proxy located between the miner and the SV2 Pool or SV2 Job Declarator Client (JDC) extracts the new job notifications,  tracking the timestamp. Another custom proxy between the Bitcoin node (TP) and the SV2 Pool or SV2 Job Declarator Client (JDC) extracts the SetNewPrevHash message sent to the SV2 Pool or SV2 Job Declarator Client (JDC). The delta of these times is recorded and displayed.
+        * _Data_: time to get new job in milliseconds
     * <span style="text-decoration:underline;">SV1 block propagation time</span>
-        * _Description_: it tracks the time it takes to propagate a valid block found by the SV1 miner to the Bitcoin network
-        * _Data Collection Method_: a SV1 custom proxy located between the Bitcoin node and the SV1 Pool forwards all the traffic and analyzes it, extracting the block’s submission. Another custom proxy between the miner and the SV1 Pool forwards all the traffic and analyzes it, extracting the shares submission, tracking their timestamp
-        * _Data Analysis and usage_: the shares submission timestamp is read by prometheus, and this value is used to compute the time it took to receive the block submission on the Bitcoin node
+        * _Description_: Time to propagate a valid block found by the SV1 miner to the Bitcoin network
+        * _Data Collection Method_: SV1 custom proxy located between the Bitcoin node and the SV1 Pool extracts a block’s submission. Another custom proxy between the miner and the SV1 Pool extracts the shares submission, tracking their timestamp. The delta of these times is recorded and displayed.
+        * _Data_: time between share submission of found block and when the bitcoin node receives the block in milliseconds
     * <span style="text-decoration:underline;">SV2 block propagation time</span>
-        * _Description_: it tracks the time it takes to propagate a valid block found by the SV2 miner to the Bitcoin network
-        * _Data Collection Method_: a SV2 custom proxy located between the Bitcoin node (TP) and the SV2 Pool or SV2 Job Declarator Client (JDC)  forwards all the traffic and analyzes it, extracting the block's submission. Another custom proxy between the miner and the SV2 Pool or SV2 Job Declarator Client (JDC) forwards all the traffic and analyzes it, extracting the shares submission, tracking the timestamp
-        * _Data Analysis and usage_: the shares submission timestamp is read by prometheus, and this value is used to compute the time it took to receive the block submission on the Bitcoin node
+        * _Description_: Time to propagate a valid block found by the SV2 miner to the Bitcoin network
+        * _Data Collection Method_: SV2 custom proxy located between the Bitcoin node (TP) and the SV2 Pool or SV2 Job Declarator Client (JDC) extracts a block's submission. Another custom proxy between the miner and the SV2 Pool or SV2 Job Declarator Client (JDC) extracts the shares submission, tracking the timestamp. The delta of these times is recorded and displayed.
+        * _Data_: time between share submission of found block and when the bitcoin node receives the block in milliseconds
 * **Bandwidth Usage - Mining Farm Level**
     * <span style="text-decoration:underline;">SV1 - Network Tx</span>
-        * _Description_: it tracks the amount of data transmitted from the SV1 mining farm (machines) to the SV1 Pool.
-        * _Data Collection Method_: [network-traffic-metrics](https://github.com/zaneclaes/network-traffic-metrics) tool (which is based on _tcpdump_) is used to constantly track the number of bytes transmitted between every role included in the testing environment
-        * _Data Analysis and usage_: the output tracked by reporter is then filtered according to the IPs of interested to get the outgoing traffic
+        * _Description_: Amount of data transmitted from the SV1 mining farm (machines) to the SV1 Pool.
+        * _Data Collection Method_: [network-traffic-metrics](https://github.com/zaneclaes/network-traffic-metrics) tool (which is based on _tcpdump_) constantly tracks the number of bytes transmitted between every role included in the testing environment
+        * _Data_: outbound traffic filtered by IP
     * <span style="text-decoration:underline;">SV1 - Network Rx</span>
-        * _Description_: it tracks the amount of data transmitted from the SV1  Pool to the SV1 mining farm (machines)
-        * _Data Collection Method_: [network-traffic-metrics](https://github.com/zaneclaes/network-traffic-metrics) tool (which is based on _tcpdump_) is used to constantly track the number of bytes transmitted between every role included in the testing environment
-        * _Data Analysis and usage_: the output tracked by reporter is then filtered according to the IPs of interested to get the incoming traffic
+        * _Description_: Amount of data transmitted from the SV1  Pool to the SV1 mining farm (machines)
+        * _Data Collection Method_: [network-traffic-metrics](https://github.com/zaneclaes/network-traffic-metrics) tool (which is based on _tcpdump_) constantly tracks the number of bytes transmitted between every role included in the testing environment
+        * _Data_: inbound traffic filtered by IP
     * <span style="text-decoration:underline;">SV2 - Network Tx</span>
-        * _Description_: it tracks the amount of data transmitted from the SV2 mining farm roles (SV2 Translator, SV2 JDC, and TP) to the SV2 Pool, SV2 JDS, and other Bitcoin peers.
-        * _Data Collection Method_: [network-traffic-metrics](https://github.com/zaneclaes/network-traffic-metrics) tool (which is based on _tcpdump_) is used to constantly track the number of bytes transmitted between every role included in the testing environment
-        * _Data Analysis and usage_: the output tracked by reporter is then filtered according to the IPs of interested to get the outgoing traffic
+        * _Description_: Amount of data transmitted from the SV2 mining farm roles (SV2 Translator, SV2 JDC, and TP) to the SV2 Pool, SV2 JDS, and other Bitcoin peers.
+        * _Data Collection Method_: [network-traffic-metrics](https://github.com/zaneclaes/network-traffic-metrics) tool (which is based on _tcpdump_) constantly tracks the number of bytes transmitted between every role included in the testing environment
+        * _Data_: outbound traffic filtered by IP
     * <span style="text-decoration:underline;">SV2 - Network Rx</span>
-        * _Description_: it tracks the amount of data transmitted from the SV2 mining farm roles (SV2 Translator, SV2 JDC, and TP) to the SV2 Pool, SV2 JDS, and other Bitcoin peers.
+        * _Description_: Amount of data transmitted from the SV2 mining farm roles (SV2 Translator, SV2 JDC, and TP) to the SV2 Pool, SV2 JDS, and other Bitcoin peers.
         * _Data Collection Method_: [network-traffic-metrics](https://github.com/zaneclaes/network-traffic-metrics) tool (which is based on _tcpdump_) is used to constantly track the number of bytes transmitted between every role included in the testing environment
-        * _Data Analysis and usage_: the output tracked by reporter is then filtered according to the IPs of interested to get the outgoing traffic
+        * _Data_: inbound traffic filtered by IP
 * **Bandwidth Usage - Pool Level**
     * <span style="text-decoration:underline;">SV1 - Network Tx</span>
         * same as for the aforementioned, but from the Pool’s perspective
@@ -139,48 +156,48 @@ Following the grafana dashboard structure, which wraps all the metrics currently
         * same as for the aforementioned, but from the Pool’s perspective
 * **SV1 roles performances**
     * <span style="text-decoration:underline;">Pool roles - CPU usage</span>
-        * _Description_: it tracks the CPU usage (percentage) due to SV1 roles running as Pool’s infrastructure (SV1 Pool and SV1 Bitcoin node)
+        * _Description_: CPU usage (percentage) of SV1 roles running as Pool’s infrastructure (SV1 Pool and SV1 Bitcoin node)
         * _Data Collection Method_: [cadvisor](https://github.com/google/cadvisor) is used to constantly track the CPU usage of every Docker container 
     * <span style="text-decoration:underline;">Pool roles - memory usage</span>
-        * _Description_: it tracks the memory usage due to SV1 roles running as Pool’s infrastructure (SV1 Pool and SV1 Bitcoin node)
+        * _Description_: Memory usage of SV1 roles running as Pool’s infrastructure (SV1 Pool and SV1 Bitcoin node)
         * _Data Collection Method_: [cadvisor](https://github.com/google/cadvisor) is used to constantly track the memory usage of every Docker container 
     * <span style="text-decoration:underline;">Pool roles - Network Tx</span>
-        * _Description_: it tracks the amount of data transmitted from the  SV1 roles running as Pool’s infrastructure (SV1 Pool and SV1 Bitcoin node)
+        * _Description_: Amount of data transmitted from the SV1 roles running as Pool’s infrastructure (SV1 Pool and SV1 Bitcoin node)
         * _Data Collection Method_: [cadvisor](https://github.com/google/cadvisor) is used to constantly track the bandwidth usage of every Docker container 
-        * _Data Analysis and usage_: since cadvisor tracks metrics on a container level, the total amount of bandwidth measured even includes the one consumed between SV1 Pool and Bitcoin node, which are typically ran in the same network, so it’s not meaningful
+        * _Data_: since cadvisor tracks metrics on a container level, the total amount of bandwidth measured even includes the one consumed between SV1 Pool and Bitcoin node, which are typically ran in the same network, so it’s not meaningful. Infrastructure run on separate networks should observe this metric more closely.
     * <span style="text-decoration:underline;">Pool roles - Network Rx</span> 
-        * _Description_: it tracks the amount of data received by the SV1 roles running as Pool’s infrastructure (SV1 Pool and SV1 Bitcoin node)
+        * _Description_: amount of data received by the SV1 roles running as Pool’s infrastructure (SV1 Pool and SV1 Bitcoin node)
         * _Data Collection Method_: [cadvisor](https://github.com/google/cadvisor) is used to constantly track the bandwidth usage of every Docker container 
-        * _Data Analysis and usage_: since cadvisor tracks metrics on a container level, the total amount of bandwidth measured even includes the one consumed between SV1 Pool and Bitcoin node, which are typically ran in the same network, so it’s not meaningful
+        * _Data_: since cadvisor tracks metrics on a container level, the total amount of bandwidth measured even includes the one consumed between SV1 Pool and Bitcoin node, which are typically ran in the same network, so it’s not meaningful. Infrastructure run on separate networks should observe this metric more closely.
 * **SV2 roles performances**
     * <span style="text-decoration:underline;">Pool roles - CPU usage</span>
-        * _Description_: it tracks the CPU usage (percentage) due to SV2 roles running as Pool’s infrastructure (SV2 Pool, SV2 Bitcoin node (TP), SV2 Job Declarator Server)
+        * _Description_: CPU usage (percentage) due to SV2 roles running as Pool’s infrastructure (SV2 Pool, SV2 Bitcoin node (TP), SV2 Job Declarator Server)
         * _Data Collection Method_: [cadvisor](https://github.com/google/cadvisor) is used to constantly track the CPU usage of every Docker container
     * <span style="text-decoration:underline;">Pool roles - memory usage</span>
-        * _Description_: it tracks the memory usage due to SV2 roles running as Pool’s infrastructure (SV2 Pool, SV2 Bitcoin node (TP), SV2 Job Declarator Server)
+        * _Description_: Memory usage due to SV2 roles running as Pool’s infrastructure (SV2 Pool, SV2 Bitcoin node (TP), SV2 Job Declarator Server)
         * _Data Collection Method_: [cadvisor](https://github.com/google/cadvisor) is used to constantly track the CPU usage of every Docker container
     * <span style="text-decoration:underline;">Pool roles - Network Tx</span>
-        * _Description_: it tracks the amount of data transmitted from the SV2 roles running as Pool’s infrastructure (SV2 Pool, SV2 Bitcoin node (TP), SV2 Job Declarator Server)
+        * _Description_: Amount of data transmitted from the SV2 roles running as Pool’s infrastructure (SV2 Pool, SV2 Bitcoin node (TP), SV2 Job Declarator Server)
         * _Data Collection Method_: [cadvisor](https://github.com/google/cadvisor) is used to constantly track the bandwidth usage of every Docker container 
-        * _Data Analysis and usage_: since cadvisor tracks metrics on a container level, the total amount of bandwidth measured even includes the one consumed between SV2 Pool and Bitcoin node (TP), which are typically ran in the same network, so it’s not meaningful
+        * _Data_: since cadvisor tracks metrics on a container level, the total amount of bandwidth measured even includes the one consumed between SV2 Pool and Bitcoin node (TP), which are typically ran in the same network, so it’s not meaningful. Infrastructure run on separate networks should observe this metric more closely.
     * <span style="text-decoration:underline;">Pool roles - Network Rx</span> 
-        * _Description_: it tracks the amount of data received by the SV2 roles running as Pool’s infrastructure (SV2 Pool, SV2 Bitcoin node (TP), SV2 Job Declarator Server)
+        * _Description_: Amount of data received by the SV2 roles running as Pool’s infrastructure (SV2 Pool, SV2 Bitcoin node (TP), SV2 Job Declarator Server)
         * _Data Collection Method_: [cadvisor](https://github.com/google/cadvisor) is used to constantly track the bandwidth usage of every Docker container 
-        * _Data Analysis and usage_: since cadvisor tracks metrics on a container level, the total amount of bandwidth measured even includes the one consumed between SV2 Pool and Bitcoin node (TP), which are typically ran in the same network, so it’s not meaningful
+        * _Data_: since cadvisor tracks metrics on a container level, the total amount of bandwidth measured even includes the one consumed between SV2 Pool and Bitcoin node (TP), which are typically ran in the same network, so it’s not meaningful. Infrastructure run on separate networks should observe this metric more closely.
     * <span style="text-decoration:underline;">Miner roles - CPU usage</span>
-        * _Description_: it tracks the CPU usage (percentage) due to SV2 roles running as Miner’s infrastructure (SV2 Job Declarator Client, SV2 Bitcoin node (TP), SV2 Translator)
+        * _Description_: CPU usage (percentage) due to SV2 roles running as Miner’s infrastructure (SV2 Job Declarator Client, SV2 Bitcoin node (TP), SV2 Translator)
         * _Data Collection Method_: [cadvisor](https://github.com/google/cadvisor) is used to constantly track the CPU usage of every Docker container
     * <span style="text-decoration:underline;">Miner roles - memory usage</span>
-        * _Description_: it tracks the memory usage due to SV2 roles running as Miner’s infrastructure (SV2 Job Declarator Client, SV2 Bitcoin node (TP), SV2 Translator)
+        * _Description_: memory usage due to SV2 roles running as Miner’s infrastructure (SV2 Job Declarator Client, SV2 Bitcoin node (TP), SV2 Translator)
         * _Data Collection Method_: [cadvisor](https://github.com/google/cadvisor) is used to constantly track the memory usage of every Docker container
     * <span style="text-decoration:underline;">Miner roles - Network Tx</span>
-        * _Description_: it tracks the amount of data transmitted from the SV2 roles running as Miner’s infrastructure (SV2 Job Declarator Client, SV2 Bitcoin node (TP), SV2 Translator)
+        * _Description_: amount of data transmitted from the SV2 roles running as Miner’s infrastructure (SV2 Job Declarator Client, SV2 Bitcoin node (TP), SV2 Translator)
         * _Data Collection Method_: [cadvisor](https://github.com/google/cadvisor) is used to constantly track the bandwidth usage of every Docker container 
-        * _Data Analysis and usage_: since cadvisor tracks metrics on a container level, the total amount of bandwidth measured even includes the one consumed between SV2 Job Declarator Client and Bitcoin node (TP), which are typically ran in the same network, so it’s not meaningful
+        * _Data_: since cadvisor tracks metrics on a container level, the total amount of bandwidth measured even includes the one consumed between SV2 Job Declarator Client and Bitcoin node (TP), which are typically ran in the same network, so it’s not meaningful. Infrastructure run on separate networks should observe this metric more closely.
     * <span style="text-decoration:underline;">Miner roles - Network Rx</span> 
-        * _Description_: it tracks the amount of data received by the SV2 roles running as Miner’s infrastructure (SV2 Job Declarator Client, SV2 Bitcoin node (TP), SV2 Translator)
+        * _Description_: amount of data received by the SV2 roles running as Miner’s infrastructure (SV2 Job Declarator Client, SV2 Bitcoin node (TP), SV2 Translator)
         * _Data Collection Method_: [cadvisor](https://github.com/google/cadvisor) is used to constantly track the bandwidth usage of every Docker container 
-        * _Data Analysis and usage_: since cadvisor tracks metrics on a container level, the total amount of bandwidth measured even includes the one consumed between SV2 Job Declarator Client and Bitcoin node (TP), which are typically ran in the same network, so it’s not meaningful
+        * _Data_: since cadvisor tracks metrics on a container level, the total amount of bandwidth measured even includes the one consumed between SV2 Job Declarator Client and Bitcoin node (TP), which are typically ran in the same network, so it’s not meaningful. Infrastructure run on separate networks should observe this metric more closely.
 * **Host info**
 
     The following metrics are relative to the host machine where the benchmarking tool is running:
@@ -194,42 +211,15 @@ Following the grafana dashboard structure, which wraps all the metrics currently
     * <span style="text-decoration:underline;">Node Memory</span>
 
 
-## Integration and Automation 🐳
-
-**Tool Workflow:** The benchmarking tool's architecture ensures seamless integration and smooth data collection across various components. The workflow is organized as follows:
-
-
-
-1. **Initialization:** All Docker containers, including those for SV1 and SV2 roles, metrics collectors, and supporting tools, are initiated.
-2. **Data Collection:** Custom proxies, cadvisor, Prometheus, and other data collectors start monitoring and gathering metrics as defined in the configurations. These tools capture detailed performance data related to shares, blocks, latency, propagation times, bandwidth usage, and resource consumption.
-3. **Metrics Aggregation:** Prometheus collects and organizes metrics from various collectors into a time-series database. Node Exporter provides additional hardware and kernel-level data to Prometheus.
-4. **Visualization:** Grafana interfaces with Prometheus to present the collected data in interactive and customizable dashboards, allowing users to analyze performance metrics in real-time.
-5. **Report Generation:** The reporter tool fetches data from Grafana dashboards and generates comprehensive PDF reports summarizing the performance insights.
-
-**Automation:** To streamline the benchmarking process, automation is employed at various stages:
-
-
-
-1. **Container Management:** Docker Compose scripts are used to manage the lifecycle of all Docker containers, ensuring they are correctly started, stopped, and restarted as necessary.
-2. **Data Collection Automation:** Custom scripts and Prometheus configuration files automate the data collection process. These scripts ensure continuous and accurate monitoring by scheduling regular data pulls and pushing metrics into the Prometheus database.
-3. **Latency Measurement:** A script automatically computes average latency with major public pools by periodically subscribing to these pools and recording round trip times (RTT).
-4. **Data Analysis Automation:** Prometheus rules and alerting configurations automatically analyze collected metrics, identifying trends, anomalies, and key performance indicators.
-5. **Report Automation:** The reporter tool is configured to automatically generate PDF reports at predefined intervals or upon completion of specific benchmarking scenarios, ensuring timely delivery of insights.
-6. **Network Emulation:** Traffic control (tc) configurations enforce network latency between containerized components, simulating real-world conditions for accurate benchmarking.
-
-By leveraging these automation techniques, the benchmarking tool minimizes manual intervention, ensuring a reliable and efficient benchmarking process that provides consistent and accurate performance insights for both Stratum V1 and Stratum V2 protocols.
-
-
 ## Results and Interpretation 📊
 
-<span style="text-decoration:underline;">Setup for Benchmarking:</span> For the benchmarking, Configuration A and Configuration C were utilized, each running for a duration of **16.5 hours**. In both cases, **two CPU miners** were connected to the **SV1 endpoint** and **two CPU miners** to the **SV2 endpoint**, all operating on the **testnet4** network. Both SV1 Pool and SV2 Job Declarator Client (JDC) were producing new block **templates every 60 seconds**. All the system was running on a mac equipped with a 4GHz Quad-Core Intel Core i7 processor and a 16 GB 1600 MHz DDR3 memory.
+<span style="text-decoration:underline;">Recommended Context:</span> When analyzing results, it is important to also note which Sv2 configuration(s) were used (Config A or C), as well as the length of the test, what devices outside of the benchmarking tool were used (ASICs vs CPU miners), what bitcoin network was used (i.e. mainnet, testnet4), as well as specification for the machine running the suite of benchmarking tools (i.e. MacOS on a 4GHz Quad-Core Intel Core i7 processor with 16 GB 1600 MHz DDR3 memory)
 
-<span style="text-decoration:underline;">Interpretation of Results:</span> To make informed decisions based on the presented results, consider the following analysis which can be used as guidelines for future benchmarks.
+<span style="text-decoration:underline;">Example Context:</span> For the benchmarking, Configuration A and Configuration C were utilized, each running for a duration of **16.5 hours**. In both cases, **two CPU miners** were connected to the **SV1 endpoint** and **two CPU miners** to the **SV2 endpoint**, all operating on the **testnet4** network. Both SV1 Pool and SV2 Job Declarator Client (JDC) were producing new block **templates every 60 seconds**. All the system was running on a mac equipped with a 4GHz Quad-Core Intel Core i7 processor and a 16 GB 1600 MHz DDR3 memory.
 
-
+<span style="text-decoration:underline;">Interpretation of Results:</span> To make informed decisions based on the presented results, consider the following analysis which can be used as guidelines for future benchmarks. The example context above was used to generate the following results.
 
 ## **Configuration A Analysis:**
-
 
 ### **_Shares, blocks and templates stats_**
 
@@ -316,7 +306,7 @@ Considering a **template refresh interval** of **60s** (as in this benchmark), i
 
 **Analysis**: 
 
-No blocks have been found by both SV1 and SV2 pools, so no particular comment for this benchmark. A more specific analysis on this comparison will be done in a future more specific benchmark done with asic miners.
+No blocks have been found by both SV1 and SV2 pools, so no particular comment for this benchmark. A more specific analysis on this comparison will be done in a future more specific benchmark done with ASIC miners.
 
 
 ### **_Bandwidth Usage - Mining Farm Level_**
@@ -374,8 +364,6 @@ The presence of proxies which aggregates downstream connections miner side drast
 
 
 ## **Configuration C Analysis:**
-
-
 
 ### **_Shares, blocks and templates stats_**
 
