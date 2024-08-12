@@ -182,8 +182,10 @@ else
     echo -e "NETWORK=$NETWORK\nSV2_INTERVAL=$SV2_INTERVAL" > "$ENV_FILE"
 fi
 
+# Convert CONFIG to lowercase for the filename
+CONFIG_LOWER=$(echo "$CONFIG" | tr '[:upper:]' '[:lower:]')
 # Start docker container with the appropriate compose file
-docker compose -f "docker-compose-config-${CONFIG}.yaml" up -d
+docker compose -f "docker-compose-config-${CONFIG_LOWER}.yaml" up -d
 
 # Display final messages
 echo ""
