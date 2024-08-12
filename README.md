@@ -153,6 +153,13 @@ If you prefer to set up the benchmarking tool manually, follow these detailed st
 
     👉 it will take some minutes to generate a complete PDF, so please be patient :) 
 
+
+7. **Analize report** 📄
+  
+    To effectively analyze the report produced by this tool, it is recommended to review the following document that explains the tool's architecture, the methodology for metrics collection, and provides guidelines for analyzing the report: https://github.com/stratum-mining/benchmarking-tool/tree/main/docs/benchmarking-tool-overview.pdf
+
+    This comprehensive document will help you understand the data and draw meaningful conclusions from your benchmarking results.
+
   <br>
 
 7.  **Download Logs from the Grafana Dashboard**
@@ -164,6 +171,7 @@ If you prefer to set up the benchmarking tool manually, follow these detailed st
       3. The logs will be downloaded as a .tar file.
 
     To check logs of the containers and if facing any issues and want help, kindly share the logs in the [benchmarking channel on Discord](https://discord.com/channels/950687892169195530/1107964065936060467).
+
 
 
 ## 🛣 Roadmap 
