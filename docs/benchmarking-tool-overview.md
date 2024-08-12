@@ -213,7 +213,7 @@ Following the grafana dashboard structure, the following lists measurements with
 
 ## Results and Interpretation 📊
 
-<span style="text-decoration:underline;">Recommended Context:</span> When analyzing results, it is important to also note which Sv2 configuration(s) were used (Config A or C), as well as the length of the test, what devices outside of the benchmarking tool were used (ASICs vs CPU miners), what bitcoin network was used (i.e. mainnet, testnet4), as well as specification for the machine running the suite of benchmarking tools (i.e. MacOS on a 4GHz Quad-Core Intel Core i7 processor with 16 GB 1600 MHz DDR3 memory)
+<span style="text-decoration:underline;">Recommended Context:</span> When analyzing results, it is important to also note which SV2 configuration(s) were used (Config A or C), as well as the length of the test, what devices outside of the benchmarking tool were used (ASICs vs CPU miners), what bitcoin network was used (i.e. mainnet, testnet4), as well as specification for the machine running the suite of benchmarking tools (i.e. MacOS on a 4GHz Quad-Core Intel Core i7 processor with 16 GB 1600 MHz DDR3 memory)
 
 <span style="text-decoration:underline;">Example Context:</span> For the benchmarking, Configuration A and Configuration C were utilized, each running for a duration of **16.5 hours**. In both cases, **two CPU miners** were connected to the **SV1 endpoint** and **two CPU miners** to the **SV2 endpoint**, all operating on the **testnet4** network. Both SV1 Pool and SV2 Job Declarator Client (JDC) were producing new block **templates every 60 seconds**. All the system was running on a mac equipped with a 4GHz Quad-Core Intel Core i7 processor and a 16 GB 1600 MHz DDR3 memory.
 
