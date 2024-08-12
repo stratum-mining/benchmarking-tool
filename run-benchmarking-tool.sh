@@ -131,8 +131,13 @@ CONFIG_FILES=(
     "custom-configs/sri-roles/config-c/pool-config-c-docker-example.toml"
 )
 
+HASHRATE_CONFIG_FILES=(
+    "custom-configs/sri-roles/config-a/tproxy-config-a-docker-example.toml"
+    "custom-configs/sri-roles/config-c/tproxy-config-c-docker-example.toml"
+)
+
 # Update the TOML files with the new hashrate value, keeping underscores
-for config_file in "${CONFIG_FILES[@]}"; do
+for config_file in "${HASHRATE_CONFIG_FILES[@]}"; do
     if [[ "$OSTYPE" == "darwin"* ]]; then
         # macOS uses -i '' for in-place editing
         sed -i '' "s/min_individual_miner_hashrate = [0-9_]*\.0/min_individual_miner_hashrate = $hashrate/" "$config_file"
