@@ -273,6 +273,7 @@
         "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
@@ -521,6 +522,7 @@
         "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
@@ -535,7 +537,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.0.0",
+      "pluginVersion": "11.1.3",
       "targets": [
         {
           "datasource": {
@@ -629,6 +631,7 @@
         "y": 11
       },
       "id": 75,
+      "interval": "15s",
       "options": {
         "legend": {
           "calcs": [
@@ -738,6 +741,7 @@
         "y": 11
       },
       "id": 93,
+      "interval": "15s",
       "options": {
         "legend": {
           "calcs": [
@@ -847,6 +851,7 @@
         "y": 19
       },
       "id": 94,
+      "interval": "15s",
       "options": {
         "legend": {
           "calcs": [
@@ -969,7 +974,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1001,6 +1007,7 @@
         "y": 28
       },
       "id": 95,
+      "interval": "15s",
       "options": {
         "legend": {
           "calcs": [
@@ -1057,7 +1064,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "(last_sv2_template_value - last_block_mined_value) / last_block_mined_value * 100",
+          "expr": "(last_sv2_template_value > 0 - last_block_mined_value) / last_block_mined_value * 100",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
@@ -1136,7 +1143,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1245,7 +1253,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1264,6 +1273,7 @@
         "y": 45
       },
       "id": 83,
+      "interval": "15s",
       "options": {
         "legend": {
           "calcs": [
@@ -1354,7 +1364,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1373,6 +1384,7 @@
         "y": 45
       },
       "id": 84,
+      "interval": "15s",
       "options": {
         "legend": {
           "calcs": [
@@ -1463,7 +1475,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1482,6 +1495,7 @@
         "y": 52
       },
       "id": 85,
+      "interval": "15s",
       "options": {
         "legend": {
           "calcs": [
@@ -1572,7 +1586,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1591,6 +1606,7 @@
         "y": 52
       },
       "id": 86,
+      "interval": "15s",
       "options": {
         "legend": {
           "calcs": [
@@ -1681,7 +1697,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1700,6 +1717,7 @@
         "y": 59
       },
       "id": 87,
+      "interval": "15s",
       "options": {
         "legend": {
           "calcs": [
@@ -1790,7 +1808,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1809,6 +1828,7 @@
         "y": 59
       },
       "id": 88,
+      "interval": "15s",
       "options": {
         "legend": {
           "calcs": [
@@ -1899,7 +1919,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1918,6 +1939,7 @@
         "y": 66
       },
       "id": 89,
+      "interval": "15s",
       "options": {
         "legend": {
           "calcs": [
@@ -2040,7 +2062,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -2059,6 +2082,7 @@
         "y": 76
       },
       "id": 90,
+      "interval": "15s",
       "options": {
         "legend": {
           "calcs": [
@@ -2181,7 +2205,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -2200,6 +2225,7 @@
         "y": 86
       },
       "id": 91,
+      "interval": "15s",
       "options": {
         "legend": {
           "calcs": [
@@ -2335,7 +2361,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -2354,6 +2381,7 @@
         "y": 97
       },
       "id": 65,
+      "interval": "15s",
       "options": {
         "legend": {
           "calcs": [
@@ -2457,7 +2485,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -2476,6 +2505,7 @@
         "y": 97
       },
       "id": 60,
+      "interval": "15s",
       "options": {
         "legend": {
           "calcs": [
@@ -2579,7 +2609,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -2598,6 +2629,7 @@
         "y": 107
       },
       "id": 64,
+      "interval": "15s",
       "options": {
         "legend": {
           "calcs": [
@@ -2700,7 +2732,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -2719,6 +2752,7 @@
         "y": 107
       },
       "id": 59,
+      "interval": "15s",
       "options": {
         "legend": {
           "calcs": [
@@ -2821,7 +2855,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -2840,6 +2875,7 @@
         "y": 117
       },
       "id": 69,
+      "interval": "15s",
       "options": {
         "legend": {
           "calcs": [
@@ -2959,7 +2995,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -2978,6 +3015,7 @@
         "y": 127
       },
       "id": 70,
+      "interval": "15s",
       "options": {
         "legend": {
           "calcs": [
@@ -3110,7 +3148,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -3129,6 +3168,7 @@
         "y": 138
       },
       "id": 63,
+      "interval": "15s",
       "options": {
         "legend": {
           "calcs": [
@@ -3249,7 +3289,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -3268,6 +3309,7 @@
         "y": 138
       },
       "id": 57,
+      "interval": "15s",
       "options": {
         "legend": {
           "calcs": [
@@ -3390,7 +3432,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -3409,6 +3452,7 @@
         "y": 148
       },
       "id": 66,
+      "interval": "15s",
       "options": {
         "legend": {
           "calcs": [
@@ -3528,7 +3572,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -3547,6 +3592,7 @@
         "y": 148
       },
       "id": 62,
+      "interval": "15s",
       "options": {
         "legend": {
           "calcs": [
@@ -3666,7 +3712,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -3685,6 +3732,7 @@
         "y": 158
       },
       "id": 67,
+      "interval": "15s",
       "options": {
         "legend": {
           "calcs": [
@@ -3804,7 +3852,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -3823,6 +3872,7 @@
         "y": 168
       },
       "id": 68,
+      "interval": "15s",
       "options": {
         "legend": {
           "calcs": [
@@ -3955,7 +4005,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -4086,7 +4137,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -4217,7 +4269,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -4348,7 +4401,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -6029,7 +6083,6 @@
       "type": "timeseries"
     }
   ],
-  "refresh": "5s",
   "schemaVersion": 39,
   "tags": [
     "docker",
@@ -6041,7 +6094,7 @@
     "list": []
   },
   "time": {
-    "from": "now-1h",
+    "from": "now-15m",
     "to": "now"
   },
   "timepicker": {
@@ -6072,6 +6125,6 @@
   "timezone": "browser",
   "title": "SRI benchmarking tool",
   "uid": "64nrElFmk",
-  "version": 42,
+  "version": 45,
   "weekStart": ""
 }
