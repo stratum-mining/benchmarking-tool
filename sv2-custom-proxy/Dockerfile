@@ -1,6 +1,7 @@
 FROM rust:1.75 as builder
 WORKDIR usr/src/sv2-custom-proxy
 COPY ./sv2-custom-proxy .
+COPY ./../Cargo.lock ./
 RUN cargo build --release
 
 FROM rust:1.75

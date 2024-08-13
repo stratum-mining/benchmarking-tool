@@ -2,5 +2,3 @@ debug/
 target/
 
 *-DB/
-
-Cargo.lock
