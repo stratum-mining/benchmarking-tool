@@ -1,0 +1,86 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  clippy:
+    name: Clippy Lint
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          profile: minimal
+          override: true
+
+      - name: Run Clippy
+        run: cargo clippy --workspace --all-targets -- -D warnings
+
+  fmt:
+    name: Rust Format Check
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          profile: minimal
+          override: true
+
+      - name: Run rustfmt
+        run: cargo fmt -- --check
+
+  docker_build:
+    name: Docker Build
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Docker (Ubuntu)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker.io
+          sudo systemctl start docker
+          sudo systemctl enable docker
+
+      - name: Set up Docker (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          brew install --cask docker
+          open /Applications/Docker.app
+          while ! docker system info > /dev/null 2>&1; do sleep 1; done
+
+      - name: Build Docker Images
+        run: |
+          docker build -t log-server ./log-server
+          docker build -t pools-latency-calculator ./pools-latency-calculator
+          docker build -t sv1-custom-proxy ./sv1-custom-proxy
+          docker build -t sv2-custom-proxy ./sv2-custom-proxy
+          docker build -f sv1-public-pool.dockerfile -t sv1-public-pool .
+          docker build -f template-provider.dockerfile -t template-provider .
+          docker build -f sv2-roles.dockerfile -t sv2-roles .
+          docker build -f pools-latency-calculator.dockerfile -t pools-latency-calculator .
