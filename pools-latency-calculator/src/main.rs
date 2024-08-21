@@ -30,7 +30,7 @@ async fn subscribe_to_pool(mut stream: TcpStream) -> Result<Duration, std::io::E
     let start = Instant::now();
     stream.write_all(subscribe_msg.as_bytes()).await?;
     let mut buffer = vec![0; 2028];
-    stream.read(&mut buffer).await?;
+    stream.read_exact(&mut buffer).await?;
     Ok(start.elapsed())
 }
 

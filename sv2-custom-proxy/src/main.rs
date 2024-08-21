@@ -12,6 +12,7 @@ use prometheus::{
 use reqwest::Client;
 use serde_json::Value;
 use std::env;
+use std::fmt::Write;
 use std::net::ToSocketAddrs;
 use std::time::SystemTime;
 use tokio::net::TcpStream;
@@ -296,7 +297,11 @@ async fn connect_to_server(server_address: &str) -> TcpStream {
 }
 
 pub fn encode_hex(bytes: &[u8]) -> String {
-    bytes.iter().map(|b| format!("{:02x}", b)).collect()
+    let hex_string = bytes.iter().fold(String::new(), |mut acc, b| {
+        write!(&mut acc, "{:02x}", b).unwrap();
+        acc
+    });
+    hex_string
 }
 
 fn reverse_hash(hash: &str) -> String {
@@ -593,7 +598,7 @@ async fn intercept_submit_solution(
                 .expect("Time went backwards")
                 .as_millis() as f64;
             let id = m.header_nonce;
-            let url = format!("http://10.5.0.17:3456/metrics");
+            let url = "http://10.5.0.17:3456/metrics".to_string();
             if let Ok(response) = client.get(&url).send().await {
                 if let Ok(body) = response.text().await {
                     // Simple parsing to find the metric for the specific nonce

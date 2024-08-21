@@ -6,6 +6,7 @@ use reqwest::Client;
 use serde::Deserialize;
 use std::collections::HashMap;
 use std::env;
+use std::fmt::Write;
 use tar::Builder;
 use warp::http::Response;
 use warp::hyper::Body;
@@ -21,12 +22,14 @@ struct Data {
     result: Vec<ResultItem>,
 }
 
+#[allow(dead_code)]
 #[derive(Deserialize, Debug)]
 struct ResultItem {
     stream: Stream,
     values: Vec<(String, String)>,
 }
 
+#[allow(dead_code)]
 #[derive(Deserialize, Debug)]
 struct Stream {
     container: String,
@@ -151,7 +154,7 @@ async fn get_containers(log_label: &str) -> Result<Vec<String>, Box<dyn std::err
         .filter_map(|container| {
             container.names.and_then(|names| {
                 names
-                    .get(0)
+                    .first()
                     .map(|name| name.trim_start_matches('/').to_string())
             })
         })
@@ -182,8 +185,10 @@ async fn fetch_logs(
 
     let formatted_logs: String = logs
         .into_iter()
-        .map(|(_, message)| format!("{}\n", message))
-        .collect();
+        .fold(String::new(), |mut acc, (_, message)| {
+            writeln!(&mut acc, "{}", message).unwrap();
+            acc
+        });
 
     info!("Fetched logs for container: {}", container);
     Ok(formatted_logs)

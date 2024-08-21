@@ -15,6 +15,7 @@ use tokio::net::{TcpListener, TcpStream};
 use tokio::time::{sleep, Duration};
 use warp::Filter;
 
+#[allow(clippy::too_many_arguments)]
 async fn transfer(
     mut inbound: TcpStream,
     mut outbound: TcpStream,
@@ -112,7 +113,7 @@ async fn transfer(
                                                 if let Some(value) = line.chars().nth(start) {
                                                     if value != 's' {
                                                         if let Some((_, timestamp)) =
-                                                            line.rsplit_once(" ")
+                                                            line.rsplit_once(' ')
                                                         {
                                                             println!(
                                                                 "The extracted timestamp is: {}",
@@ -129,24 +130,22 @@ async fn transfer(
                                                         } else {
                                                             println!("No timestamp value found.");
                                                         }
+                                                    } else if let Some((_, timestamp)) =
+                                                        line.rsplit_once(' ')
+                                                    {
+                                                        println!(
+                                                            "The extracted timestamp is: {}",
+                                                            timestamp.trim()
+                                                        );
+                                                        let new_job_timestamp = timestamp
+                                                            .trim()
+                                                            .parse::<f64>()
+                                                            .unwrap();
+                                                        let delta =
+                                                            current_timestamp - new_job_timestamp;
+                                                        new_job_gauge.set(delta);
                                                     } else {
-                                                        if let Some((_, timestamp)) =
-                                                            line.rsplit_once(" ")
-                                                        {
-                                                            println!(
-                                                                "The extracted timestamp is: {}",
-                                                                timestamp.trim()
-                                                            );
-                                                            let new_job_timestamp = timestamp
-                                                                .trim()
-                                                                .parse::<f64>()
-                                                                .unwrap();
-                                                            let delta = current_timestamp
-                                                                - new_job_timestamp;
-                                                            new_job_gauge.set(delta);
-                                                        } else {
-                                                            println!("No timestamp value found.");
-                                                        }
+                                                        println!("No timestamp value found.");
                                                     }
                                                 }
                                             }
@@ -182,6 +181,7 @@ async fn transfer(
     Ok(())
 }
 
+#[allow(unused_assignments)]
 async fn handle_rpc_request(
     req: Request<Body>,
     forward_uri: Uri,
@@ -228,7 +228,7 @@ async fn handle_rpc_request(
                                 };
                                 let nonce_value = &line[start..end];
                                 // Decode the nonce hex string into bytes
-                                let nonce_bytes_result = hex::decode(&nonce_value);
+                                let nonce_bytes_result = hex::decode(nonce_value);
                                 let nonce_bytes = match nonce_bytes_result {
                                     Ok(bytes) => bytes,
                                     Err(e) => {
@@ -339,12 +339,12 @@ async fn handle_rpc_request(
                             .expect("Time went backwards")
                             .as_millis() as f64;
                         sv1_new_job_vec
-                            .with_label_values(&[&prev_hash, &flag])
+                            .with_label_values(&[&prev_hash, flag])
                             .set(current_timestamp);
                         tokio::spawn(async move {
                             sleep(Duration::from_secs(1)).await;
                             // Remove the metric from Prometheus
-                            let _ = sv1_new_job_vec.remove_label_values(&[&prev_hash, &flag]);
+                            let _ = sv1_new_job_vec.remove_label_values(&[&prev_hash, flag]);
                         });
                         // Take the coinbase value and set the block template value metric
                         if let Some(coinbasevalue) = result.get("coinbasevalue") {
@@ -628,17 +628,16 @@ async fn transfer_new_job(
                                 if let Ok(response) = client.get(prometheus_url).send().await {
                                     if let Ok(body) = response.text().await {
                                         for line in body.lines() {
-                                            println!("LINE: {:?}", line);
                                             if let Some(start_index) = line.find("prevhash=") {
                                                 let start = start_index + "prevhash=\"".len();
-                                                let _end = match line[start..].find("\"") {
+                                                let _end = match line[start..].find('"') {
                                                     Some(index) => start + index,
                                                     None => {
                                                         println!("Failed to find end quote for prevhash in line: {}", line);
                                                         continue;
                                                     }
                                                 };
-                                                if let Some((_, timestamp)) = line.rsplit_once(" ")
+                                                if let Some((_, timestamp)) = line.rsplit_once(' ')
                                                 {
                                                     let new_job_timestamp =
                                                         timestamp.trim().parse::<f64>().unwrap();
@@ -658,8 +657,8 @@ async fn transfer_new_job(
                                                     println!("No timestamp value found.");
                                                 }
                                             }
-                                            if let Some(_) = line.find("id=") {
-                                                if let Some((_, timestamp)) = line.rsplit_once(" ")
+                                            if line.contains("id=") {
+                                                if let Some((_, timestamp)) = line.rsplit_once(' ')
                                                 {
                                                     println!(
                                                         "Current timestamp: {:?}",
