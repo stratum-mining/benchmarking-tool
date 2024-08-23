@@ -1,4 +1,4 @@
-FROM --platform=linux/amd64 debian:stable-slim as build
+FROM debian:stable-slim as build
 
 # Install & update base system
 RUN apt-get update && apt-get upgrade -y
@@ -13,8 +13,15 @@ ENV BITCOIN_DIR=/bitcoin
 # Create the directory where Bitcoin Core will be installed
 RUN mkdir -p $BITCOIN_DIR
 
-# Download the selected binary release of Bitcoin Core
-RUN wget https://github.com/Sjors/bitcoin/releases/download/$BITCOIN_VERSION/bitcoin-$BITCOIN_VERSION-x86_64-linux-gnu.tar.gz -O /tmp/bitcoin.tar.gz
+RUN ARCH=$(dpkg --print-architecture) && \
+    if [ "$ARCH" = "amd64" ]; then \
+        BITCOIN_URL=https://github.com/Sjors/bitcoin/releases/download/$BITCOIN_VERSION/bitcoin-$BITCOIN_VERSION-x86_64-linux-gnu.tar.gz; \
+    elif [ "$ARCH" = "arm64" ]; then \
+        BITCOIN_URL=https://github.com/Sjors/bitcoin/releases/download/$BITCOIN_VERSION/bitcoin-$BITCOIN_VERSION-aarch64-linux-gnu.tar.gz; \
+    else \
+        echo "Unsupported architecture"; exit 1; \
+    fi && \
+    wget $BITCOIN_URL -O /tmp/bitcoin.tar.gz
 
 # Extract the downloaded tarball
 RUN tar -xzvf /tmp/bitcoin.tar.gz -C $BITCOIN_DIR --strip-components=1
