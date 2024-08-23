@@ -22,17 +22,9 @@ struct Data {
     result: Vec<ResultItem>,
 }
 
-#[allow(dead_code)]
 #[derive(Deserialize, Debug)]
 struct ResultItem {
-    stream: Stream,
     values: Vec<(String, String)>,
-}
-
-#[allow(dead_code)]
-#[derive(Deserialize, Debug)]
-struct Stream {
-    container: String,
 }
 
 #[tokio::main]

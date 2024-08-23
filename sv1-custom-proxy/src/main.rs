@@ -181,7 +181,7 @@ async fn transfer(
     Ok(())
 }
 
-#[allow(unused_assignments)]
+
 async fn handle_rpc_request(
     req: Request<Body>,
     forward_uri: Uri,
@@ -319,7 +319,6 @@ async fn handle_rpc_request(
 
     if let Ok(json) = serde_json::from_slice::<Value>(&body_bytes) {
         if is_get_block_template {
-            is_get_block_template = false;
 
             if let Some(result) = json.get("result") {
                 if let Some(previousblockhash) = result.get("previousblockhash") {
