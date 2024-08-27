@@ -3,7 +3,7 @@
 
 First off, thank you for taking the time to contribute! ❤️
 
-All types of contributions are encouraged and valued. Please refer to the [Table of Contents](#table-of-contents) for various ways you can help and details on how this project handles contributions. Be sure to read the relevant sections before contributing—it will make things easier for us maintainers and provide a smoother experience for everyone involved. The community looks forward to your contributions! 🎉
+All types of contributions are encouraged and valued. Please refer to the [Table of Contents](#table-of-contents) for various ways you can help and details on how this project handles contributions. Be sure to read the relevant sections before contributing, it will make things easier for us maintainers and provide a smoother experience for everyone involved. The community looks forward to your contributions! 🎉
 
 > If you like the project but don’t have time to contribute, that's perfectly fine. There are other simple ways to support the project and show your appreciation, which we would greatly appreciate:
 > - Star the project
@@ -25,8 +25,7 @@ All types of contributions are encouraged and valued. Please refer to the [Table
 
 > Before asking a question, please ensure you’ve read the documentation available in the `docs` directory.
 
-The best way to ask a question is to join our community [Discord](https://discord.com/invite/fsEW23wFYs). The most suitable place to post your question is:
-- #benchmarking-tool
+The best way to ask a question is by joining our community on [Discord](https://discord.com/invite/fsEW23wFYs). The most suitable place to post your question is `#benchmarking-tool`
 
 If you still need clarification after that, we recommend the following:
 
@@ -49,7 +48,7 @@ Our development calls are scheduled every Tuesday at 18:00 CET. You can see them
 
 ### Contribution Workflow
 
-The SRI project follows an open contributor model, where anyone is welcome to contribute through reviews, documentation, testing, and patches. Follow these steps to contribute:
+The project follows an open contributor model, where anyone is welcome to contribute through reviews, documentation, testing, and patches. Follow these steps to contribute:
 
 1. **Fork the Repository**
 
@@ -61,7 +60,7 @@ The SRI project follows an open contributor model, where anyone is welcome to co
 
 4. **Commit Your Changes**
 
-5. **Submit a Pull Request**: Once you're satisfied with your changes, submit a pull request to the original SRI repository. Provide a clear and concise description of the changes you've made. If your pull request addresses an existing issue, reference the issue number in the description. To contribute to the protocol implementation, every PR must be opened against the `dev` branch. To better understand the SRI branch structure, please refer to [this guide](https://github.com/stratum-mining/stratum/blob/main/RELEASE.md#principal-branches).
+5. **Submit a Pull Request**: Once you're satisfied with your changes, submit a pull request to the repository. Provide a clear and concise description of the changes you've made. If your pull request addresses an existing issue, reference the issue number in the description. To contribute to the protocol implementation, every PR must be opened against the `main` branch. To better understand the branch structure, please refer to [this guide](https://github.com/stratum-mining/stratum/blob/main/RELEASE.md#principal-branches).
 
 6. **Review and Iterate**
 
@@ -74,3 +73,7 @@ The SRI project follows an open contributor model, where anyone is welcome to co
 Not sure where to start contributing to SRI? You can begin by looking through issues labeled `good first issue`:
 
 * [Good first issue](https://github.com/stratum-mining/benchmarking-tool/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) - These issues typically require only a few lines of code and a test or two.
+
+* [Help wanted](https://github.com/stratum-mining/benchmarking-tool/labels/help%20wanted) - issues which should be a bit more involved than good first issue issues.
+
+Another way to better understand where to focus your contribution is by looking at our roadmap: https://docs.google.com/document/d/1CqcvsxGugFjWy4e4Yf6PjxCs2O4puwlFBO6M0TRL4qE/edit#heading=h.adukd8mh74q7
