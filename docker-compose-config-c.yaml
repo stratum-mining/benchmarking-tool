@@ -336,9 +336,10 @@ services:
     image: inzania/network-traffic-metrics:latest
     network_mode: host
     container_name: monitor-traffic-tcpdump
+    platform: linux/amd64
     environment:
       - "NTM_INTERFACE=any"
-      - "NTM_FILTERS="
+      - "NTM_FILTERS=" 
 
   prometheus:
     image: prom/prometheus:v2.36.2
@@ -448,6 +449,7 @@ services:
     image: izakmarais/grafana-reporter:${gr_version:-latest}
     command: "-ip grafana:3000 -grid-layout=1"
     container_name: reporter
+    platform: linux/amd64
     depends_on:
       - grafana
     ports:
