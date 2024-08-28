@@ -1,0 +1,14 @@
+#!/bin/sh
+cargo fmt -- --check
+if [ $? -ne 0 ]; then
+  echo "Rustfmt failed. Please format your code."
+  exit 1
+fi
+
+cargo clippy --workspace --all-targets -- -D warnings
+if [ $? -ne 0 ]; then
+  echo "Clippy found issues. Please fix them."
+  exit 1
+fi
+
+echo "All checks passed. Proceeding with push..."
