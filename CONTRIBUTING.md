@@ -76,4 +76,4 @@ Not sure where to start contributing to SRI? You can begin by looking through is
 
 * [Help wanted](https://github.com/stratum-mining/benchmarking-tool/labels/help%20wanted) - issues which should be a bit more involved than good first issue issues.
 
-Another way to better understand where to focus your contribution is by looking at our roadmap: https://docs.google.com/document/d/1CqcvsxGugFjWy4e4Yf6PjxCs2O4puwlFBO6M0TRL4qE/edit#heading=h.adukd8mh74q7
+Another way to better understand where to focus your contribution is by looking at our project board: https://github.com/orgs/stratum-mining/projects/10
