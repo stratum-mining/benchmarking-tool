@@ -1,5 +1,3 @@
-version: "3"
-
 volumes:
   prometheus_data_config_c:
   grafana_data_config_c:
@@ -236,6 +234,7 @@ services:
     container_name: sv2-translator-miner-proxy
     depends_on:
       - sv1-custom-proxy-builder
+      - translator
     restart: unless-stopped
     networks:
       sv2-net:
@@ -258,6 +257,8 @@ services:
     restart: unless-stopped
     environment:
       - NODE_ENV=production
+    depends_on:
+      - sv1-node-pool-proxy
     networks:
       sv2-net:
         ipv4_address: 10.5.0.8

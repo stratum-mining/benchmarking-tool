@@ -1,5 +1,3 @@
-version: "3"
-
 volumes:
   prometheus_data_config_a:
   grafana_data_config_a:
