@@ -125,7 +125,6 @@ services:
       dockerfile: ./sv1-ckpool.dockerfile
     ports:
       - "3332:3332"
-      - "3333:3333"
     volumes:
       - "./conf:/ckpool-solo/src/conf"
     restart: unless-stopped
@@ -341,7 +340,7 @@ services:
       - "4567:4567"
     environment:
       - SERVER=http://10.5.0.16:18332
-      - CLIENT=0.0.0.0:48330
+      - CLIENT=10.5.0.21:18332
       - PROM_ADDRESS=10.5.0.21:4567
       - PROXY_TYPE=node-pool
     container_name: sv1-node-pool-proxy

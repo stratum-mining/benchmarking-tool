@@ -57,7 +57,7 @@ FROM ubuntu:latest
 ARG REPO=ckpool-solo
 ARG BRANCH=solobtc
 ARG REPO_URL=https://bitbucket.org/ckolivas/${REPO}.git
-# ARG REPO_URL=https://github.com/golden-guy/${REPO}.git
+
 
 RUN apt-get update && apt-get install -y autoconf automake libtool build-essential git yasm libzmq3-dev libcap2-bin pkgconf
 
@@ -70,7 +70,5 @@ COPY conf/ckpool.conf .
 RUN ./autogen.sh && ./configure && make
 
 WORKDIR ./src 
-
-EXPOSE 3333
 
 CMD ["./ckpool","-B","-k", "-c", "./conf/ckpool.conf"]

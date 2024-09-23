@@ -365,7 +365,6 @@ services:
       dockerfile: ./sv1-ckpool.dockerfile
     ports:
       - "3332:3332"
-      - "3333:3333"
     volumes:
       - "./conf:/ckpool-solo/src/conf"
     restart: unless-stopped
@@ -393,14 +392,14 @@ services:
       - "3333:3333"
       - "2345:2345"
     environment:
-      - SERVER=10.5.0.8:3332
+      - SERVER=10.5.0.40:3332
       - CLIENT=0.0.0.0:3333
       - PROM_ADDRESS=10.5.0.19:2345
       - PROXY_TYPE=pool-miner
     container_name: sv1-pool-miner-proxy
     depends_on:
       - sv1-custom-proxy-builder
-      - sv1-pool
+      - sv1-ckpool
     restart: unless-stopped
     networks:
       sv2-net:
@@ -418,7 +417,7 @@ services:
       - "4567:4567"
     environment:
       - SERVER=http://10.5.0.16:18332
-      - CLIENT=0.0.0.0:48330
+      - CLIENT=10.5.0.21:18332
       - PROM_ADDRESS=10.5.0.21:4567
       - PROXY_TYPE=node-pool
     container_name: sv1-node-pool-proxy
