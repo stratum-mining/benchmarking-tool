@@ -7,7 +7,7 @@ RUN apt-get update && apt-get upgrade -y
 RUN apt-get install -y wget tar curl jq
 
 # Set environment variables for Bitcoin Core version and installation directory
-ENV BITCOIN_VERSION=sv2-tp-0.1.3
+ENV BITCOIN_VERSION=sv2-tp-0.1.9
 ENV BITCOIN_DIR=/bitcoin
 
 # Create the directory where Bitcoin Core will be installed

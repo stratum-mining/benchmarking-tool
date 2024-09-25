@@ -3,6 +3,7 @@ volumes:
   grafana_data_config_c:
   bitcoin_pool_side_data:
   bitcoin_sv1_pool_side_data:
+  shared-mainnet-snapshot-volume:
 
 networks:
   monitor-net:
@@ -71,6 +72,7 @@ services:
       - common-template-provider-builder
     volumes:
       - bitcoin_pool_side_data:/root/.bitcoin
+      - shared-mainnet-snapshot-volume:/shared_volume  # Shared volume for mainnet snapshot
       - ./custom-configs/sri-roles/bitcoin-tp-pool.conf:/root/.bitcoin/bitcoin.conf
       - ./containers-scripts:/scripts
     restart: unless-stopped
@@ -98,12 +100,15 @@ services:
       - common-template-provider-builder
     volumes:
       - bitcoin_sv1_pool_side_data:/root/.bitcoin
+      - shared-mainnet-snapshot-volume:/shared_volume  # Shared volume for mainnet snapshot
       - ./custom-configs/sri-roles/bitcoin-sv1-node-pool.conf:/root/.bitcoin/bitcoin.conf
       - ./containers-scripts:/scripts
     restart: unless-stopped
     networks:
       sv2-net:
         ipv4_address: 10.5.0.16
+    environment:
+      - NETWORK=${NETWORK}
     healthcheck:
       test: [ "CMD", "./scripts/healthcheck.sh", "http://127.0.0.1:18332" ]
       interval: 2m

@@ -4,6 +4,7 @@ volumes:
   bitcoin_pool_side_data:
   bitcoin_miner_side_data:
   bitcoin_sv1_pool_side_data:
+  shared-mainnet-snapshot-volume:
 
 networks:
   monitor-net:
@@ -72,6 +73,7 @@ services:
       - common-template-provider-builder
     volumes:
       - bitcoin_pool_side_data:/root/.bitcoin
+      - shared-mainnet-snapshot-volume:/shared_volume  # Shared volume for mainnet snapshot
       - ./custom-configs/sri-roles/bitcoin-tp-pool.conf:/root/.bitcoin/bitcoin.conf
       - ./containers-scripts:/scripts 
     restart: unless-stopped
@@ -98,6 +100,7 @@ services:
       - common-template-provider-builder
     volumes:
       - bitcoin_miner_side_data:/root/.bitcoin
+      - shared-mainnet-snapshot-volume:/shared_volume  # Shared volume for mainnet snapshot
       - ./custom-configs/sri-roles/bitcoin-tp-miner.conf:/root/.bitcoin/bitcoin.conf
       - ./containers-scripts:/scripts
     restart: unless-stopped
@@ -125,6 +128,7 @@ services:
       - common-template-provider-builder
     volumes:
       - bitcoin_sv1_pool_side_data:/root/.bitcoin
+      - shared-mainnet-snapshot-volume:/shared_volume  # Shared volume for mainnet snapshot
       - ./custom-configs/sri-roles/bitcoin-sv1-node-pool.conf:/root/.bitcoin/bitcoin.conf
       - ./containers-scripts:/scripts
     restart: unless-stopped
