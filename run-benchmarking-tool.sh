@@ -14,6 +14,21 @@ DEFAULT_INTERVAL_C="60"
 # Path to .env file
 ENV_FILE=".env"
 
+# Function to clean up Docker containers on error
+cleanup() {
+    echo ""
+    echo "An error occurred during the setup process."
+    echo "Stopping any running Docker containers..."
+    docker compose -f "docker-compose-config-${CONFIG_LOWER}.yaml" down
+    echo "Docker containers stopped."
+    echo "Please try running the tool again with the command: ./run-benchmarking-tool.sh"
+    echo "🚨If the issue persists, please contact the support team for assistance on Discord: https://discord.com/channels/950687892169195530/1107964065936060467"
+    exit 1
+}
+
+# Set up trap to catch errors and call cleanup
+trap 'cleanup' ERR
+
 # Display a note about the configurations
 bold=$(tput bold)
 underline=$(tput smul)
@@ -189,6 +204,7 @@ fi
 
 # Convert CONFIG to lowercase for the filename
 CONFIG_LOWER=$(echo "$CONFIG" | tr '[:upper:]' '[:lower:]')
+
 # Start docker container with the appropriate compose file
 docker compose -f "docker-compose-config-${CONFIG_LOWER}.yaml" up -d
 
