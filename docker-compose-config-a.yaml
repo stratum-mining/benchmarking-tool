@@ -316,30 +316,52 @@ services:
       sv2-net:
         ipv4_address: 10.5.0.23
 
-  sv1-pool:
-    container_name: sv1-pool
+  # sv1-pool:
+  #   container_name: sv1-pool
+  #   labels:
+  #     logging: "config-a"
+  #   build:
+  #     context: .
+  #     dockerfile: ./sv1-public-pool.dockerfile
+  #   ports:
+  #     - "3332:3332"
+  #     - "3334:3334"
+  #   volumes:
+  #     - "./testnet-DB:/public-pool/DB"
+  #     - "./custom-configs/sv1-pool/.env:/public-pool/.env:ro"
+  #     - "./custom-configs/sv1-pool/rpc.js:/public-pool/node_modules/rpc-bitcoin/build/src/rpc.js" # to fix rpc-version field issue
+  #   restart: unless-stopped
+  #   environment:
+  #     - NODE_ENV=production
+  #   depends_on:
+  #     - sv1-node-pool-proxy
+  #   networks:
+  #     sv2-net:
+  #       ipv4_address: 10.5.0.8
+  #   cap_add:
+  #     - NET_ADMIN
+
+  sv1-ckpool:
+    container_name: sv1-ckpool
     labels:
-      logging: "config-a"
+      logging: "config-c"
     build:
       context: .
-      dockerfile: ./sv1-public-pool.dockerfile
+      dockerfile: ./sv1-ckpool.dockerfile
     ports:
       - "3332:3332"
-      - "3334:3334"
     volumes:
-      - "./testnet-DB:/public-pool/DB"
-      - "./custom-configs/sv1-pool/.env:/public-pool/.env:ro"
-      - "./custom-configs/sv1-pool/rpc.js:/public-pool/node_modules/rpc-bitcoin/build/src/rpc.js" # to fix rpc-version field issue
+      - "./conf:/ckpool-solo/src/conf"
     restart: unless-stopped
-    environment:
-      - NODE_ENV=production
-    depends_on:
-      - sv1-node-pool-proxy
     networks:
       sv2-net:
-        ipv4_address: 10.5.0.8
-    cap_add:
-      - NET_ADMIN
+        ipv4_address: 10.5.0.40
+    healthcheck:
+      test: ["CMD-SHELL", "curl --silent --user username:password --data-binary '{\"jsonrpc\":\"1.0\",\"id\":\"healthcheck\",\"method\":\"getblockchaininfo\",\"params\":[]}' -H 'Content-Type: application/json' http://10.5.0.16:18332/ | jq -e '.result.initialblockdownload == false' || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+      start_period: 10s
 
   sv1-pool-miner-proxy:
     image: sv1-custom-proxy-builder-image
@@ -355,14 +377,14 @@ services:
       - "3333:3333"
       - "2345:2345"
     environment:
-      - SERVER=10.5.0.8:3332
+      - SERVER=10.5.0.40:3332
       - CLIENT=0.0.0.0:3333
       - PROM_ADDRESS=10.5.0.19:2345
       - PROXY_TYPE=pool-miner
     container_name: sv1-pool-miner-proxy
     depends_on:
       - sv1-custom-proxy-builder
-      - sv1-pool
+      - sv1-ckpool
     restart: unless-stopped
     networks:
       sv2-net:
@@ -380,7 +402,7 @@ services:
       - "4567:4567"
     environment:
       - SERVER=http://10.5.0.16:18332
-      - CLIENT=0.0.0.0:48330
+      - CLIENT=10.5.0.21:18332
       - PROM_ADDRESS=10.5.0.21:4567
       - PROXY_TYPE=node-pool
     container_name: sv1-node-pool-proxy
