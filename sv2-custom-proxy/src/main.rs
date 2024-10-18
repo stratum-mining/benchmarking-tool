@@ -334,7 +334,6 @@ async fn fetch_block_reward(hash: &str) -> Result<u64, String> {
     let height = json["height"]
         .as_u64()
         .ok_or("Failed to parse height from response")?;
-    println!("Height: {:?}", height);
 
     let reward_stats_url = match network.as_str() {
         "" => "https://mempool.space/api/v1/mining/reward-stats/1",
@@ -358,7 +357,6 @@ async fn fetch_block_reward(hash: &str) -> Result<u64, String> {
     let start_block = reward_stats_json["startBlock"]
         .as_u64()
         .ok_or("Failed to parse startBlock from reward stats")?;
-    println!("start_block: {:?}", start_block);
     let end_block = reward_stats_json["endBlock"]
         .as_u64()
         .ok_or("Failed to parse endBlock from reward stats")?;
@@ -402,11 +400,8 @@ async fn fetch_metric_from_prometheus(
         "{}/api/v1/query?query={} &time={}",
         prometheus_address, metric_name, timestamp
     );
-    println!("Fetching from URL: {}", url); // Logging dell'URL
     let response = client.get(&url).send().await.map_err(|e| e.to_string())?;
     let body = response.text().await.map_err(|e| e.to_string())?;
-    println!("Received response body: {}", body); // Logging della risposta
-
     let json: Value =
         serde_json::from_str(&body).map_err(|e| format!("Error parsing JSON: {}", e))?;
 
@@ -438,7 +433,6 @@ async fn intercept_prev_hash(
             m,
         ))) = r.recv().await
         {
-            println!("Set prev hash received --> {:?}", m);
             let mut id = m.prev_hash;
             let d = id.inner_as_mut();
             let prev_hash_hex = encode_hex(d);
@@ -483,7 +477,6 @@ async fn intercept_prev_hash(
 
                     // Set the fetched metric value for last_sv2_block_template_value
                     if let Ok(value) = fetch_metric_result {
-                        println!("Fetched metric value: {}", value);
                         last_sv2_block_template_value_clone.set(value);
                     } else {
                         eprintln!("Error fetching metric");
@@ -504,7 +497,6 @@ async fn intercept_new_template(
         while let Some(PoolMessages::TemplateDistribution(TemplateDistribution::NewTemplate(m))) =
             r.recv().await
         {
-            println!("Set new template received --> {:?}", m);
             let id = m.template_id;
             let current_time = std::time::SystemTime::now()
                 .duration_since(std::time::UNIX_EPOCH)
@@ -522,7 +514,6 @@ async fn intercept_new_template(
             // Take the coinbase value and set the block template value metric
             let sv2_block_template_value_clone = sv2_block_template_value.clone();
             let block_value = m.coinbase_tx_value_remaining;
-            println!("Block Template Value: {}", block_value);
             sv2_block_template_value_clone.set(block_value as f64);
         }
     });
@@ -536,7 +527,6 @@ async fn intercept_submit_share_extended(
     let mut r = builder.add_handler(Remote::Client, MESSAGE_TYPE_SUBMIT_SHARES_EXTENDED);
     tokio::spawn(async move {
         while let Some(PoolMessages::Mining(Mining::SubmitSharesExtended(m))) = r.recv().await {
-            println!("SubmitSharesExtended received --> {:?}", m);
             submitted_shares.inc();
 
             let id = m.nonce;
@@ -562,8 +552,7 @@ async fn intercept_submit_share_extended(
 async fn intercept_submit_share_success(builder: &mut ProxyBuilder, valid_shares: Counter) {
     let mut r = builder.add_handler(Remote::Server, MESSAGE_TYPE_SUBMIT_SHARES_SUCCESS);
     tokio::spawn(async move {
-        while let Some(PoolMessages::Mining(Mining::SubmitSharesSuccess(m))) = r.recv().await {
-            println!("SubmitSharesSuccess received --> {:?}", m);
+        while let Some(PoolMessages::Mining(Mining::SubmitSharesSuccess(_m))) = r.recv().await {
             valid_shares.inc();
         }
     });
@@ -592,7 +581,6 @@ async fn intercept_submit_solution(
             m,
         ))) = r.recv().await
         {
-            println!("SubmitSolution received --> {:?}", m);
             let current_timestamp = std::time::SystemTime::now()
                 .duration_since(std::time::UNIX_EPOCH)
                 .expect("Time went backwards")
@@ -609,10 +597,7 @@ async fn intercept_submit_solution(
                             let parts: Vec<&str> = line.split_whitespace().collect();
                             if let Some(timestamp_str) = parts.get(1) {
                                 if let Ok(previous_timestamp) = timestamp_str.parse::<f64>() {
-                                    println!("Previous timestamp: {:?}", previous_timestamp);
-                                    println!("Current timestamp: {:?}", current_timestamp);
                                     let latency = current_timestamp - previous_timestamp;
-                                    println!("Computed latency: {:?}", latency);
                                     block_propagation_time.set(latency);
                                     mined_blocks.inc();
                                 }

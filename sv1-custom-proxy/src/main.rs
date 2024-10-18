@@ -41,7 +41,6 @@ async fn transfer(
             while let Some(pos) = client_buf.iter().position(|&b| b == b'\n') {
                 let line = client_buf.drain(..=pos).collect::<Vec<_>>();
                 if let Ok(json) = serde_json::from_slice::<Value>(&line) {
-                    println!("Client to Server: {}", json);
                     if json["method"] == "mining.submit" {
                         submitted_shares.inc();
                         if let Some(params) = json["params"].as_array() {
@@ -65,14 +64,14 @@ async fn transfer(
                                         .remove_label_values(&[&nonce_string]);
                                 });
                             } else {
+                                println!("Client to Server: {:?}", line);
                                 println!("Nonce not found in params");
                             }
                         } else {
+                            println!("Client to Server: {:?}", line);
                             println!("Params is not an array");
                         }
                     }
-                } else {
-                    println!("Client to Server: {:?}", line);
                 }
                 wo.write_all(&line).await?;
             }
@@ -93,7 +92,6 @@ async fn transfer(
             while let Some(pos) = server_buf.iter().position(|&b| b == b'\n') {
                 let line = server_buf.drain(..=pos).collect::<Vec<_>>();
                 if let Ok(json) = serde_json::from_slice::<Value>(&line) {
-                    println!("Server to Client: {}", json);
                     if json["method"] == "mining.notify" {
                         if let Some(params) = json["params"].as_array() {
                             if let Some(_prevhash) = params.get(1) {
@@ -107,7 +105,6 @@ async fn transfer(
                                 if let Ok(response) = client.get(prometheus_url).send().await {
                                     if let Ok(body) = response.text().await {
                                         for line in body.lines() {
-                                            println!("Line: {:?}", line);
                                             if let Some(start_index) = line.find("flag=") {
                                                 let start = start_index + "flag=\"".len();
                                                 if let Some(value) = line.chars().nth(start) {
@@ -128,6 +125,7 @@ async fn transfer(
                                                             new_job_prev_hash_gauge.set(delta);
                                                             new_job_gauge.set(delta);
                                                         } else {
+                                                            println!("Line: {:?}", line);
                                                             println!("No timestamp value found.");
                                                         }
                                                     } else if let Some((_, timestamp)) =
@@ -145,6 +143,7 @@ async fn transfer(
                                                             current_timestamp - new_job_timestamp;
                                                         new_job_gauge.set(delta);
                                                     } else {
+                                                        println!("Line: {:?}", line);
                                                         println!("No timestamp value found.");
                                                     }
                                                 }
@@ -153,6 +152,7 @@ async fn transfer(
                                     }
                                 }
                             } else {
+                                println!("Server to Client: {}", json);
                                 println!("Prevhash not found in params");
                             }
                         }
@@ -168,9 +168,9 @@ async fn transfer(
                         stale_shares.inc();
                     }
                 } else {
-                    // println!("Server to Client: {:?}", line);
+                    println!("Server to Client: {:?}", line);
+                    println!("Error in getting json from line")
                 }
-
                 wi.write_all(&line).await?;
             }
         }
@@ -190,14 +190,11 @@ async fn handle_rpc_request(
     sv1_new_job_vec: GaugeVec,
     prev_hash_mutex: Arc<Mutex<VecDeque<String>>>,
 ) -> Result<Response<Body>, hyper::Error> {
-    let uri = req.uri().clone();
     let method = req.method().clone();
     let headers = req.headers().clone();
     let body_bytes = hyper::body::to_bytes(req.into_body()).await?;
     let body_str = String::from_utf8_lossy(&body_bytes);
     let mut is_get_block_template: bool = false;
-    println!("Incoming request: {} {} {:?}", method, uri, headers);
-    println!("Request body: {}", body_str);
 
     if let Ok(json) = serde_json::from_slice::<Value>(&body_bytes) {
         if let Some(method) = json.get("method") {
@@ -247,13 +244,7 @@ async fn handle_rpc_request(
                                     if let Some(timestamp_str) = parts.get(1) {
                                         if let Ok(previous_timestamp) = timestamp_str.parse::<f64>()
                                         {
-                                            println!(
-                                                "Previous timestamp: {:?}",
-                                                previous_timestamp
-                                            );
-                                            println!("Current timestamp: {:?}", current_timestamp);
                                             let latency = current_timestamp - previous_timestamp;
-                                            println!("Computed latency: {:?}", latency);
                                             block_propagation_time.set(latency);
                                             mined_blocks.inc();
                                         }
@@ -291,16 +282,6 @@ async fn handle_rpc_request(
             .insert("authorization", auth_value.parse().unwrap());
     }
 
-    // Log the forwarded request
-    let forwarded_headers = new_req.headers().clone();
-    println!(
-        "Forwarded request: {} {} {:?}",
-        new_req.method(),
-        new_req.uri(),
-        forwarded_headers
-    );
-    println!("Forwarded request body: {}", body_str);
-
     let res = match client.request(new_req).await {
         Ok(res) => res,
         Err(err) => {
@@ -310,11 +291,7 @@ async fn handle_rpc_request(
     };
 
     let status = res.status();
-    let headers = res.headers().clone();
     let body_bytes = hyper::body::to_bytes(res.into_body()).await?;
-    let body_str = String::from_utf8_lossy(&body_bytes);
-    println!("Response: {} {:?}", status, headers);
-    println!("Response body: {}", body_str);
 
     if let Ok(json) = serde_json::from_slice::<Value>(&body_bytes) {
         if is_get_block_template {
@@ -346,7 +323,6 @@ async fn handle_rpc_request(
                         // Take the coinbase value and set the block template value metric
                         if let Some(coinbasevalue) = result.get("coinbasevalue") {
                             if let Some(block_value) = coinbasevalue.as_i64() {
-                                println!("Block Template Value: {}", block_value);
                                 sv1_block_template_value.set(block_value as f64);
                             }
                         }
@@ -638,14 +614,6 @@ async fn transfer_new_job(
                                                 {
                                                     let new_job_timestamp =
                                                         timestamp.trim().parse::<f64>().unwrap();
-                                                    println!(
-                                                        "Current timestamp: {:?}",
-                                                        current_timestamp
-                                                    );
-                                                    println!(
-                                                        "New job timestamp: {:?}",
-                                                        new_job_timestamp
-                                                    );
                                                     let delta =
                                                         current_timestamp - new_job_timestamp;
                                                     new_job_prev_hash_throught_sv2_jdc.set(delta);
@@ -657,11 +625,6 @@ async fn transfer_new_job(
                                             if line.contains("id=") {
                                                 if let Some((_, timestamp)) = line.rsplit_once(' ')
                                                 {
-                                                    println!(
-                                                        "Current timestamp: {:?}",
-                                                        current_timestamp
-                                                    );
-                                                    println!("Read Timestamp: {:?}", timestamp);
                                                     let new_job_timestamp =
                                                         timestamp.trim().parse::<f64>().unwrap();
                                                     let delta =

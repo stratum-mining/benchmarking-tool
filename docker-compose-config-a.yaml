@@ -62,7 +62,7 @@ services:
     labels:
       logging: "config-a"
     image: template-provider-builder-image
-    entrypoint: ["/bin/sh", "-c", "./scripts/update-mainnet-chainstate.sh ${NETWORK} && /bitcoin/bin/bitcoind -sv2 -sv2port=8442 -sv2interval=${SV2_INTERVAL} -sv2feedelta=0 -debug=sv2 -loglevel=sv2:trace -sv2bind=0.0.0.0  -${NETWORK}"]
+    entrypoint: ["/bin/sh", "-c", "./scripts/update-mainnet-chainstate.sh ${NETWORK} && /bitcoin/bin/bitcoind -sv2 -sv2port=8442 -sv2interval=${SV2_INTERVAL} -sv2feedelta=0 -debug=sv2 -loglevel=sv2:debug -sv2bind=0.0.0.0  -${NETWORK}"]
     ports:
       - "8442:8442"
       - "18333:48333"
@@ -91,7 +91,7 @@ services:
     labels:
       logging: "config-a"
     image: template-provider-builder-image
-    entrypoint: ["/bin/sh", "-c", "./scripts/update-mainnet-chainstate.sh ${NETWORK} && /bitcoin/bin/bitcoind -sv2 -sv2port=8443 -sv2interval=${SV2_INTERVAL} -sv2feedelta=0 -debug=sv2 -loglevel=sv2:trace -sv2bind=0.0.0.0 -${NETWORK}"]
+    entrypoint: ["/bin/sh", "-c", "./scripts/update-mainnet-chainstate.sh ${NETWORK} && /bitcoin/bin/bitcoind -sv2 -sv2port=8443 -sv2interval=${SV2_INTERVAL} -sv2feedelta=0 -debug=sv2 -loglevel=sv2:debug -sv2bind=0.0.0.0 -${NETWORK}"]
     ports:
       - "8443:8443"
       - "28333:18333"
@@ -543,7 +543,7 @@ services:
         ipv4_address: 10.5.0.18
 
   loki:
-      image: grafana/loki
+      image: grafana/loki:2.9.8
       container_name: loki
       ports:
         - "3100:3100"
