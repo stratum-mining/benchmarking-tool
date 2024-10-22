@@ -52,7 +52,7 @@ services:
 
   pools-latency-calculator-builder:
     build:
-      dockerfile: pools-latency-calculator.dockerfile
+      dockerfile: ./pools-latency-calculator/Dockerfile
     container_name: pools-latency-calculator-builder
     image: pools-latency-calculator-builder-image
     command: echo "pools-latency-calculator build completed"
@@ -122,7 +122,7 @@ services:
       logging: "config-c"
     command:
       [
-        "./target/release/pool_sv2",
+        "./pool_sv2",
         "-c",
         "pool/config-examples/pool-config-c-docker-example.toml",
       ]
@@ -133,7 +133,7 @@ services:
       - sv2-roles-builder
       - sv2-tp-pool-proxy
     volumes:
-      - ./custom-configs/sri-roles/config-c:/usr/src/stratum/roles/pool/config-examples/
+      - ./custom-configs/sri-roles/config-c:/usr/local/bin/pool/config-examples/
     restart: unless-stopped
     networks:
       sv2-net:
@@ -147,9 +147,9 @@ services:
       logging: "config-c"
     command:
       [
-        "/bin/bash",
+        "/bin/sh",
         "-c",
-        "/usr/local/bin/monitor_and_apply_latency.sh 10.5.0.23 2 & exec ./target/release/translator_sv2 -c translator/config-examples/tproxy-config-c-docker-example.toml",
+        "./monitor_and_apply_latency.sh 10.5.0.23 2 & exec ./translator_sv2 -c translator/config-examples/tproxy-config-c-docker-example.toml",
       ]
     ports:
       - "34256:34256"
@@ -157,7 +157,7 @@ services:
     depends_on:
       - sv2-pool-translator-proxy
     volumes:
-      - ./custom-configs/sri-roles/config-c:/usr/src/stratum/roles/translator/config-examples/
+      - ./custom-configs/sri-roles/config-c:/usr/local/bin/translator/config-examples/
     restart: unless-stopped
     networks:
       sv2-net:
@@ -171,9 +171,9 @@ services:
       logging: "config-c"
     command:
       [
-        "/bin/bash",
+        "/bin/sh",
         "-c",
-        "/usr/local/bin/monitor_and_apply_latency.sh 10.5.0.4 2 -proxy-type=pool-translator & exec ./target/release/sv2-custom-proxy",
+        "./monitor_and_apply_latency.sh 10.5.0.4 2 -proxy-type=pool-translator & exec ./sv2-custom-proxy",
       ]
     ports:
       - "34253:34254"
@@ -199,7 +199,7 @@ services:
     image: sv2-custom-proxy-builder-image
     labels:
       logging: "config-c"
-    command: ["./target/release/sv2-custom-proxy"]
+    command: ["./sv2-custom-proxy"]
     ports:
       - "8441:8441"
       - "5678:5678"
@@ -227,7 +227,7 @@ services:
     image: sv1-custom-proxy-builder-image
     labels:
       logging: "config-c"  
-    command: ["./target/release/sv1-custom-proxy"]
+    command: ["./sv1-custom-proxy"]
     ports:
       - "34255:34255"
       - "5676:5676"
@@ -276,9 +276,9 @@ services:
       logging: "config-c" 
     command:
       [
-        "/bin/bash",
+        "/bin/sh",
         "-c",
-        "/usr/local/bin/monitor_and_apply_latency.sh 10.5.0.8 2 & exec ./target/release/sv1-custom-proxy",
+        "./monitor_and_apply_latency.sh 10.5.0.8 2 & exec ./sv1-custom-proxy",
       ]
     ports:
       - "3333:3333"
@@ -303,7 +303,7 @@ services:
     image: sv1-custom-proxy-builder-image
     labels:
       logging: "config-c"
-    command: ["./target/release/sv1-custom-proxy"]
+    command: ["./sv1-custom-proxy"]
     ports:
       - "48330:48330"
       - "4567:4567"
@@ -463,7 +463,7 @@ services:
 
   pools-latency-calculator:
     image: pools-latency-calculator-builder-image
-    command: ["./target/release/pools-latency-calculator"]
+    command: ["./pools-latency-calculator"]
     ports:
       - "1234:1234"
     container_name: pools-latency-calculator
@@ -506,7 +506,7 @@ services:
   
   log-server:
     image: log-server-builder-image
-    command: ["./target/release/log-server"]
+    command: ["./log-server"]
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     ports:

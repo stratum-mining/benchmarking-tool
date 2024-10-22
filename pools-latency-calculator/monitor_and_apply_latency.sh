@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 if [ -z "$1" ] || [ -z "$2" ]; then
     echo "Usage: $0 <TARGET_IP1> <DIVISOR> [TARGET_IP2] [-proxy-type=pool-translator]"
