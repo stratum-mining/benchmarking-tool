@@ -1,21 +1,17 @@
 FROM ubuntu:latest
 
-
-ARG REPO=ckpool-solo
-ARG BRANCH=solobtc
-ARG REPO_URL=https://bitbucket.org/ckolivas/${REPO}.git
-
-
 RUN apt-get update && apt-get install -y autoconf automake libtool build-essential git yasm libzmq3-dev libcap2-bin pkgconf
+
+ARG REPO_URL=https://github.com/Shourya742/Pool.git
 
 RUN git clone ${REPO_URL}
 
-WORKDIR /ckpool-solo
+WORKDIR /Pool
 
-COPY conf/ckpool.conf .
+COPY conf/ckpool.conf ./src
 
 RUN ./autogen.sh && ./configure && make
 
 WORKDIR ./src 
 
-CMD ["./ckpool","-B","-k", "-c", "./conf/ckpool.conf"]
+CMD ["./ckpool","-B","-k", "-c", "./ckpool.conf", "-l", "7"]
