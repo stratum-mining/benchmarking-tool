@@ -1,7 +1,6 @@
 ############################
 # Docker build environment #
 ############################
-
 FROM node:18.16.1-bookworm-slim AS build
 
 # Upgrade all packages and install dependencies
@@ -18,6 +17,7 @@ RUN apt-get update && \
     curl \
     && apt clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
+# Clone the repository
 RUN git clone https://github.com/benjamin-wilson/public-pool.git
 
 WORKDIR /public-pool
@@ -28,7 +28,6 @@ RUN npm i && npm run build
 ############################
 # Docker final environment #
 ############################
-
 FROM node:18.16.1-bookworm-slim
 
 # Install necessary packages in the final image
@@ -42,6 +41,7 @@ RUN apt-get update && \
 # Expose ports for Stratum and Bitcoin RPC
 EXPOSE 3333 3334 8332 48332
 
+# Set the working directory
 WORKDIR /public-pool
 
 # Copy built binaries into the final image

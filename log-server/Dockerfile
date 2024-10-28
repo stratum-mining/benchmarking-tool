@@ -1,13 +1,20 @@
-FROM rust:1.75 as builder
-WORKDIR usr/src/log-server
-COPY ./log-server .
+# Build stage
+FROM rust:1.75-alpine AS builder
+
+WORKDIR /usr/src/log-server
+COPY . .
+
+# Install necessary dependencies
+RUN apk add musl-dev pkgconfig libressl-dev
+
+# Build the project in release mode
 RUN cargo build --release
 
-FROM rust:1.75
-COPY --from=builder usr/src/log-server/ usr/src/log-server/
-RUN apt-get update && apt-get install -y --no-install-recommends \
-        iproute2 \
-        iputils-ping \
-        iptables \
-        curl 
-WORKDIR /usr/src/log-server/
+# Final stage
+FROM alpine:latest
+
+# Copy only the binary from the builder image
+COPY --from=builder /usr/src/log-server/target/release/log-server /usr/local/bin/log-server
+
+# Set the working directory
+WORKDIR /usr/local/bin/

@@ -28,3 +28,6 @@ RUN tar -xzvf /tmp/bitcoin.tar.gz -C $BITCOIN_DIR --strip-components=1
 
 # Cleanup
 RUN rm /tmp/bitcoin.tar.gz
+
+# Create a volume for blockchain data and configuration files
+VOLUME ["/root/.bitcoin"]
