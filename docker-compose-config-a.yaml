@@ -341,6 +341,46 @@ services:
     cap_add:
       - NET_ADMIN
 
+  sv1-ckpool:
+    container_name: sv1-ckpool
+    labels:
+      logging: "config-c"
+    build:
+      context: .
+      dockerfile: ./sv1-ckpool.dockerfile
+    # ports:
+    #   - "3332:3332"
+    volumes:
+      - "./conf:/ckpool-solo/src/conf"
+    restart: unless-stopped
+    networks:
+      sv2-net:
+        ipv4_address: 10.5.0.40
+    healthcheck:
+      test: ["CMD-SHELL", "curl --silent --user username:password --data-binary '{\"jsonrpc\":\"1.0\",\"id\":\"healthcheck\",\"method\":\"getblockchaininfo\",\"params\":[]}' -H 'Content-Type: application/json' http://10.5.0.16:18332/ | jq -e '.result.initialblockdownload == false' || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+      start_period: 10s
+  
+  sv1-ckproxy:
+    container_name: sv1-ckproxy
+    labels:
+      logging: "config-c"
+    build:
+      context: .
+      dockerfile: ./sv1-ckproxy.dockerfile
+    ports:
+      - "3333:3333"
+    volumes:
+      - "./conf:/ckpool-solo/src/conf"
+    restart: unless-stopped
+    depends_on:
+      - sv1-pool
+    networks:
+      sv2-net:
+        ipv4_address: 10.5.0.41
+
   sv1-pool-miner-proxy:
     image: sv1-custom-proxy-builder-image
     labels:
@@ -352,17 +392,17 @@ services:
         "./monitor_and_apply_latency.sh 10.5.0.8 2 & exec ./sv1-custom-proxy",
       ]
     ports:
-      - "3333:3333"
+      # - "3333:3333"
       - "2345:2345"
     environment:
-      - SERVER=10.5.0.8:3332
-      - CLIENT=0.0.0.0:3333
+      - SERVER=10.5.0.40:3332
+      - CLIENT=10.5.0.19:3333
       - PROM_ADDRESS=10.5.0.19:2345
       - PROXY_TYPE=pool-miner
     container_name: sv1-pool-miner-proxy
     depends_on:
       - sv1-custom-proxy-builder
-      - sv1-pool
+      - sv1-ckpool
     restart: unless-stopped
     networks:
       sv2-net:
