@@ -22,19 +22,19 @@ services:
     image: template-provider-builder-image
     command: echo "common-template-provider build completed"
 
-  sv2-roles-builder:
-    build:
-      dockerfile: ./sv2-roles.dockerfile
-    container_name: sv2-roles-builder
-    image: sv2-roles-builder-image
-    command: echo "SRI build completed"
+  # sv2-roles-builder:
+  #   build:
+  #     dockerfile: ./sv2-roles.dockerfile
+  #   container_name: sv2-roles-builder
+  #   image: sv2-roles-builder-image
+  #   command: echo "SRI build completed"
 
-  sv2-custom-proxy-builder:
-    build:
-      dockerfile: ./sv2-custom-proxy/Dockerfile
-    container_name: sv2-custom-proxy-builder
-    image: sv2-custom-proxy-builder-image
-    command: echo "sv2-custom-proxy build completed"
+  # sv2-custom-proxy-builder:
+  #   build:
+  #     dockerfile: ./sv2-custom-proxy/Dockerfile
+  #   container_name: sv2-custom-proxy-builder
+  #   image: sv2-custom-proxy-builder-image
+  #   command: echo "sv2-custom-proxy build completed"
 
   sv1-custom-proxy-builder:
     build:
@@ -43,48 +43,48 @@ services:
     image: sv1-custom-proxy-builder-image
     command: echo "sv1-custom-proxy build completed"
 
-  log-server-builder:
-    build:
-      dockerfile: ./log-server/Dockerfile
-    container_name: log-server-builder
-    image: log-server-builder-image
-    command: echo "log-server-builder build completed"
+  # log-server-builder:
+  #   build:
+  #     dockerfile: ./log-server/Dockerfile
+  #   container_name: log-server-builder
+  #   image: log-server-builder-image
+  #   command: echo "log-server-builder build completed"
 
-  pools-latency-calculator-builder:
-    build:
-      dockerfile: pools-latency-calculator.dockerfile
-    container_name: pools-latency-calculator-builder
-    image: pools-latency-calculator-builder-image
-    command: echo "pools-latency-calculator build completed"
+  # pools-latency-calculator-builder:
+  #   build:
+  #     dockerfile: pools-latency-calculator.dockerfile
+  #   container_name: pools-latency-calculator-builder
+  #   image: pools-latency-calculator-builder-image
+  #   command: echo "pools-latency-calculator build completed"
 
-  template-provider-pool-side:
-    labels:
-      logging: "config-c"
-    image: template-provider-builder-image
-    entrypoint: ["/bin/sh", "-c", "./scripts/update-mainnet-chainstate.sh ${NETWORK} && /bitcoin/bin/bitcoind -sv2 -sv2port=8442 -sv2interval=${SV2_INTERVAL} -sv2feedelta=0 -debug=sv2 -loglevel=sv2:trace -sv2bind=0.0.0.0  -${NETWORK}"]
-    ports:
-      - "8442:8442"
-      - "18333:48333"
-      - "8332:8332"
-      - "18332:18332"
-    container_name: sv2-tp-pool-side
-    depends_on:
-      - common-template-provider-builder
-    volumes:
-      - bitcoin_pool_side_data:/root/.bitcoin
-      - shared-mainnet-snapshot-volume:/shared_volume  # Shared volume for mainnet snapshot
-      - ./custom-configs/sri-roles/bitcoin-tp-pool.conf:/root/.bitcoin/bitcoin.conf
-      - ./containers-scripts:/scripts
-    restart: unless-stopped
-    networks:
-      sv2-net:
-        ipv4_address: 10.5.0.2
-    healthcheck:
-      test: [ "CMD", "./scripts/healthcheck.sh", "http://127.0.0.1:18332" ]
-      interval: 2m
-      timeout: 30s
-      retries: 100
-      start_period: 1m
+  # template-provider-pool-side:
+  #   labels:
+  #     logging: "config-c"
+  #   image: template-provider-builder-image
+  #   entrypoint: ["/bin/sh", "-c", "./scripts/update-mainnet-chainstate.sh ${NETWORK} && /bitcoin/bin/bitcoind -sv2 -sv2port=8442 -sv2interval=${SV2_INTERVAL} -sv2feedelta=0 -debug=sv2 -loglevel=sv2:trace -sv2bind=0.0.0.0  -${NETWORK}"]
+  #   ports:
+  #     - "8442:8442"
+  #     - "18333:48333"
+  #     - "8332:8332"
+  #     - "18332:18332"
+  #   container_name: sv2-tp-pool-side
+  #   depends_on:
+  #     - common-template-provider-builder
+  #   volumes:
+  #     - bitcoin_pool_side_data:/root/.bitcoin
+  #     - shared-mainnet-snapshot-volume:/shared_volume  # Shared volume for mainnet snapshot
+  #     - ./custom-configs/sri-roles/bitcoin-tp-pool.conf:/root/.bitcoin/bitcoin.conf
+  #     - ./containers-scripts:/scripts
+  #   restart: unless-stopped
+  #   networks:
+  #     sv2-net:
+  #       ipv4_address: 10.5.0.2
+  #   healthcheck:
+  #     test: [ "CMD", "./scripts/healthcheck.sh", "http://127.0.0.1:18332" ]
+  #     interval: 2m
+  #     timeout: 30s
+  #     retries: 100
+  #     start_period: 1m
 
   sv1-node-pool-side:
     labels:
@@ -117,134 +117,134 @@ services:
       retries: 100
       start_period: 1m
 
-  pool:
-    image: sv2-roles-builder-image
-    labels:
-      logging: "config-c"
-    command:
-      [
-        "./target/release/pool_sv2",
-        "-c",
-        "pool/config-examples/pool-config-c-docker-example.toml",
-      ]
-    ports:
-      - "34254:34254"
-    container_name: sv2-pool
-    depends_on:
-      - sv2-roles-builder
-      - sv2-tp-pool-proxy
-    volumes:
-      - ./custom-configs/sri-roles/config-c:/usr/src/stratum/roles/pool/config-examples/
-    restart: unless-stopped
-    networks:
-      sv2-net:
-        ipv4_address: 10.5.0.4
-    cap_add:
-      - NET_ADMIN
+  # pool:
+  #   image: sv2-roles-builder-image
+  #   labels:
+  #     logging: "config-c"
+  #   command:
+  #     [
+  #       "./target/release/pool_sv2",
+  #       "-c",
+  #       "pool/config-examples/pool-config-c-docker-example.toml",
+  #     ]
+  #   ports:
+  #     - "34254:34254"
+  #   container_name: sv2-pool
+  #   depends_on:
+  #     - sv2-roles-builder
+  #     - sv2-tp-pool-proxy
+  #   volumes:
+  #     - ./custom-configs/sri-roles/config-c:/usr/src/stratum/roles/pool/config-examples/
+  #   restart: unless-stopped
+  #   networks:
+  #     sv2-net:
+  #       ipv4_address: 10.5.0.4
+  #   cap_add:
+  #     - NET_ADMIN
 
-  translator:
-    image: sv2-roles-builder-image
-    labels:
-      logging: "config-c"
-    command:
-      [
-        "/bin/bash",
-        "-c",
-        "/usr/local/bin/monitor_and_apply_latency.sh 10.5.0.23 2 & exec ./target/release/translator_sv2 -c translator/config-examples/tproxy-config-c-docker-example.toml",
-      ]
-    ports:
-      - "34256:34256"
-    container_name: sv2-translator
-    depends_on:
-      - sv2-pool-translator-proxy
-    volumes:
-      - ./custom-configs/sri-roles/config-c:/usr/src/stratum/roles/translator/config-examples/
-    restart: unless-stopped
-    networks:
-      sv2-net:
-        ipv4_address: 10.5.0.7
-    cap_add:
-      - NET_ADMIN
+  # translator:
+  #   image: sv2-roles-builder-image
+  #   labels:
+  #     logging: "config-c"
+  #   command:
+  #     [
+  #       "/bin/bash",
+  #       "-c",
+  #       "/usr/local/bin/monitor_and_apply_latency.sh 10.5.0.23 2 & exec ./target/release/translator_sv2 -c translator/config-examples/tproxy-config-c-docker-example.toml",
+  #     ]
+  #   ports:
+  #     - "34256:34256"
+  #   container_name: sv2-translator
+  #   depends_on:
+  #     - sv2-pool-translator-proxy
+  #   volumes:
+  #     - ./custom-configs/sri-roles/config-c:/usr/src/stratum/roles/translator/config-examples/
+  #   restart: unless-stopped
+  #   networks:
+  #     sv2-net:
+  #       ipv4_address: 10.5.0.7
+  #   cap_add:
+  #     - NET_ADMIN
 
-  sv2-pool-translator-proxy:
-    image: sv2-custom-proxy-builder-image
-    labels:
-      logging: "config-c"
-    command:
-      [
-        "/bin/bash",
-        "-c",
-        "/usr/local/bin/monitor_and_apply_latency.sh 10.5.0.4 2 -proxy-type=pool-translator & exec ./target/release/sv2-custom-proxy",
-      ]
-    ports:
-      - "34253:34254"
-      - "34251:34251"
-      - "3456:3456"
-    environment:
-      - SERVER=10.5.0.4:34254
-      - CLIENT=10.5.0.17:34251
-      - PROM_ADDRESS=10.5.0.17:3456
-      - PROXY_TYPE=pool-translator
-    container_name: sv2-pool-translator-proxy
-    depends_on:
-      - sv2-custom-proxy-builder
-      - pool
-    restart: unless-stopped
-    networks:
-      sv2-net:
-        ipv4_address: 10.5.0.17
-    cap_add:
-      - NET_ADMIN
+  # sv2-pool-translator-proxy:
+  #   image: sv2-custom-proxy-builder-image
+  #   labels:
+  #     logging: "config-c"
+  #   command:
+  #     [
+  #       "/bin/bash",
+  #       "-c",
+  #       "/usr/local/bin/monitor_and_apply_latency.sh 10.5.0.4 2 -proxy-type=pool-translator & exec ./target/release/sv2-custom-proxy",
+  #     ]
+  #   ports:
+  #     - "34253:34254"
+  #     - "34251:34251"
+  #     - "3456:3456"
+  #   environment:
+  #     - SERVER=10.5.0.4:34254
+  #     - CLIENT=10.5.0.17:34251
+  #     - PROM_ADDRESS=10.5.0.17:3456
+  #     - PROXY_TYPE=pool-translator
+  #   container_name: sv2-pool-translator-proxy
+  #   depends_on:
+  #     - sv2-custom-proxy-builder
+  #     - pool
+  #   restart: unless-stopped
+  #   networks:
+  #     sv2-net:
+  #       ipv4_address: 10.5.0.17
+  #   cap_add:
+  #     - NET_ADMIN
 
-  sv2-tp-pool-proxy:
-    image: sv2-custom-proxy-builder-image
-    labels:
-      logging: "config-c"
-    command: ["./target/release/sv2-custom-proxy"]
-    ports:
-      - "8441:8441"
-      - "5678:5678"
-    environment:
-      - SERVER=10.5.0.2:8442
-      - CLIENT=10.5.0.20:8441
-      - PROM_ADDRESS=10.5.0.20:5678
-      - PROXY_TYPE=tp-pool
-      - NETWORK=${NETWORK}
-    container_name: sv2-tp-pool-proxy
-    depends_on:
-      template-provider-pool-side: 
-        condition: service_healthy
-        restart: true
-      sv2-custom-proxy-builder:
-        condition: service_started
-      prometheus:
-        condition: service_started
-    restart: unless-stopped
-    networks:
-      sv2-net:
-        ipv4_address: 10.5.0.20
+  # sv2-tp-pool-proxy:
+  #   image: sv2-custom-proxy-builder-image
+  #   labels:
+  #     logging: "config-c"
+  #   command: ["./target/release/sv2-custom-proxy"]
+  #   ports:
+  #     - "8441:8441"
+  #     - "5678:5678"
+  #   environment:
+  #     - SERVER=10.5.0.2:8442
+  #     - CLIENT=10.5.0.20:8441
+  #     - PROM_ADDRESS=10.5.0.20:5678
+  #     - PROXY_TYPE=tp-pool
+  #     - NETWORK=${NETWORK}
+  #   container_name: sv2-tp-pool-proxy
+  #   depends_on:
+  #     template-provider-pool-side: 
+  #       condition: service_healthy
+  #       restart: true
+  #     sv2-custom-proxy-builder:
+  #       condition: service_started
+  #     prometheus:
+  #       condition: service_started
+  #   restart: unless-stopped
+  #   networks:
+  #     sv2-net:
+  #       ipv4_address: 10.5.0.20
 
-  sv2-translator-miner-proxy:
-    image: sv1-custom-proxy-builder-image
-    labels:
-      logging: "config-c"  
-    command: ["./target/release/sv1-custom-proxy"]
-    ports:
-      - "34255:34255"
-      - "5676:5676"
-    environment:
-      - SERVER=0.0.0.0:34255
-      - CLIENT=10.5.0.7:34256
-      - PROM_ADDRESS=10.5.0.23:5676
-      - PROXY_TYPE=translator-miner
-    container_name: sv2-translator-miner-proxy
-    depends_on:
-      - sv1-custom-proxy-builder
-      - translator
-    restart: unless-stopped
-    networks:
-      sv2-net:
-        ipv4_address: 10.5.0.23
+  # sv2-translator-miner-proxy:
+  #   image: sv1-custom-proxy-builder-image
+  #   labels:
+  #     logging: "config-c"  
+  #   command: ["./target/release/sv1-custom-proxy"]
+  #   ports:
+  #     - "34255:34255"
+  #     - "5676:5676"
+  #   environment:
+  #     - SERVER=0.0.0.0:34255
+  #     - CLIENT=10.5.0.7:34256
+  #     - PROM_ADDRESS=10.5.0.23:5676
+  #     - PROXY_TYPE=translator-miner
+  #   container_name: sv2-translator-miner-proxy
+  #   depends_on:
+  #     - sv1-custom-proxy-builder
+  #     - translator
+  #   restart: unless-stopped
+  #   networks:
+  #     sv2-net:
+  #       ipv4_address: 10.5.0.23
 
   sv1-pool:
     container_name: sv1-pool
@@ -366,200 +366,200 @@ services:
       sv2-net:
         ipv4_address: 10.5.0.41
 
-  monitor-traffic-tcpdump:
-    image: inzania/network-traffic-metrics:latest
-    network_mode: host
-    container_name: monitor-traffic-tcpdump
-    platform: linux/amd64
-    environment:
-      - "NTM_INTERFACE=any"
-      - "NTM_FILTERS=" 
+  # monitor-traffic-tcpdump:
+  #   image: inzania/network-traffic-metrics:latest
+  #   network_mode: host
+  #   container_name: monitor-traffic-tcpdump
+  #   platform: linux/amd64
+  #   environment:
+  #     - "NTM_INTERFACE=any"
+  #     - "NTM_FILTERS=" 
 
-  prometheus:
-    image: prom/prometheus:v2.36.2
-    volumes:
-      - ./prometheus/:/etc/prometheus/
-      - prometheus_data_config_c:/prometheus
-    command:
-      - "--config.file=/etc/prometheus/prometheus.yml"
-      - "--storage.tsdb.path=/prometheus"
-      - "--web.console.libraries=/usr/share/prometheus/console_libraries"
-      - "--web.console.templates=/usr/share/prometheus/consoles"
-      - "--web.enable-lifecycle"
-      - "--web.enable-admin-api"
-    ports:
-      - "9090:9090"
-    container_name: prometheus
-    depends_on:
-      - cadvisor
-    networks:
-      sv2-net:
-        ipv4_address: 10.5.0.9
-    deploy:
-      placement:
-        constraints:
-          - node.role==manager
-      restart_policy:
-        condition: on-failure
-    extra_hosts:
-      - "host.docker.internal:10.5.0.1"
+  # prometheus:
+  #   image: prom/prometheus:v2.36.2
+  #   volumes:
+  #     - ./prometheus/:/etc/prometheus/
+  #     - prometheus_data_config_c:/prometheus
+  #   command:
+  #     - "--config.file=/etc/prometheus/prometheus.yml"
+  #     - "--storage.tsdb.path=/prometheus"
+  #     - "--web.console.libraries=/usr/share/prometheus/console_libraries"
+  #     - "--web.console.templates=/usr/share/prometheus/consoles"
+  #     - "--web.enable-lifecycle"
+  #     - "--web.enable-admin-api"
+  #   ports:
+  #     - "9090:9090"
+  #   container_name: prometheus
+  #   depends_on:
+  #     - cadvisor
+  #   networks:
+  #     sv2-net:
+  #       ipv4_address: 10.5.0.9
+  #   deploy:
+  #     placement:
+  #       constraints:
+  #         - node.role==manager
+  #     restart_policy:
+  #       condition: on-failure
+  #   extra_hosts:
+  #     - "host.docker.internal:10.5.0.1"
 
-  node-exporter:
-    image: quay.io/prometheus/node-exporter:latest
-    volumes:
-      - /proc:/host/proc:ro
-      - /sys:/host/sys:ro
-      - /:/rootfs:ro
-    command:
-      - "--path.procfs=/host/proc"
-      - "--path.sysfs=/host/sys"
-      - --collector.filesystem.ignored-mount-points
-      - "^/(sys|proc|dev|host|etc|rootfs/var/lib/docker/containers|rootfs/var/lib/docker/overlay2|rootfs/run/docker/netns|rootfs/var/lib/docker/aufs)($$|/)"
-    ports:
-      - "9100:9100"
-    container_name: node-exporter
-    networks:
-      sv2-net:
-        ipv4_address: 10.5.0.10
-    deploy:
-      mode: global
-      restart_policy:
-        condition: on-failure
+  # node-exporter:
+  #   image: quay.io/prometheus/node-exporter:latest
+  #   volumes:
+  #     - /proc:/host/proc:ro
+  #     - /sys:/host/sys:ro
+  #     - /:/rootfs:ro
+  #   command:
+  #     - "--path.procfs=/host/proc"
+  #     - "--path.sysfs=/host/sys"
+  #     - --collector.filesystem.ignored-mount-points
+  #     - "^/(sys|proc|dev|host|etc|rootfs/var/lib/docker/containers|rootfs/var/lib/docker/overlay2|rootfs/run/docker/netns|rootfs/var/lib/docker/aufs)($$|/)"
+  #   ports:
+  #     - "9100:9100"
+  #   container_name: node-exporter
+  #   networks:
+  #     sv2-net:
+  #       ipv4_address: 10.5.0.10
+  #   deploy:
+  #     mode: global
+  #     restart_policy:
+  #       condition: on-failure
 
-  cadvisor:
-    image: gcr.io/cadvisor/cadvisor
-    volumes:
-      - /:/rootfs:ro
-      #- /var/run:/var/run:rw
-      - /var/run/docker.sock:/var/run/docker.sock:rw
-      - /sys:/sys:ro
-      - /var/lib/docker/:/var/lib/docker:ro
-    ports:
-      - "8080:8080"
-    container_name: cadvisor
-    networks:
-      sv2-net:
-        ipv4_address: 10.5.0.12
-    deploy:
-      mode: global
-      restart_policy:
-        condition: on-failure
+  # cadvisor:
+  #   image: gcr.io/cadvisor/cadvisor
+  #   volumes:
+  #     - /:/rootfs:ro
+  #     #- /var/run:/var/run:rw
+  #     - /var/run/docker.sock:/var/run/docker.sock:rw
+  #     - /sys:/sys:ro
+  #     - /var/lib/docker/:/var/lib/docker:ro
+  #   ports:
+  #     - "8080:8080"
+  #   container_name: cadvisor
+  #   networks:
+  #     sv2-net:
+  #       ipv4_address: 10.5.0.12
+  #   deploy:
+  #     mode: global
+  #     restart_policy:
+  #       condition: on-failure
 
-  grafana:
-    image: grafana/grafana
-    depends_on:
-      - prometheus
-      - loki
-    ports:
-      - "3000:3000"
-    environment:
-      GF_USERS_ALLOW_SIGN_UP: "false"
-      GF_AUTH_DISABLE_LOGIN_FORM: "true"
-      GF_AUTH_DISABLE_SIGNOUT_MENU: "true"
-      GF_AUTH_ANONYMOUS_ENABLED: "true"
-      GF_AUTH_ANONYMOUS_ORG_ROLE: "Admin"
-      GF_RENDERING_SERVER_URL: http://renderer:8081/render
-      GF_RENDERING_CALLBACK_URL: http://grafana:3000/
-      GF_LOG_FILTERS: rendering:debug
-    container_name: grafana
-    volumes:
-      - grafana_data_config_c:/var/lib/grafana
-      - ./grafana/provisioning/dashboards/config-c:/etc/grafana/provisioning/dashboards
-      - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
-    env_file:
-      - ./grafana/config.monitoring
-    networks:
-      sv2-net:
-        ipv4_address: 10.5.0.13
-    user: "472"
-    deploy:
-      placement:
-        constraints:
-          - node.role==manager
-      restart_policy:
-        condition: on-failure
+  # grafana:
+  #   image: grafana/grafana
+  #   depends_on:
+  #     - prometheus
+  #     - loki
+  #   ports:
+  #     - "3000:3000"
+  #   environment:
+  #     GF_USERS_ALLOW_SIGN_UP: "false"
+  #     GF_AUTH_DISABLE_LOGIN_FORM: "true"
+  #     GF_AUTH_DISABLE_SIGNOUT_MENU: "true"
+  #     GF_AUTH_ANONYMOUS_ENABLED: "true"
+  #     GF_AUTH_ANONYMOUS_ORG_ROLE: "Admin"
+  #     GF_RENDERING_SERVER_URL: http://renderer:8081/render
+  #     GF_RENDERING_CALLBACK_URL: http://grafana:3000/
+  #     GF_LOG_FILTERS: rendering:debug
+  #   container_name: grafana
+  #   volumes:
+  #     - grafana_data_config_c:/var/lib/grafana
+  #     - ./grafana/provisioning/dashboards/config-c:/etc/grafana/provisioning/dashboards
+  #     - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
+  #   env_file:
+  #     - ./grafana/config.monitoring
+  #   networks:
+  #     sv2-net:
+  #       ipv4_address: 10.5.0.13
+  #   user: "472"
+  #   deploy:
+  #     placement:
+  #       constraints:
+  #         - node.role==manager
+  #     restart_policy:
+  #       condition: on-failure
 
-  reporter:
-    image: izakmarais/grafana-reporter:${gr_version:-latest}
-    command: "-ip grafana:3000 -grid-layout=1"
-    container_name: reporter
-    platform: linux/amd64
-    depends_on:
-      - grafana
-    ports:
-      - "8686:8686"
-    networks:
-      sv2-net:
-        ipv4_address: 10.5.0.14
+  # reporter:
+  #   image: izakmarais/grafana-reporter:${gr_version:-latest}
+  #   command: "-ip grafana:3000 -grid-layout=1"
+  #   container_name: reporter
+  #   platform: linux/amd64
+  #   depends_on:
+  #     - grafana
+  #   ports:
+  #     - "8686:8686"
+  #   networks:
+  #     sv2-net:
+  #       ipv4_address: 10.5.0.14
 
-  renderer:
-    image: grafana/grafana-image-renderer:latest
-    container_name: renderer
-    depends_on:
-      - grafana
-    ports:
-      - "8081:8081"
-    networks:
-      sv2-net:
-        ipv4_address: 10.5.0.15
+  # renderer:
+  #   image: grafana/grafana-image-renderer:latest
+  #   container_name: renderer
+  #   depends_on:
+  #     - grafana
+  #   ports:
+  #     - "8081:8081"
+  #   networks:
+  #     sv2-net:
+  #       ipv4_address: 10.5.0.15
 
-  pools-latency-calculator:
-    image: pools-latency-calculator-builder-image
-    command: ["./target/release/pools-latency-calculator"]
-    ports:
-      - "1234:1234"
-    container_name: pools-latency-calculator
-    restart: unless-stopped
-    networks:
-      sv2-net:
-        ipv4_address: 10.5.0.18
+  # pools-latency-calculator:
+  #   image: pools-latency-calculator-builder-image
+  #   command: ["./target/release/pools-latency-calculator"]
+  #   ports:
+  #     - "1234:1234"
+  #   container_name: pools-latency-calculator
+  #   restart: unless-stopped
+  #   networks:
+  #     sv2-net:
+  #       ipv4_address: 10.5.0.18
 
-  loki:
-    image: grafana/loki
-    container_name: loki
-    ports:
-      - "3100:3100"
-    restart: unless-stopped
-    networks:
-      sv2-net:
-        ipv4_address: 10.5.0.30
-        aliases:
-          - loki
-    volumes:
-      - ./loki-config.yaml:/etc/loki/loki-config.yaml
-    command: -config.file=/etc/loki/loki-config.yaml
+  # loki:
+  #   image: grafana/loki
+  #   container_name: loki
+  #   ports:
+  #     - "3100:3100"
+  #   restart: unless-stopped
+  #   networks:
+  #     sv2-net:
+  #       ipv4_address: 10.5.0.30
+  #       aliases:
+  #         - loki
+  #   volumes:
+  #     - ./loki-config.yaml:/etc/loki/loki-config.yaml
+  #   command: -config.file=/etc/loki/loki-config.yaml
 
-  promtail:
-    image: grafana/promtail
-    container_name: promtail
-    volumes:
-      - ./promtail/config/config-c/promtail-local-config.yaml:/etc/promtail/config.yaml
-      - /var/lib/docker/containers:/var/lib/docker/containers
-      - /var/run/docker.sock:/var/run/docker.sock
-    command: -config.file=/etc/promtail/config.yaml
-    restart: unless-stopped
-    depends_on:
-      - loki
-    networks:
-      sv2-net:
-        ipv4_address: 10.5.0.31
-        aliases:
-          - promtail
+  # promtail:
+  #   image: grafana/promtail
+  #   container_name: promtail
+  #   volumes:
+  #     - ./promtail/config/config-c/promtail-local-config.yaml:/etc/promtail/config.yaml
+  #     - /var/lib/docker/containers:/var/lib/docker/containers
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  #   command: -config.file=/etc/promtail/config.yaml
+  #   restart: unless-stopped
+  #   depends_on:
+  #     - loki
+  #   networks:
+  #     sv2-net:
+  #       ipv4_address: 10.5.0.31
+  #       aliases:
+  #         - promtail
   
-  log-server:
-    image: log-server-builder-image
-    command: ["./target/release/log-server"]
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    ports:
-      - "7420:7420"
-    environment:
-      - LOG_LABEL=config-c
-      - RUST_LOG=info
-    container_name: log-server
-    depends_on:
-      - log-server-builder
-    restart: unless-stopped
-    networks:
-      sv2-net:
-        ipv4_address: 10.5.0.32
+  # log-server:
+  #   image: log-server-builder-image
+  #   command: ["./target/release/log-server"]
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  #   ports:
+  #     - "7420:7420"
+  #   environment:
+  #     - LOG_LABEL=config-c
+  #     - RUST_LOG=info
+  #   container_name: log-server
+  #   depends_on:
+  #     - log-server-builder
+  #   restart: unless-stopped
+  #   networks:
+  #     sv2-net:
+  #       ipv4_address: 10.5.0.32
