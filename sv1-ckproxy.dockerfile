@@ -30,7 +30,7 @@ RUN git clone ${REPO_URL}
 
 WORKDIR /Pool
 
-RUN git reset 1a0b3143564d3e45edf8679ff344aac92bff7f25 --hard
+RUN git checkout before_spm
 
 COPY conf/ckproxy.conf ./src
 

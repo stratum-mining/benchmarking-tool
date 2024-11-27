@@ -325,27 +325,27 @@ services:
       sv2-net:
         ipv4_address: 10.5.0.21
   
-  sv1-ckpool:
-    container_name: sv1-ckpool
-    labels:
-      logging: "config-c"
-    build:
-      context: .
-      dockerfile: ./sv1-ckpool.dockerfile
-    # ports:
-      # - "3333:3333"
-    volumes:
-      - "./conf:/ckpool-solo/src/conf"
-    restart: unless-stopped
-    networks:
-      sv2-net:
-        ipv4_address: 10.5.0.40
-    healthcheck:
-      test: ["CMD-SHELL", "curl --silent --user username:password --data-binary '{\"jsonrpc\":\"1.0\",\"id\":\"healthcheck\",\"method\":\"getblockchaininfo\",\"params\":[]}' -H 'Content-Type: application/json' http://10.5.0.16:18332/ | jq -e '.result.initialblockdownload == false' || exit 1"]
-      interval: 30s
-      timeout: 10s
-      retries: 10
-      start_period: 10s
+  # sv1-ckpool:
+  #   container_name: sv1-ckpool
+  #   labels:
+  #     logging: "config-c"
+  #   build:
+  #     context: .
+  #     dockerfile: ./sv1-ckpool.dockerfile
+  #   # ports:
+  #     # - "3333:3333"
+  #   volumes:
+  #     - "./conf:/ckpool-solo/src/conf"
+  #   restart: unless-stopped
+  #   networks:
+  #     sv2-net:
+  #       ipv4_address: 10.5.0.40
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "curl --silent --user username:password --data-binary '{\"jsonrpc\":\"1.0\",\"id\":\"healthcheck\",\"method\":\"getblockchaininfo\",\"params\":[]}' -H 'Content-Type: application/json' http://10.5.0.16:18332/ | jq -e '.result.initialblockdownload == false' || exit 1"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 10
+  #     start_period: 10s
 
   
   sv1-ckproxy:
