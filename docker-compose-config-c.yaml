@@ -358,7 +358,8 @@ services:
     ports:
       - "3333:3333"
     volumes:
-      - "./conf:/ckpool-solo/src/conf"
+      # - "../ckpool:/Pool"
+      - "./conf:/Pool/src/conf"
     restart: unless-stopped
     depends_on:
       - sv1-pool

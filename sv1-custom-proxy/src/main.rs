@@ -65,10 +65,10 @@ async fn transfer(
                                         .remove_label_values(&[&nonce_string]);
                                 });
                             } else {
-                                println!("Nonce not found in params");
+                                // println!("Nonce not found in params");
                             }
                         } else {
-                            println!("Params is not an array");
+                            // println!("Params is not an array");
                         }
                     }
                 } else {
@@ -107,7 +107,7 @@ async fn transfer(
                                 if let Ok(response) = client.get(prometheus_url).send().await {
                                     if let Ok(body) = response.text().await {
                                         for line in body.lines() {
-                                            println!("Line: {:?}", line);
+                                            // println!("Line: {:?}", line);
                                             if let Some(start_index) = line.find("flag=") {
                                                 let start = start_index + "flag=\"".len();
                                                 if let Some(value) = line.chars().nth(start) {
@@ -115,10 +115,10 @@ async fn transfer(
                                                         if let Some((_, timestamp)) =
                                                             line.rsplit_once(' ')
                                                         {
-                                                            println!(
-                                                                "The extracted timestamp is: {}",
-                                                                timestamp.trim()
-                                                            );
+                                                            // println!(
+                                                            //     "The extracted timestamp is: {}",
+                                                            //     timestamp.trim()
+                                                            // );
                                                             let new_job_timestamp = timestamp
                                                                 .trim()
                                                                 .parse::<f64>()
@@ -128,15 +128,15 @@ async fn transfer(
                                                             new_job_prev_hash_gauge.set(delta);
                                                             new_job_gauge.set(delta);
                                                         } else {
-                                                            println!("No timestamp value found.");
+                                                            // println!("No timestamp value found.");
                                                         }
                                                     } else if let Some((_, timestamp)) =
                                                         line.rsplit_once(' ')
                                                     {
-                                                        println!(
-                                                            "The extracted timestamp is: {}",
-                                                            timestamp.trim()
-                                                        );
+                                                        // println!(
+                                                        //     "The extracted timestamp is: {}",
+                                                        //     timestamp.trim()
+                                                        // );
                                                         let new_job_timestamp = timestamp
                                                             .trim()
                                                             .parse::<f64>()
@@ -145,7 +145,7 @@ async fn transfer(
                                                             current_timestamp - new_job_timestamp;
                                                         new_job_gauge.set(delta);
                                                     } else {
-                                                        println!("No timestamp value found.");
+                                                        // println!("No timestamp value found.");
                                                     }
                                                 }
                                             }
@@ -153,7 +153,7 @@ async fn transfer(
                                     }
                                 }
                             } else {
-                                println!("Prevhash not found in params");
+                                // println!("Prevhash not found in params");
                             }
                         }
                     }

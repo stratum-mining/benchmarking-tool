@@ -32,11 +32,11 @@ WORKDIR /Pool
 
 RUN git checkout before_spm
 
-COPY conf/ckproxy.conf ./src
+# COPY conf/ckproxy.conf ./src
 
 RUN ./autogen.sh && ./configure && make
 
 WORKDIR ./src 
 
-CMD ["./ckpool","-p","-k", "-c", "./ckproxy.conf", "-l", "7"]
+CMD ["./ckpool","-p","-k", "-c", "./conf/ckproxy.conf", "-l", "7"]
 # CMD ["./ckpool","-B","-k", "-c", "./ckpool.conf", "-l", "7"]

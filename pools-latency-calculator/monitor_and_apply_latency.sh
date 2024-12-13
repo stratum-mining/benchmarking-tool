@@ -31,7 +31,7 @@ while true; do
     LATENCY=$(echo "$JSON" | grep -o '"value":[[0-9.]*,"[0-9.]*' | cut -d',' -f2 | tr -d '"')
     # Check if LATENCY is empty
     if [ -z "$LATENCY" ]; then
-        echo "No latency value found, skipping this cycle."
+        echo ""
     else
         # Compare the current latency with the previous latency
         if [ "$LATENCY" != "$PREV_LATENCY" ]; then
