@@ -184,7 +184,7 @@ services:
       - CLIENT=10.5.0.17:34251
       - PROM_ADDRESS=10.5.0.17:3456
       - PROXY_TYPE=pool-translator
-      - RUST_LOG=info
+      - RUST_LOG=${LOG_LEVEL}
     container_name: sv2-pool-translator-proxy
     depends_on:
       - sv2-custom-proxy-builder
@@ -210,7 +210,7 @@ services:
       - PROM_ADDRESS=10.5.0.20:5678
       - PROXY_TYPE=tp-pool
       - NETWORK=${NETWORK}
-      - RUST_LOG=info
+      - RUST_LOG=${LOG_LEVEL}
     container_name: sv2-tp-pool-proxy
     depends_on:
       template-provider-pool-side: 
@@ -238,7 +238,7 @@ services:
       - CLIENT=10.5.0.7:34256
       - PROM_ADDRESS=10.5.0.23:5676
       - PROXY_TYPE=translator-miner
-      - RUST_LOG=info
+      - RUST_LOG=${LOG_LEVEL}
     container_name: sv2-translator-miner-proxy
     depends_on:
       - sv1-custom-proxy-builder
@@ -291,7 +291,7 @@ services:
       - CLIENT=0.0.0.0:3333
       - PROM_ADDRESS=10.5.0.19:2345
       - PROXY_TYPE=pool-miner
-      - RUST_LOG=info
+      - RUST_LOG=${LOG_LEVEL}
     container_name: sv1-pool-miner-proxy
     depends_on:
       - sv1-custom-proxy-builder
@@ -316,7 +316,7 @@ services:
       - CLIENT=0.0.0.0:48330
       - PROM_ADDRESS=10.5.0.21:4567
       - PROXY_TYPE=node-pool
-      - RUST_LOG=info
+      - RUST_LOG=${LOG_LEVEL}
     container_name: sv1-node-pool-proxy
     depends_on:
       sv1-custom-proxy-builder: 
@@ -473,7 +473,7 @@ services:
       - "1234:1234"
     container_name: pools-latency-calculator
     environment:
-      - RUST_LOG=info
+      - RUST_LOG=${LOG_LEVEL}
     restart: unless-stopped
     networks:
       sv2-net:
@@ -520,7 +520,7 @@ services:
       - "7420:7420"
     environment:
       - LOG_LABEL=config-c
-      - RUST_LOG=info
+      - RUST_LOG=${LOG_LEVEL}
     container_name: log-server
     depends_on:
       - log-server-builder
