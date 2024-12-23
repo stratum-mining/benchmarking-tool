@@ -91,8 +91,6 @@ async fn average_latency(addresses: Vec<&str>, repetitions: usize, gauge: Gauge)
 
 #[tokio::main]
 async fn main() {
-    let log_level = std::env::var("LOG_LEVEL").unwrap_or("info".to_string());
-    std::env::set_var("RUST_LOG", log_level);
     env_logger::Builder::from_env(
         env_logger::Env::default()
             .default_filter_or("coinswap=info")

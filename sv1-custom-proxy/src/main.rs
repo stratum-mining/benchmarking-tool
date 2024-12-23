@@ -348,8 +348,6 @@ fn reverse_string(s: &str) -> String {
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let log_level = env::var("LOG_LEVEL").unwrap_or("info".to_string());
-    env::set_var("RUST_LOG", log_level);
     env_logger::Builder::from_env(
         env_logger::Env::default()
             .default_filter_or("coinswap=info")
