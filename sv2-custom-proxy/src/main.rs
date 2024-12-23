@@ -21,6 +21,15 @@ use warp::Filter;
 
 #[tokio::main]
 async fn main() {
+    let log_level = std::env::var("LOG_LEVEL").unwrap_or("info".to_string());
+    std::env::set_var("RUST_LOG", log_level);
+    env_logger::Builder::from_env(
+        env_logger::Env::default()
+            .default_filter_or("coinswap=info")
+            .default_write_style_or("always"),
+    )
+    .is_test(true)
+    .init();
     let client_address = env::var("CLIENT").expect("CLIENT environment variable not set");
     let server_address = env::var("SERVER").expect("SERVER environment variable not set");
     let proxy_type = env::var("PROXY_TYPE").expect("PROXY_TYPE environment variable not set");
@@ -381,7 +390,7 @@ async fn fetch_last_block_reward_with_retries(
         match fetch_block_reward(hash).await {
             Ok(reward) => return Ok(reward),
             Err(e) => {
-                eprintln!("Attempt {} failed: {}", attempt + 1, e);
+                log::error!("Attempt {} failed: {}", attempt + 1, e);
                 attempt += 1;
                 sleep(delay).await;
             }
@@ -479,7 +488,7 @@ async fn intercept_prev_hash(
                     if let Ok(value) = fetch_metric_result {
                         last_sv2_block_template_value_clone.set(value);
                     } else {
-                        eprintln!("Error fetching metric");
+                        log::error!("Error fetching metric");
                     }
                 }
             });
@@ -562,7 +571,7 @@ async fn intercept_submit_share_error(builder: &mut ProxyBuilder, stale_shares: 
     let mut r = builder.add_handler(Remote::Server, MESSAGE_TYPE_SUBMIT_SHARES_ERROR);
     tokio::spawn(async move {
         while let Some(PoolMessages::Mining(Mining::SubmitSharesError(m))) = r.recv().await {
-            println!("SubmitSharesError received --> {:?}", m);
+            log::error!("SubmitSharesError received --> {:?}", m);
             stale_shares.inc();
         }
     });
