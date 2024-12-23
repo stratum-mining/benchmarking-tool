@@ -78,7 +78,8 @@ async fn average_latency(addresses: Vec<&str>, repetitions: usize, gauge: Gauge)
         total_duration += address_duration;
         log::info!(
             "Average latency for {}: {:?}",
-            address, avg_address_duration
+            address,
+            avg_address_duration
         );
     }
 
