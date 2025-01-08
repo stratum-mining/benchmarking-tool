@@ -77,7 +77,7 @@ If you prefer to set up the benchmarking tool manually, follow these detailed st
   
       🚨 If you are going to use `mainnet`, you need to leave an empty string there --> `NETWORK=`
     
-   - *SV2 block templates refresh interval*: specify frequence in which you will get refreshed block templates for SV2
+   - *SV2 block templates refresh interval*: specify frequency in which you will get refreshed block templates for SV2
      - Edit the `SV2_INTERVAL` parameter in [.env](.env) and enter the number of seconds you desire
     
       🚨 The `SV1 Pool` used in the benchmarking tool will generate a new block template every 60 seconds. Note that this value will affect the bandwidth used and tracked (especially in `configuration C`)
@@ -154,7 +154,7 @@ If you prefer to set up the benchmarking tool manually, follow these detailed st
     👉 it will take some minutes to generate a complete PDF, so please be patient :) 
 
 
-7. **Analize report** 📄
+7. **Analyze report** 📄
   
     To effectively analyze the report produced by this tool, it is recommended to review the following document that explains the tool's architecture, the methodology for metrics collection, and provides guidelines for analyzing the report: https://github.com/stratum-mining/benchmarking-tool/tree/main/docs/benchmarking-tool-overview.pdf
 
