@@ -64,12 +64,12 @@ async fn transfer(
                                         .remove_label_values(&[&nonce_string]);
                                 });
                             } else {
-                                println!("Client to Server: {:?}", line);
-                                println!("Nonce not found in params");
+                                log::info!("Client to Server: {:?}", line);
+                                log::warn!("Nonce not found in params");
                             }
                         } else {
-                            println!("Client to Server: {:?}", line);
-                            println!("Params is not an array");
+                            log::info!("Client to Server: {:?}", line);
+                            log::warn!("Params is not an array");
                         }
                     }
                 }
@@ -112,7 +112,7 @@ async fn transfer(
                                                         if let Some((_, timestamp)) =
                                                             line.rsplit_once(' ')
                                                         {
-                                                            println!(
+                                                            log::info!(
                                                                 "The extracted timestamp is: {}",
                                                                 timestamp.trim()
                                                             );
@@ -125,13 +125,13 @@ async fn transfer(
                                                             new_job_prev_hash_gauge.set(delta);
                                                             new_job_gauge.set(delta);
                                                         } else {
-                                                            println!("Line: {:?}", line);
-                                                            println!("No timestamp value found.");
+                                                            log::info!("Line: {:?}", line);
+                                                            log::info!("No timestamp value found.");
                                                         }
                                                     } else if let Some((_, timestamp)) =
                                                         line.rsplit_once(' ')
                                                     {
-                                                        println!(
+                                                        log::info!(
                                                             "The extracted timestamp is: {}",
                                                             timestamp.trim()
                                                         );
@@ -143,8 +143,8 @@ async fn transfer(
                                                             current_timestamp - new_job_timestamp;
                                                         new_job_gauge.set(delta);
                                                     } else {
-                                                        println!("Line: {:?}", line);
-                                                        println!("No timestamp value found.");
+                                                        log::info!("Line: {:?}", line);
+                                                        log::info!("No timestamp value found.");
                                                     }
                                                 }
                                             }
@@ -152,14 +152,14 @@ async fn transfer(
                                     }
                                 }
                             } else {
-                                println!("Server to Client: {}", json);
-                                println!("Prevhash not found in params");
+                                log::info!("Server to Client: {}", json);
+                                log::info!("Prevhash not found in params");
                             }
                         }
                     }
                     if !first_result_seen && json["result"] == true {
                         first_result_seen = true;
-                        println!(
+                        log::info!(
                             "Not counting this as a valid share because it's related to mining.subscribe"
                         );
                     } else if json["result"] == true {
@@ -168,8 +168,8 @@ async fn transfer(
                         stale_shares.inc();
                     }
                 } else {
-                    println!("Server to Client: {:?}", line);
-                    println!("Error in getting json from line")
+                    log::info!("Server to Client: {:?}", line);
+                    log::info!("Error in getting json from line")
                 }
                 wi.write_all(&line).await?;
             }
@@ -199,7 +199,7 @@ async fn handle_rpc_request(
     if let Ok(json) = serde_json::from_slice::<Value>(&body_bytes) {
         if let Some(method) = json.get("method") {
             if method == "submitblock" {
-                println!("Detected submitblock method.");
+                log::info!("Detected submitblock method.");
                 let current_timestamp = std::time::SystemTime::now()
                     .duration_since(std::time::UNIX_EPOCH)
                     .expect("Time went backwards")
@@ -215,7 +215,7 @@ async fn handle_rpc_request(
                                 let end = match line[start..].find("\\\"") {
                                     Some(index) => start + index,
                                     None => {
-                                        println!(
+                                        log::info!(
                                             "Failed to find end quote for nonce in line: {}",
                                             line
                                         );
@@ -228,7 +228,7 @@ async fn handle_rpc_request(
                                 let nonce_bytes = match nonce_bytes_result {
                                     Ok(bytes) => bytes,
                                     Err(e) => {
-                                        println!("Failed to parse nonce hex: {}", e);
+                                        log::info!("Failed to parse nonce hex: {}", e);
                                         continue;
                                     }
                                 };
@@ -255,7 +255,7 @@ async fn handle_rpc_request(
                             }
                         }
                         if !nonce_found {
-                            println!("Nonce not found in Prometheus metrics");
+                            log::warn!("Nonce not found in Prometheus metrics");
                         }
                     }
                 }
@@ -285,7 +285,7 @@ async fn handle_rpc_request(
     let res = match client.request(new_req).await {
         Ok(res) => res,
         Err(err) => {
-            println!("Error forwarding request: {}", err);
+            log::error!("Error forwarding request: {}", err);
             return Err(err);
         }
     };
@@ -348,6 +348,13 @@ fn reverse_string(s: &str) -> String {
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    env_logger::Builder::from_env(
+        env_logger::Env::default()
+            .default_filter_or("coinswap=info")
+            .default_write_style_or("always"),
+    )
+    .is_test(true)
+    .init();
     let proxy_type = env::var("PROXY_TYPE").expect("PROXY_TYPE environment variable not set");
     let client = env::var("CLIENT").expect("CLIENT environment variable not set");
     let server = env::var("SERVER").expect("SERVER environment variable not set");
@@ -401,7 +408,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         let client_address: SocketAddr = client.parse().expect("Invalid address");
         let server_address: SocketAddr = server.parse().expect("Invalid address");
         let listener = TcpListener::bind(client_address).await?;
-        println!("SV1 proxy listening on port 3333");
+        log::info!("SV1 proxy listening on port 3333");
 
         loop {
             let (inbound, _) = listener.accept().await?;
@@ -427,7 +434,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 )
                 .await
                 {
-                    println!("Failed to transfer; error = {}", e);
+                    log::error!("Failed to transfer; error = {}", e);
                 }
             });
         }
@@ -480,10 +487,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
         let server = Server::bind(&addr).serve(make_svc);
 
-        println!("Listening on http://{}", addr);
+        log::info!("Listening on http://{}", addr);
 
         if let Err(e) = server.await {
-            eprintln!("server error: {}", e);
+            log::error!("server error: {}", e);
         }
     } else if proxy_type == "translator-miner" {
         let new_job_prev_hash_throught_sv2_jdc = Arc::new(
@@ -508,7 +515,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         let listener = tokio::net::TcpListener::bind("0.0.0.0:34255")
             .await
             .unwrap();
-        println!("SV2 proxy translation proxy started at 34255");
+        log::info!("SV2 proxy translation proxy started at 34255");
         loop {
             let (inbound, _) = listener.accept().await.unwrap();
             let outbound = TcpStream::connect("10.5.0.7:34256").await.unwrap();
@@ -527,7 +534,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 )
                 .await
                 {
-                    println!("Failed to transfer; error = {}", e);
+                    log::error!("Failed to transfer; error = {}", e);
                 }
             });
         }
@@ -606,7 +613,7 @@ async fn transfer_new_job(
                                                 let _end = match line[start..].find('"') {
                                                     Some(index) => start + index,
                                                     None => {
-                                                        println!("Failed to find end quote for prevhash in line: {}", line);
+                                                        log::error!("Failed to find end quote for prevhash in line: {}", line);
                                                         continue;
                                                     }
                                                 };
@@ -619,7 +626,7 @@ async fn transfer_new_job(
                                                     new_job_prev_hash_throught_sv2_jdc.set(delta);
                                                     new_job_prev_hash_through_sv2_pool.set(delta);
                                                 } else {
-                                                    println!("No timestamp value found.");
+                                                    log::warn!("No timestamp value found.");
                                                 }
                                             }
                                             if line.contains("id=") {
@@ -632,22 +639,22 @@ async fn transfer_new_job(
                                                     new_job_time_sv2_jdc.set(delta);
                                                     new_job_time_sv2_pool.set(delta);
                                                 } else {
-                                                    println!("No timestamp value found.");
+                                                    log::warn!("No timestamp value found.");
                                                 }
                                             }
                                         }
                                     }
                                 }
                             } else {
-                                println!("Prevhash not found in params");
+                                log::warn!("Prevhash not found in params");
                             }
                         } else {
-                            println!("Params is not an array");
+                            log::warn!("Params is not an array");
                         }
-                        println!("JSON: {:?}", json);
+                        log::debug!("JSON: {:?}", json);
                     }
                 } else {
-                    println!("Server to Client: {:?}", line);
+                    log::info!("Server to Client: {:?}", line);
                 }
                 wi.write_all(&line).await?;
             }

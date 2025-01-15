@@ -14,6 +14,9 @@ DEFAULT_INTERVAL_C="60"
 # Path to .env file
 ENV_FILE=".env"
 
+#Binaries Log Level
+DEFAULT_LOG_LEVEL="info"
+
 # Function to clean up Docker containers on error
 cleanup() {
     echo ""
@@ -139,6 +142,14 @@ if ! [[ "$SV2_INTERVAL" =~ ^[0-9]+$ ]]; then
     exit 1
 fi
 
+echo ""
+read -p "Choose the log level to display in the tool.? (default is 'info'): " LOG_LEVEL
+LOG_LEVEL=${LOG_LEVEL:-$DEFAULT_LOG_LEVEL}
+if ! [[ "$LOG_LEVEL" =~ ^(info|debug|error|warn)$ ]]; then
+    echo "Invalid log level. Please enter one of these: info, debug, error, or warn."
+    exit 1
+fi
+
 # Define all the configuration files to update
 CONFIG_FILES=(
     "custom-configs/sri-roles/config-a/jds-config-a-docker-example.toml"
@@ -197,9 +208,9 @@ done
 
 # Update the .env file with the selected values
 if [[ "$NETWORK" == "mainnet" ]]; then
-    echo -e "NETWORK=\nSV2_INTERVAL=$SV2_INTERVAL" > "$ENV_FILE"
+    echo -e "NETWORK=\nSV2_INTERVAL=$SV2_INTERVAL\nLOG_LEVEL=$LOG_LEVEL" > "$ENV_FILE"
 else
-    echo -e "NETWORK=$NETWORK\nSV2_INTERVAL=$SV2_INTERVAL" > "$ENV_FILE"
+    echo -e "NETWORK=$NETWORK\nSV2_INTERVAL=$SV2_INTERVAL\nLOG_LEVEL=$LOG_LEVEL" > "$ENV_FILE"
 fi
 
 # Convert CONFIG to lowercase for the filename

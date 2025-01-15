@@ -39,7 +39,7 @@ async fn get_subscription_latency(address: &str) -> Result<Duration, std::io::Er
         Ok(connection) => match timeout(TIMEOUT_DURATION, subscribe_to_pool(connection)).await {
             Ok(result) => result,
             Err(_) => {
-                println!("Timeout while subscribing to {}", address);
+                log::error!("Timeout while subscribing to {}", address);
                 Err(std::io::Error::new(
                     std::io::ErrorKind::TimedOut,
                     "Subscription timeout",
@@ -47,7 +47,7 @@ async fn get_subscription_latency(address: &str) -> Result<Duration, std::io::Er
             }
         },
         Err(e) => {
-            println!("Failed to connect to {}: {}", address, e);
+            log::error!("Failed to connect to {}: {}", address, e);
             Err(e)
         }
     }
@@ -58,15 +58,15 @@ async fn average_latency(addresses: Vec<&str>, repetitions: usize, gauge: Gauge)
     let mut total_attempts = 0;
 
     for address in addresses {
-        println!("Starting latency measurement for: {}", address);
+        log::warn!("Starting latency measurement for: {}", address);
         let mut address_duration = Duration::new(0, 0);
 
         for i in 0..repetitions {
-            print!("Attempt {} for {}... ", i + 1, address);
+            log::info!("Attempt {} for {}... ", i + 1, address);
             match get_subscription_latency(address).await {
                 Ok(duration) => {
                     address_duration += duration;
-                    println!("latency: {:?}", duration);
+                    log::info!("latency: {:?}", duration);
                 }
                 Err(e) => println!("Error: {}", e),
             }
@@ -76,14 +76,15 @@ async fn average_latency(addresses: Vec<&str>, repetitions: usize, gauge: Gauge)
 
         let avg_address_duration = address_duration / repetitions as u32;
         total_duration += address_duration;
-        println!(
+        log::info!(
             "Average latency for {}: {:?}",
-            address, avg_address_duration
+            address,
+            avg_address_duration
         );
     }
 
     let avg_total_duration = total_duration / total_attempts as u32;
-    println!("Total average latency: {:?}", avg_total_duration);
+    log::info!("Total average latency: {:?}", avg_total_duration);
 
     let avg_total_duration_ms = avg_total_duration.as_secs_f64() * 1000.0;
     gauge.set(avg_total_duration_ms);
@@ -91,6 +92,13 @@ async fn average_latency(addresses: Vec<&str>, repetitions: usize, gauge: Gauge)
 
 #[tokio::main]
 async fn main() {
+    env_logger::Builder::from_env(
+        env_logger::Env::default()
+            .default_filter_or("coinswap=info")
+            .default_write_style_or("always"),
+    )
+    .is_test(true)
+    .init();
     let addresses = vec![
         "stratum+tcp://ss.antpool.com:3333",
         "stratum+tcp://ss.antpool.com:443",
@@ -138,6 +146,6 @@ async fn main() {
     });
 
     let addr: SocketAddr = ([0, 0, 0, 0], 1234).into();
-    println!("Starting Prometheus metrics server on http://0.0.0.0:1234/metrics");
+    log::info!("Starting Prometheus metrics server on http://0.0.0.0:1234/metrics");
     warp::serve(metrics_route).run(addr).await;
 }
