@@ -54,4 +54,4 @@ COPY ./pools-latency-calculator/monitor_and_apply_latency.sh /usr/local/bin/moni
 RUN chmod +x /usr/local/bin/monitor_and_apply_latency.sh
 
 # Run the monitoring script in the background and start the main application
-CMD ["/bin/bash", "-c", "/usr/local/bin/monitor_and_apply_latency.sh 10.5.0.19 2 & exec /usr/local/bin/node dist/main"]
+CMD ["/bin/sh", "-c", "/usr/local/bin/monitor_and_apply_latency.sh 10.5.0.19 2 & exec /usr/local/bin/node dist/main"]
