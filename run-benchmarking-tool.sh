@@ -143,7 +143,7 @@ if ! [[ "$SV2_INTERVAL" =~ ^[0-9]+$ ]]; then
 fi
 
 echo ""
-read -p "Choose the log level to display in the tool.? (default is 'info'): " LOG_LEVEL
+read -p "Choose the log level to display in the tool? (info, debug, error, or warn, default is 'info'): " LOG_LEVEL
 LOG_LEVEL=${LOG_LEVEL:-$DEFAULT_LOG_LEVEL}
 if ! [[ "$LOG_LEVEL" =~ ^(info|debug|error|warn)$ ]]; then
     echo "Invalid log level. Please enter one of these: info, debug, error, or warn."
