@@ -213,6 +213,23 @@ else
     echo -e "NETWORK=$NETWORK\nSV2_INTERVAL=$SV2_INTERVAL\nLOG_LEVEL=$LOG_LEVEL" > "$ENV_FILE"
 fi
 
+# Ensure SV1 pool configuration uses the correct network format
+SV1_POOL_ENV="custom-configs/sv1-pool/.env"
+if [[ -f "$SV1_POOL_ENV" ]]; then
+    if [[ "$NETWORK" == "mainnet" ]]; then
+        NEW_NETWORK_VALUE="mainnet"
+    else
+        NEW_NETWORK_VALUE="testnet"
+    fi
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        sed -i '' "s/^NETWORK=.*/NETWORK=$NEW_NETWORK_VALUE/" "$SV1_POOL_ENV"
+    else
+        sed -i "s/^NETWORK=.*/NETWORK=$NEW_NETWORK_VALUE/" "$SV1_POOL_ENV"
+    fi
+else
+    echo "Warning: SV1 pool .env file not found at $SV1_POOL_ENV"
+fi
+
 # Convert CONFIG to lowercase for the filename
 CONFIG_LOWER=$(echo "$CONFIG" | tr '[:upper:]' '[:lower:]')
 
