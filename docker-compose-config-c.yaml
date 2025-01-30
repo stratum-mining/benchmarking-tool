@@ -409,7 +409,7 @@ services:
         condition: on-failure
 
   grafana:
-    image: grafana/grafana
+    image: grafana/grafana:11.2.4
     depends_on:
       - prometheus
       - loki
