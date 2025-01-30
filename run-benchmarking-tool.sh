@@ -143,7 +143,7 @@ if ! [[ "$SV2_INTERVAL" =~ ^[0-9]+$ ]]; then
 fi
 
 echo ""
-read -p "Choose the log level to display in the tool.? (default is 'info'): " LOG_LEVEL
+read -p "Choose the log level to display in the tool? (info, debug, error, or warn, default is 'info'): " LOG_LEVEL
 LOG_LEVEL=${LOG_LEVEL:-$DEFAULT_LOG_LEVEL}
 if ! [[ "$LOG_LEVEL" =~ ^(info|debug|error|warn)$ ]]; then
     echo "Invalid log level. Please enter one of these: info, debug, error, or warn."
@@ -211,6 +211,23 @@ if [[ "$NETWORK" == "mainnet" ]]; then
     echo -e "NETWORK=\nSV2_INTERVAL=$SV2_INTERVAL\nLOG_LEVEL=$LOG_LEVEL" > "$ENV_FILE"
 else
     echo -e "NETWORK=$NETWORK\nSV2_INTERVAL=$SV2_INTERVAL\nLOG_LEVEL=$LOG_LEVEL" > "$ENV_FILE"
+fi
+
+# Ensure SV1 pool configuration uses the correct network format
+SV1_POOL_ENV="custom-configs/sv1-pool/.env"
+if [[ -f "$SV1_POOL_ENV" ]]; then
+    if [[ "$NETWORK" == "mainnet" ]]; then
+        NEW_NETWORK_VALUE="mainnet"
+    else
+        NEW_NETWORK_VALUE="testnet"
+    fi
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        sed -i '' "s/^NETWORK=.*/NETWORK=$NEW_NETWORK_VALUE/" "$SV1_POOL_ENV"
+    else
+        sed -i "s/^NETWORK=.*/NETWORK=$NEW_NETWORK_VALUE/" "$SV1_POOL_ENV"
+    fi
+else
+    echo "Warning: SV1 pool .env file not found at $SV1_POOL_ENV"
 fi
 
 # Convert CONFIG to lowercase for the filename
