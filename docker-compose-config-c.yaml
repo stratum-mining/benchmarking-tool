@@ -128,6 +128,8 @@ services:
       ]
     ports:
       - "34254:34254"
+    environment:
+      - RUST_LOG=${LOG_LEVEL}
     container_name: sv2-pool
     depends_on:
       - sv2-roles-builder
@@ -153,6 +155,8 @@ services:
       ]
     ports:
       - "34256:34256"
+    environment:
+      - RUST_LOG=${LOG_LEVEL}
     container_name: sv2-translator
     depends_on:
       - sv2-pool-translator-proxy

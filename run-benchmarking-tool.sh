@@ -152,6 +152,7 @@ fi
 
 # Define all the configuration files to update
 CONFIG_FILES=(
+    "custom-configs/sri-roles/config-a/pool-config-a-docker-example.toml"
     "custom-configs/sri-roles/config-a/jds-config-a-docker-example.toml"
     "custom-configs/sri-roles/config-a/jdc-config-a-docker-example.toml"
     "custom-configs/sri-roles/config-c/pool-config-c-docker-example.toml"

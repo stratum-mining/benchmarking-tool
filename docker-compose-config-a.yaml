@@ -151,6 +151,8 @@ services:
     command: ["/bin/sh", "-c", "./monitor_and_apply_latency.sh 10.5.0.6 2 & exec ./pool_sv2 -c pool/config-examples/pool-config-a-docker-example.toml"]
     ports:
       - "34254:34254"
+    environment:
+      - RUST_LOG=${LOG_LEVEL}
     container_name: sv2-pool
     depends_on:
       template-provider-pool-side: 
@@ -179,6 +181,8 @@ services:
       ]
     ports:
       - "34264:34264"
+    environment:
+      - RUST_LOG=${LOG_LEVEL}
     container_name: sv2-jds
     depends_on:
       template-provider-pool-side: 
@@ -207,6 +211,8 @@ services:
       ]
     ports:
       - "34265:34265"
+    environment:
+      - RUST_LOG=${LOG_LEVEL}
     container_name: sv2-jdc
     volumes:
       - ./custom-configs/sri-roles/config-a:/usr/local/bin/jd-client/config-examples/
@@ -233,6 +239,8 @@ services:
       ]
     ports:
       - "34256:34256"
+    environment:
+      - RUST_LOG=${LOG_LEVEL}
     container_name: sv2-translator
     depends_on:
       - sv2-jdc-translator-proxy
