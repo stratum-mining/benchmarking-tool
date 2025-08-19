@@ -57,6 +57,13 @@ services:
     image: pools-latency-calculator-builder-image
     command: echo "pools-latency-calculator build completed"
 
+  solo-ckpool-builder:
+    build:
+      dockerfile: ./solo-ckpool.dockerfile
+    container_name: solo-ckpool-builder
+    image: solo-ckpool-builder-image
+    command: echo "solo-ckpool build completed"
+
   template-provider-pool-side:
     labels:
       logging: "config-c"
@@ -332,6 +339,63 @@ services:
     networks:
       sv2-net:
         ipv4_address: 10.5.0.21
+
+  solo-ckpool:
+    image: solo-ckpool-builder-image
+    container_name: solo-ckpool
+    labels:
+      logging: "config-c"
+    command:
+      [
+        "/bin/sh",
+        "-c",
+        "/usr/local/bin/start-ckpool.sh",
+      ]
+    ports:
+      - "3336:3333"
+    environment:
+      - NETWORK=${NETWORK}
+    volumes:
+      - "./custom-configs/solo-ckpool/ckpool.conf:/etc/ckpool/ckpool.conf:ro"
+    restart: unless-stopped
+    depends_on:
+      - solo-ckpool-builder
+      - sv1-node-pool-proxy
+    networks:
+      sv2-net:
+        ipv4_address: 10.5.0.24
+    cap_add:
+      - NET_ADMIN
+
+  solo-ckpool-miner-proxy:
+    image: sv1-custom-proxy-builder-image
+    labels:
+      logging: "config-c"
+    command:
+      [
+        "/bin/sh",
+        "-c",
+        "./monitor_and_apply_latency.sh 10.5.0.24 2 & exec ./sv1-custom-proxy",
+      ]
+    ports:
+      - "3335:3335"
+      - "2346:2346"
+    environment:
+      - SERVER=10.5.0.24:3333
+      - CLIENT=0.0.0.0:3335
+      - PROM_ADDRESS=10.5.0.25:2346
+      - PROXY_TYPE=pool-miner
+      - RUST_LOG=${LOG_LEVEL}
+    container_name: solo-ckpool-miner-proxy
+    depends_on:
+      - sv1-custom-proxy-builder
+      - solo-ckpool
+    restart: unless-stopped
+    networks:
+      sv2-net:
+        ipv4_address: 10.5.0.25
+    cap_add:
+      - NET_ADMIN
 
   monitor-traffic-tcpdump:
     image: inzania/network-traffic-metrics:latest

@@ -116,12 +116,19 @@ If you prefer to set up the benchmarking tool manually, follow these detailed st
    ```
 
 4. **Point miners to the following endpoints**
-    - For Stratum V1:
+    - For Stratum V1 (Public Pool):
       ```bash
       stratum+tcp://<host-ip-address>:3333
       ```
       🚨 For SV1, you should use the address format `[bitcoin_address].[nickname]` as the username in your miner setup.
       E.g. to correctly run a CPU miner, you need to run it with: `./minerd -a sha256d -o stratum+tcp://127.0.0.1:3333 -q -D -P -u tb1qa0sm0hxzj0x25rh8gw5xlzwlsfvvyz8u96w3p8.sv2-gitgab19`
+  
+    - For Stratum V1 (Solo-CKPool):
+      ```bash
+      stratum+tcp://<host-ip-address>:3335
+      ```
+      🚨 For Solo-CKPool, the username MUST be a valid Bitcoin address for the target network.
+      E.g. to correctly run a CPU miner, you need to run it with: `./minerd -a sha256d -o stratum+tcp://127.0.0.1:3335 -q -D -P -u tb1qa0sm0hxzj0x25rh8gw5xlzwlsfvvyz8u96w3p8`
   
     - For Stratum V2:
       ```bash
