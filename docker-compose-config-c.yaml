@@ -343,13 +343,16 @@ services:
       - "NTM_FILTERS=" 
 
   prometheus:
-    image: prom/prometheus:v2.36.2
+    image: prom/prometheus:v2.47.2
     volumes:
       - ./prometheus/:/etc/prometheus/
       - prometheus_data_config_c:/prometheus
     command:
       - "--config.file=/etc/prometheus/prometheus.yml"
       - "--storage.tsdb.path=/prometheus"
+      - "--storage.tsdb.retention.time=7d"
+      - "--storage.tsdb.retention.size=2GB"
+      - "--storage.tsdb.wal-compression"
       - "--web.console.libraries=/usr/share/prometheus/console_libraries"
       - "--web.console.templates=/usr/share/prometheus/consoles"
       - "--web.enable-lifecycle"
