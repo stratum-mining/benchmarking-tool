@@ -4,14 +4,16 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-demand-easy-sv2 = { version = "=0.6.0" }
+# Stratum v2 crates from v1.5.0 tag
+stratum-common = { git = "https://github.com/stratum-mining/stratum.git", tag = "v1.5.0", features = ["with_network_helpers"] }
+codec_sv2 = { git = "https://github.com/stratum-mining/stratum.git", tag = "v1.5.0", features = ["noise_sv2", "with_buffer_pool"] }
+key-utils = { git = "https://github.com/stratum-mining/stratum.git", tag = "v1.5.0" }
+async-channel = "1.8.0"
+
 prometheus = "0.13"
 warp = "0.3"
 tokio = { version = "1.36.0", features = ["full", "tracing"] }
-dotenv = "0.15.0"
 reqwest = { version = "0.11", default-features = false, features = ["json", "rustls-tls"] }
 serde_json = "1.0.120"
-hex = "0.4.3"
-log = "0.4.22"
-env_logger = "0.11.6"
-#serde = { version = "1.0.89", features = ["derive", "alloc"], default-features = false }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }

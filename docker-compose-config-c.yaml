@@ -61,7 +61,10 @@ services:
     labels:
       logging: "config-c"
     image: template-provider-builder-image
-    entrypoint: ["/bin/sh", "-c", "./scripts/update-mainnet-chainstate.sh ${NETWORK} && /bitcoin/bin/bitcoind -sv2 -sv2port=8442 -sv2interval=${SV2_INTERVAL} -sv2feedelta=0 -debug=sv2 -loglevel=sv2:debug -sv2bind=0.0.0.0  -${NETWORK}"]
+    entrypoint: ["./scripts/start-sv2-tp.sh", "-${NETWORK}"]
+    environment:
+      - SV2_PORT=8442
+      - SV2_INTERVAL=${SV2_INTERVAL}
     ports:
       - "8442:8442"
       - "18333:48333"
@@ -90,7 +93,7 @@ services:
     labels:
       logging: "config-c"
     image: template-provider-builder-image
-    entrypoint: ["/bin/sh", "-c", "./scripts/update-mainnet-chainstate.sh ${NETWORK} && /bitcoin/bin/bitcoind -${NETWORK}"]
+    entrypoint: ["/bitcoin/bin/bitcoind", "-${NETWORK}"]
     ports:
       - "38333:18333"
       - "28332:18332"

@@ -62,7 +62,10 @@ services:
     labels:
       logging: "config-a"
     image: template-provider-builder-image
-    entrypoint: ["/bin/sh", "-c", "./scripts/update-mainnet-chainstate.sh ${NETWORK} && /bitcoin/bin/bitcoind -sv2 -sv2port=8442 -sv2interval=${SV2_INTERVAL} -sv2feedelta=0 -debug=sv2 -loglevel=sv2:debug -sv2bind=0.0.0.0  -${NETWORK}"]
+    entrypoint: ["./scripts/start-sv2-tp.sh"]
+    environment:
+      - SV2_PORT=8442
+      - SV2_INTERVAL=${SV2_INTERVAL}
     ports:
       - "8442:8442"
       - "18333:48333"
@@ -73,9 +76,9 @@ services:
       - common-template-provider-builder
     volumes:
       - bitcoin_pool_side_data:/root/.bitcoin
-      - shared-mainnet-snapshot-volume:/shared_volume  # Shared volume for mainnet snapshot
+      - shared-mainnet-snapshot-volume:/shared_volume # Shared volume for mainnet snapshot
       - ./custom-configs/sri-roles/bitcoin-tp-pool.conf:/root/.bitcoin/bitcoin.conf
-      - ./containers-scripts:/scripts 
+      - ./containers-scripts:/scripts
     restart: unless-stopped
     networks:
       sv2-net:
@@ -91,7 +94,10 @@ services:
     labels:
       logging: "config-a"
     image: template-provider-builder-image
-    entrypoint: ["/bin/sh", "-c", "./scripts/update-mainnet-chainstate.sh ${NETWORK} && /bitcoin/bin/bitcoind -sv2 -sv2port=8443 -sv2interval=${SV2_INTERVAL} -sv2feedelta=0 -debug=sv2 -loglevel=sv2:debug -sv2bind=0.0.0.0 -${NETWORK}"]
+    entrypoint: ["./scripts/start-sv2-tp.sh"]
+    environment:
+      - SV2_PORT=8443
+      - SV2_INTERVAL=${SV2_INTERVAL}
     ports:
       - "8443:8443"
       - "28333:18333"
@@ -100,7 +106,7 @@ services:
       - common-template-provider-builder
     volumes:
       - bitcoin_miner_side_data:/root/.bitcoin
-      - shared-mainnet-snapshot-volume:/shared_volume  # Shared volume for mainnet snapshot
+      - shared-mainnet-snapshot-volume:/shared_volume # Shared volume for mainnet snapshot
       - ./custom-configs/sri-roles/bitcoin-tp-miner.conf:/root/.bitcoin/bitcoin.conf
       - ./containers-scripts:/scripts
     restart: unless-stopped
@@ -118,7 +124,13 @@ services:
     labels:
       logging: "config-a"
     image: template-provider-builder-image
-    entrypoint: ["/bin/sh", "-c", "./scripts/update-mainnet-chainstate.sh ${NETWORK} && /bitcoin/bin/bitcoind -${NETWORK}"]
+    entrypoint:
+      [
+        "/bitcoin/bin/bitcoind",
+        "-${NETWORK}",
+        "-rpcbind=0.0.0.0",
+        "-rpcallowip=0.0.0.0/0",
+      ]
     ports:
       - "38333:18333"
       - "28332:18332"
@@ -128,7 +140,7 @@ services:
       - common-template-provider-builder
     volumes:
       - bitcoin_sv1_pool_side_data:/root/.bitcoin
-      - shared-mainnet-snapshot-volume:/shared_volume  # Shared volume for mainnet snapshot
+      - shared-mainnet-snapshot-volume:/shared_volume # Shared volume for mainnet snapshot
       - ./custom-configs/sri-roles/bitcoin-sv1-node-pool.conf:/root/.bitcoin/bitcoin.conf
       - ./containers-scripts:/scripts
     restart: unless-stopped
@@ -148,14 +160,19 @@ services:
     image: sv2-roles-builder-image
     labels:
       logging: "config-a"
-    command: ["/bin/sh", "-c", "./monitor_and_apply_latency.sh 10.5.0.6 2 & exec ./pool_sv2 -c pool/config-examples/pool-config-a-docker-example.toml"]
+    command:
+      [
+        "/bin/sh",
+        "-c",
+        "./monitor_and_apply_latency.sh 10.5.0.6 2 & exec ./pool_sv2 -c pool/config-examples/pool-config-a-docker-example.toml",
+      ]
     ports:
       - "34254:34254"
     environment:
       - RUST_LOG=${LOG_LEVEL}
     container_name: sv2-pool
     depends_on:
-      template-provider-pool-side: 
+      template-provider-pool-side:
         condition: service_healthy
         restart: true
       sv2-roles-builder:
@@ -185,7 +202,7 @@ services:
       - RUST_LOG=${LOG_LEVEL}
     container_name: sv2-jds
     depends_on:
-      template-provider-pool-side: 
+      template-provider-pool-side:
         condition: service_healthy
         restart: true
       sv2-roles-builder:
@@ -292,7 +309,7 @@ services:
       - RUST_LOG=${LOG_LEVEL}
     container_name: sv2-tp-jdc-proxy
     depends_on:
-      template-provider-miner-side: 
+      template-provider-miner-side:
         condition: service_healthy
         restart: true
       sv2-custom-proxy-builder:
@@ -398,7 +415,7 @@ services:
       - RUST_LOG=${LOG_LEVEL}
     container_name: sv1-node-pool-proxy
     depends_on:
-      sv1-custom-proxy-builder: 
+      sv1-custom-proxy-builder:
         condition: service_started
       sv1-node-pool-side:
         condition: service_healthy
@@ -415,7 +432,7 @@ services:
     platform: linux/amd64
     environment:
       - "NTM_INTERFACE=any"
-      - "NTM_FILTERS=" 
+      - "NTM_FILTERS="
 
   prometheus:
     image: prom/prometheus:v2.36.2
@@ -558,19 +575,19 @@ services:
         ipv4_address: 10.5.0.18
 
   loki:
-      image: grafana/loki:2.9.8
-      container_name: loki
-      ports:
-        - "3100:3100"
-      restart: unless-stopped
-      networks:
-        sv2-net:
-          ipv4_address: 10.5.0.30
-          aliases:
-            - loki
-      volumes:
-        - ./loki-config.yaml:/etc/loki/loki-config.yaml
-      command: -config.file=/etc/loki/loki-config.yaml
+    image: grafana/loki:2.9.8
+    container_name: loki
+    ports:
+      - "3100:3100"
+    restart: unless-stopped
+    networks:
+      sv2-net:
+        ipv4_address: 10.5.0.30
+        aliases:
+          - loki
+    volumes:
+      - ./loki-config.yaml:/etc/loki/loki-config.yaml
+    command: -config.file=/etc/loki/loki-config.yaml
 
   promtail:
     image: grafana/promtail
@@ -589,7 +606,6 @@ services:
         aliases:
           - promtail
 
-  
   log-server:
     image: log-server-builder-image
     command: ["./log-server"]

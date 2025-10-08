@@ -195,70 +195,18 @@ async fn handle_rpc_request(
     let body_bytes = hyper::body::to_bytes(req.into_body()).await?;
     let body_str = String::from_utf8_lossy(&body_bytes);
     let mut is_get_block_template: bool = false;
+    let mut is_submitblock: bool = false;
+    let mut submitblock_timestamp: f64 = 0.0;
 
     if let Ok(json) = serde_json::from_slice::<Value>(&body_bytes) {
         if let Some(method) = json.get("method") {
             if method == "submitblock" {
+                is_submitblock = true;
                 log::info!("Detected submitblock method.");
-                let current_timestamp = std::time::SystemTime::now()
+                submitblock_timestamp = std::time::SystemTime::now()
                     .duration_since(std::time::UNIX_EPOCH)
                     .expect("Time went backwards")
                     .as_millis() as f64;
-                let prometheus_url = "http://10.5.0.19:2345/metrics";
-                let client = reqwest::Client::new();
-                if let Ok(response) = client.get(prometheus_url).send().await {
-                    if let Ok(body) = response.text().await {
-                        let mut nonce_found = false;
-                        for line in body.lines() {
-                            if let Some(start_index) = line.find("nonce=\"\\\"") {
-                                let start = start_index + "nonce=\"\\\"".len();
-                                let end = match line[start..].find("\\\"") {
-                                    Some(index) => start + index,
-                                    None => {
-                                        log::info!(
-                                            "Failed to find end quote for nonce in line: {}",
-                                            line
-                                        );
-                                        continue; // Skip to the next line if end quote for nonce is not found
-                                    }
-                                };
-                                let nonce_value = &line[start..end];
-                                // Decode the nonce hex string into bytes
-                                let nonce_bytes_result = hex::decode(nonce_value);
-                                let nonce_bytes = match nonce_bytes_result {
-                                    Ok(bytes) => bytes,
-                                    Err(e) => {
-                                        log::info!("Failed to parse nonce hex: {}", e);
-                                        continue;
-                                    }
-                                };
-                                // Perform bytes swap with the nonce bytes
-                                let swapped_bytes: Vec<u8> =
-                                    nonce_bytes.iter().rev().cloned().collect();
-                                let swapped_nonce =
-                                    hex::encode_upper(&swapped_bytes).to_lowercase();
-
-                                // Check if the body contains the swapped nonce
-                                if body_str.contains(&swapped_nonce) {
-                                    let parts: Vec<&str> = line.split_whitespace().collect();
-                                    if let Some(timestamp_str) = parts.get(1) {
-                                        if let Ok(previous_timestamp) = timestamp_str.parse::<f64>()
-                                        {
-                                            let latency = current_timestamp - previous_timestamp;
-                                            block_propagation_time.set(latency);
-                                            mined_blocks.inc();
-                                        }
-                                    }
-                                    nonce_found = true;
-                                    break;
-                                }
-                            }
-                        }
-                        if !nonce_found {
-                            log::warn!("Nonce not found in Prometheus metrics");
-                        }
-                    }
-                }
             } else if method == "getblocktemplate" {
                 is_get_block_template = true;
             }
@@ -294,6 +242,75 @@ async fn handle_rpc_request(
     let body_bytes = hyper::body::to_bytes(res.into_body()).await?;
 
     if let Ok(json) = serde_json::from_slice::<Value>(&body_bytes) {
+        // Check if this is a submitblock response and if it was successful
+        if is_submitblock {
+            // A successful submitblock returns {"result":null,"error":null,"id":...}
+            // Any error or non-null result means the block was rejected
+            let is_success = json.get("result").map(|r| r.is_null()).unwrap_or(false)
+                && json.get("error").map(|e| e.is_null()).unwrap_or(true);
+
+            if is_success {
+                log::info!("submitblock succeeded - counting as mined block");
+                // Now fetch the share timestamp to calculate propagation time
+                let prometheus_url = "http://10.5.0.19:2345/metrics";
+                let prom_client = reqwest::Client::new();
+                if let Ok(response) = prom_client.get(prometheus_url).send().await {
+                    if let Ok(prom_body) = response.text().await {
+                        let mut nonce_found = false;
+                        for line in prom_body.lines() {
+                            if let Some(start_index) = line.find("nonce=\"\\\"") {
+                                let start = start_index + "nonce=\"\\\"".len();
+                                let end = match line[start..].find("\\\"") {
+                                    Some(index) => start + index,
+                                    None => {
+                                        log::info!(
+                                            "Failed to find end quote for nonce in line: {}",
+                                            line
+                                        );
+                                        continue;
+                                    }
+                                };
+                                let nonce_value = &line[start..end];
+                                let nonce_bytes_result = hex::decode(nonce_value);
+                                let nonce_bytes = match nonce_bytes_result {
+                                    Ok(bytes) => bytes,
+                                    Err(e) => {
+                                        log::info!("Failed to parse nonce hex: {}", e);
+                                        continue;
+                                    }
+                                };
+                                let swapped_bytes: Vec<u8> =
+                                    nonce_bytes.iter().rev().cloned().collect();
+                                let swapped_nonce =
+                                    hex::encode_upper(&swapped_bytes).to_lowercase();
+
+                                if body_str.contains(&swapped_nonce) {
+                                    let parts: Vec<&str> = line.split_whitespace().collect();
+                                    if let Some(timestamp_str) = parts.get(1) {
+                                        if let Ok(previous_timestamp) = timestamp_str.parse::<f64>()
+                                        {
+                                            let latency = submitblock_timestamp - previous_timestamp;
+                                            block_propagation_time.set(latency);
+                                            mined_blocks.inc();
+                                        }
+                                    }
+                                    nonce_found = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if !nonce_found {
+                            log::warn!("Nonce not found in Prometheus metrics for successful block");
+                            // Still increment the counter since the block was accepted
+                            mined_blocks.inc();
+                        }
+                    }
+                }
+            } else {
+                log::warn!("submitblock failed - not counting as mined block. Response: {:?}", json);
+            }
+        }
+
         if is_get_block_template {
             if let Some(result) = json.get("result") {
                 if let Some(previousblockhash) = result.get("previousblockhash") {

@@ -79,9 +79,10 @@ fi
 
 # Prompt user to check if they want to configure the custom public key
 echo ""
-echo -e "🚨 To customize the coinbase transaction output, a custom public key (or redeem script) is required."
+echo -e "🚨 To customize the coinbase transaction output, a Bitcoin address or descriptor is required."
+echo -e "   In SV2 v1.5.0, coinbase outputs use Bitcoin descriptors format."
 echo ""
-read -p "Do you want to configure your custom public key for the coinbase transaction? (yes/no, default is 'no'): " CONFIGURE_KEY
+read -p "Do you want to configure your custom address for the coinbase transaction? (yes/no, default is 'no'): " CONFIGURE_KEY
 CONFIGURE_KEY=${CONFIGURE_KEY:-"no"}
 
 # Validate the CONFIGURE_KEY input
@@ -93,18 +94,35 @@ fi
 # If the user wants to configure the key, prompt for public key and script type
 if [[ "$CONFIGURE_KEY" == "yes" ]]; then
     echo ""
-    echo -e "If you still don't have a public key, setup a new wallet and extract the extended public key it provides. At this point, you can derive the child public key using this script: https://github.com/stratum-mining/stratum/tree/dev/utils/bip32-key-derivation"
+    echo -e "You can provide either:"
+    echo -e "  1. A Bitcoin address (e.g., tb1qa0sm0hxzj0x25rh8gw5xlzwlsfvvyz8u96w3p8)"
+    echo -e "  2. A Bitcoin descriptor (e.g., wpkh(xpub...))"
+    echo -e "  3. A public key (will be converted to descriptor format)"
     echo ""
-    read -p "Now enter the public key (or redeem script) to use for generating the address in the coinbase transaction: " PUBLIC_KEY
-    echo ""
-    read -p "Enter the script type (P2PK, P2PKH, P2SH, P2WSH, P2WPKH, P2TR, default is 'P2WPKH'): " SCRIPT_TYPE
-    SCRIPT_TYPE=${SCRIPT_TYPE:-$DEFAULT_SCRIPT_TYPE}
-
-    # Validate the script type
-    VALID_SCRIPT_TYPES=("P2PK" "P2PKH" "P2SH" "P2WSH" "P2WPKH" "P2TR")
-    if [[ ! " ${VALID_SCRIPT_TYPES[@]} " =~ " ${SCRIPT_TYPE} " ]]; then
-        echo "Invalid script type. Please enter one of the following: P2PK, P2PKH, P2SH, P2WSH, P2WPKH, P2TR."
-        exit 1
+    read -p "Enter your Bitcoin address, descriptor, or public key: " PUBLIC_KEY
+    
+    # Check if it's already a descriptor or address
+    if [[ "$PUBLIC_KEY" =~ ^(addr|wpkh|sh|tr|pk)\( ]]; then
+        DESCRIPTOR="$PUBLIC_KEY"
+    elif [[ "$PUBLIC_KEY" =~ ^(tb1|bc1|[13]) ]]; then
+        # It's an address, wrap it in addr() descriptor
+        DESCRIPTOR="addr($PUBLIC_KEY)"
+    else
+        # It's a public key, ask for script type
+        echo ""
+        read -p "Enter the script type for your public key (P2PK, P2PKH, P2SH, P2WSH, P2WPKH, P2TR, default is 'P2WPKH'): " SCRIPT_TYPE
+        SCRIPT_TYPE=${SCRIPT_TYPE:-$DEFAULT_SCRIPT_TYPE}
+        
+        # Convert to descriptor
+        case "$SCRIPT_TYPE" in
+            "P2PK") DESCRIPTOR="pk($PUBLIC_KEY)" ;;
+            "P2PKH") DESCRIPTOR="pkh($PUBLIC_KEY)" ;;
+            "P2WPKH") DESCRIPTOR="wpkh($PUBLIC_KEY)" ;;
+            "P2SH") DESCRIPTOR="sh($PUBLIC_KEY)" ;;
+            "P2WSH") DESCRIPTOR="wsh($PUBLIC_KEY)" ;;
+            "P2TR") DESCRIPTOR="tr($PUBLIC_KEY)" ;;
+            *) echo "Invalid script type. Using P2WPKH as default."; DESCRIPTOR="wpkh($PUBLIC_KEY)" ;;
+        esac
     fi
 fi
 
@@ -167,37 +185,37 @@ HASHRATE_CONFIG_FILES=(
 for config_file in "${HASHRATE_CONFIG_FILES[@]}"; do
     if [[ "$OSTYPE" == "darwin"* ]]; then
         # macOS uses -i '' for in-place editing
-        sed -i '' "s/min_individual_miner_hashrate = [0-9_]*\.0/min_individual_miner_hashrate = $hashrate/" "$config_file"
-        sed -i '' "s/channel_nominal_hashrate = [0-9_]*\.0/channel_nominal_hashrate = $hashrate/" "$config_file"
+        sed -i '' "s/min_individual_miner_hashrate[[:space:]]*=[[:space:]]*[0-9_]*\.0/min_individual_miner_hashrate = $hashrate/" "$config_file"
+        # Remove deprecated channel_nominal_hashrate field (removed in v1.5.0)
+        sed -i '' "/^[[:space:]]*channel_nominal_hashrate[[:space:]]*=/d" "$config_file"
+        sed -i '' "/^[[:space:]]*#.*channel_nominal_hashrate/d" "$config_file"
     else
         # Linux uses -i for in-place editing
-        sed -i "s/min_individual_miner_hashrate = [0-9_]*\.0/min_individual_miner_hashrate = $hashrate/" "$config_file"
-        sed -i "s/channel_nominal_hashrate = [0-9_]*\.0/channel_nominal_hashrate = $hashrate/" "$config_file"
+        sed -i "s/min_individual_miner_hashrate[[:space:]]*=[[:space:]]*[0-9_]*\.0/min_individual_miner_hashrate = $hashrate/" "$config_file"
+        # Remove deprecated channel_nominal_hashrate field (removed in v1.5.0)
+        sed -i "/^[[:space:]]*channel_nominal_hashrate[[:space:]]*=/d" "$config_file"
+        sed -i "/^[[:space:]]*#.*channel_nominal_hashrate/d" "$config_file"
     fi
 done
 
-# Update JDC and Pool configs for custom public key and script type
+# Update JDC and Pool configs for custom address using new v1.5.0 descriptor format
 if [[ "$CONFIGURE_KEY" == "yes" ]]; then
     for config_file in "${CONFIG_FILES[@]}"; do
-        awk -v script_type="$SCRIPT_TYPE" -v new_value="$PUBLIC_KEY" '
-        BEGIN { in_coinbase_outputs = 0 }
-        /coinbase_outputs = \[/ { in_coinbase_outputs = 1 }
-        in_coinbase_outputs && /\{ output_script_type =/ {
-            if ($0 ~ "output_script_type = \"" script_type "\"") {
-                print "    { output_script_type = \"" script_type "\", output_script_value = \"" new_value "\" },"
-            } else {
-                print "#" $0
-            }
-            next
-        }
-        /]/ { in_coinbase_outputs = 0 }
-        { print }
-        ' "$config_file" > temp_config && mv temp_config "$config_file"
+        if [[ "$OSTYPE" == "darwin"* ]]; then
+            sed -i '' "s|coinbase_reward_script = \"[^\"]*\"|coinbase_reward_script = \"$DESCRIPTOR\"|" "$config_file"
+        else
+            sed -i "s|coinbase_reward_script = \"[^\"]*\"|coinbase_reward_script = \"$DESCRIPTOR\"|" "$config_file"
+        fi
     done
 fi
 
-# Update pool signature
-for config_file in "${CONFIG_FILES[@]}"; do
+# Update pool signature (only for pool configs, not JDC/JDS in v1.5.0)
+POOL_CONFIG_FILES=(
+    "custom-configs/sri-roles/config-a/pool-config-a-docker-example.toml"
+    "custom-configs/sri-roles/config-c/pool-config-c-docker-example.toml"
+)
+
+for config_file in "${POOL_CONFIG_FILES[@]}"; do
     if [[ "$OSTYPE" == "darwin"* ]]; then
         # macOS uses -i '' for in-place editing
         sed -i '' "s/pool_signature = \"[^\"]*\"/pool_signature = \"$POOL_SIGNATURE\"/" "$config_file"
@@ -239,8 +257,25 @@ docker compose -f "docker-compose-config-${CONFIG_LOWER}.yaml" up -d
 
 # Display final messages
 echo ""
-echo "${underline}Now point your miner(s) to the SV1 setup:${reset} stratum+tcp://<host-ip-address>:3333 ⛏️"
-echo "${underline}And point your miner(s) to the SV2 setup:${reset} stratum+tcp://<host-ip-address>:34255 ⛏️"
+echo "🔗 ${bold}Available Mining Connection Options:${reset}"
+echo ""
+echo "1️⃣ ${underline}SV1 Public Pool:${reset} stratum+tcp://<host-ip-address>:3333 ⛏️"
+echo "   📋 Traditional Stratum v1 protocol for compatibility testing"
+echo ""
+
+if [[ "$CONFIG" == "A" ]]; then
+    echo "2️⃣ ${underline}SV2 Translator Proxy:${reset} stratum+tcp://<host-ip-address>:34255 ⛏️"
+    echo "   📋 SV2 Translator for backward compatibility with SV1 miners"
+    echo ""
+    echo "3️⃣ ${underline}SV2 Job Declaration Client (JDC):${reset} stratum2+tcp://<host-ip-address>:34265 ⛏️"
+    echo "   📋 Native SV2 protocol with Job Declaration for custom transaction selection"
+else
+    echo "2️⃣ ${underline}SV2 Translator Proxy:${reset} stratum+tcp://<host-ip-address>:34255 ⛏️"
+    echo "   📋 SV2 Translator for pool template mining (Config C)"
+    echo ""
+    echo "3️⃣ ${underline}SV2 Pool Direct:${reset} stratum2+tcp://<host-ip-address>:34254 ⛏️"
+    echo "   📋 Native SV2 protocol direct to pool (Config C - no JDC)"
+fi
 echo ""
 echo "🚨 For SV1, you should use the address format [address].[nickname] as the username in your miner setup."
 echo "💡 For example, to configure a CPU miner, you can use: ./minerd -a sha256d -o stratum+tcp://127.0.0.1:3333 -q -D -P -u tb1qa0sm0hxzj0x25rh8gw5xlzwlsfvvyz8u96w3p8.sv2-gitgab19"

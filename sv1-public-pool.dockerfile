@@ -17,8 +17,8 @@ RUN apt-get update && \
     curl \
     && apt clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-# Clone the repository
-RUN git clone https://github.com/benjamin-wilson/public-pool.git
+# Clone the repository (using average-gary fork with timestamp validation fix)
+RUN git clone https://github.com/average-gary/public-pool.git
 
 WORKDIR /public-pool
 
