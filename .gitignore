@@ -2,5 +2,5 @@ debug/
 target/
 
 *-DB/
-
-Cargo.lock
+/.env
+/custom-configs/sv1-pool/.env

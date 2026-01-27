@@ -1,11 +1,11 @@
 # Build stage
-FROM rust:1.82-alpine AS builder
+FROM rust:1.83-alpine AS builder
 
 WORKDIR /usr/src/sv1-custom-proxy
 COPY ./sv1-custom-proxy .
 
 # Install necessary dependencies for building
-RUN apk add musl-dev pkgconfig libressl-dev
+RUN apk update && apk add --no-cache musl-dev pkgconf libressl-dev
 
 # Build the project in release mode
 RUN cargo build --release

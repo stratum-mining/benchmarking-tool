@@ -36,18 +36,27 @@ async fn main() {
     let log_label = format!("logging={}", log_label);
     info!("Starting server with LOG_LABEL: {}", log_label);
 
-    let route = warp::path::end().and(warp::get()).and_then(move || {
-        let log_label = log_label.clone();
-        async move { fetch_and_package_logs(&log_label).await }
-    });
+    let route = warp::path::end()
+        .and(warp::get())
+        .and(warp::query::<HashMap<String, String>>())
+        .and_then(move |params: HashMap<String, String>| {
+            let log_label = log_label.clone();
+            async move { fetch_and_package_logs(&log_label, params).await }
+        });
 
     warp::serve(route).run(([0, 0, 0, 0], 7420)).await;
 }
 
-async fn fetch_and_package_logs(log_label: &str) -> Result<impl Reply, Rejection> {
-    info!("Fetching logs for label: {}", log_label);
+async fn fetch_and_package_logs(
+    log_label: &str,
+    params: HashMap<String, String>,
+) -> Result<impl Reply, Rejection> {
+    info!(
+        "Fetching logs for label: {} with params: {:?}",
+        log_label, params
+    );
 
-    match fetch_and_package_logs_impl(log_label).await {
+    match fetch_and_package_logs_impl(log_label, params).await {
         Ok(file) => {
             info!("Successfully fetched and packaged logs.");
             let response = Response::builder()
@@ -70,11 +79,17 @@ async fn fetch_and_package_logs(log_label: &str) -> Result<impl Reply, Rejection
     }
 }
 
-async fn fetch_and_package_logs_impl(log_label: &str) -> Result<Body, Box<dyn std::error::Error>> {
+async fn fetch_and_package_logs_impl(
+    log_label: &str,
+    params: HashMap<String, String>,
+) -> Result<Body, Box<dyn std::error::Error>> {
     info!("Fetching logs for label: {}", log_label);
 
     let containers = get_containers(log_label).await?;
     info!("Found containers: {:?}", containers);
+
+    // Parse time range from query parameters (Grafana sends 'from' and 'to' in milliseconds)
+    let (start_time, end_time) = parse_time_range(&params);
 
     let client = Client::new();
     let mut tar_data = Vec::new();
@@ -84,11 +99,13 @@ async fn fetch_and_package_logs_impl(log_label: &str) -> Result<Body, Box<dyn st
         let readme_content = r#"
 ### Download Logs from the Grafana Dashboard
 
-We’ve added a feature that allows you to download logs of all containers directly from the Grafana dashboard. Here’s how to use it:
+We've added a feature that allows you to download logs of all containers directly from the Grafana dashboard. Here's how to use it:
 
 1. Navigate to the Grafana dashboard.
 2. Look for the 'Download Logs' button and click on it.
 3. The logs will be downloaded as a .tar file.
+
+The logs will include all entries from the selected time range in Grafana.
 
 To check logs of the containers and if facing any issues and want help, kindly share the logs in the [benchmarking channel on Discord](https://discord.com/channels/950687892169195530/1107964065936060467).
 "#;
@@ -100,7 +117,7 @@ To check logs of the containers and if facing any issues and want help, kindly s
 
         for container in containers {
             info!("Fetching logs for container: {}", container);
-            match fetch_logs(&client, &container).await {
+            match fetch_logs(&client, &container, start_time, end_time).await {
                 Ok(logs) => {
                     let mut header = tar::Header::new_gnu();
                     header.set_size(logs.len() as u64);
@@ -155,15 +172,57 @@ async fn get_containers(log_label: &str) -> Result<Vec<String>, Box<dyn std::err
     Ok(container_names)
 }
 
+fn parse_time_range(params: &HashMap<String, String>) -> (u64, u64) {
+    // Grafana sends 'from' and 'to' as milliseconds since epoch
+    // Loki expects nanoseconds since epoch
+    let now = std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .expect("Time went backwards")
+        .as_millis() as u64;
+
+    let end_time_ms = params
+        .get("to")
+        .and_then(|s| s.parse::<u64>().ok())
+        .unwrap_or(now);
+
+    let start_time_ms = params
+        .get("from")
+        .and_then(|s| s.parse::<u64>().ok())
+        .unwrap_or_else(|| {
+            // Default to last 7 days if not provided
+            let hours_back = env::var("LOG_TIME_RANGE_HOURS")
+                .ok()
+                .and_then(|s| s.parse::<u64>().ok())
+                .unwrap_or(168); // Default: 168 hours = 7 days
+            end_time_ms - (hours_back * 3600 * 1000) // Convert hours to milliseconds
+        });
+
+    // Convert milliseconds to nanoseconds for Loki
+    let start_time_ns = start_time_ms * 1_000_000;
+    let end_time_ns = end_time_ms * 1_000_000;
+
+    info!(
+        "Time range: {} to {} ({} ms to {} ms)",
+        start_time_ms, end_time_ms, start_time_ns, end_time_ns
+    );
+
+    (start_time_ns, end_time_ns)
+}
+
 async fn fetch_logs(
     client: &Client,
     container: &str,
+    start_time: u64,
+    end_time: u64,
 ) -> Result<String, Box<dyn std::error::Error>> {
     let url = format!(
-        "http://loki:3100/loki/api/v1/query_range?query={{container=\"{}\"}}&limit=100000000",
-        container
+        "http://loki:3100/loki/api/v1/query_range?query={{container=\"{}\"}}&start={}&end={}&limit=100000000",
+        container, start_time, end_time
     );
-    info!("Fetching logs from Loki: {}", url);
+    info!(
+        "Fetching logs from Loki for container {}: {}",
+        container, url
+    );
 
     let response: LokiResponse = client.get(&url).send().await?.json().await?;
     let mut logs: Vec<(String, String)> = response

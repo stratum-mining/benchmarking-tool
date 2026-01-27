@@ -16,3 +16,4 @@ hyper = { version = "0.14", features = ["full"] }
 reqwest = { version = "0.11", default-features = false, features = ["json", "rustls-tls"] }
 hex = "0.4.3"
 env_logger = "0.11.6"
+urlencoding = "2.1"

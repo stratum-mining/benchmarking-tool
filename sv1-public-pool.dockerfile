@@ -54,4 +54,5 @@ COPY ./pools-latency-calculator/monitor_and_apply_latency.sh /usr/local/bin/moni
 RUN chmod +x /usr/local/bin/monitor_and_apply_latency.sh
 
 # Run the monitoring script in the background and start the main application
-CMD ["/bin/sh", "-c", "/usr/local/bin/monitor_and_apply_latency.sh 10.5.0.19 2 & exec /usr/local/bin/node dist/main"]
+# Apply latency to traffic going to the sv1-pool-miner proxy (10.5.0.41)
+CMD ["/bin/sh", "-c", "/usr/local/bin/monitor_and_apply_latency.sh 10.5.0.41 2 & exec /usr/local/bin/node dist/main"]

@@ -1,0 +1,73 @@
+# SRI JDC config
+listening_address = "10.5.0.22:34265"
+
+# Version support
+max_supported_version = 2
+min_supported_version = 2
+
+# Auth keys for open encrypted connection downstream
+authority_public_key = "9auqWEzQDVyd2oe1JVGFLMLHZtCo2FFqZwtKA5gd9xbuEu7PH72"
+authority_secret_key = "mkDLTBBRxdBv998612qipDYoTK3YUrqLe8uWw7gu3iXbSrn2n"
+cert_validity_sec = 3600
+
+
+# User identity/username for pool connection
+user_identity = "JDC"
+
+# How many shares we expect to receive in a minute (determines difficulty targets)
+shares_per_minute = 6.0
+
+# How many shares do we want to acknowledge in a batch
+share_batch_size = 1
+
+# JDC supports two modes:
+# "FULLTEMPLATE"  - full template mining
+# "COINBASEONLY" - coinbase-only mining
+mode = "FULLTEMPLATE"
+
+# string to be added into the Coinbase scriptSig
+jdc_signature = "JDC"
+
+# Solo Mining config
+# Coinbase output used to build the coinbase tx in case of Solo Mining (as last-resort solution of the pools fallback system)
+#
+# Coinbase outputs are specified as descriptors. A full list of descriptors is available at
+#     https://github.com/bitcoin/bips/blob/master/bip-0380.mediawiki#appendix-b-index-of-script-expressions
+# Although the `musig` descriptor is not yet supported and the legacy `combo` descriptor never
+# will be. If you have an address, embed it in a descriptor like `addr(<address here>)`.
+coinbase_reward_script = "addr(bc1q9f9vj7spn8h7qda6pn8d4g4j99f0mn9lhwz55j)"
+
+# Enable this option to set a predefined log file path.
+# When enabled, logs will always be written to this file.
+# The CLI option --log-file (or -f) will override this setting if provided.
+# log_file = "./jd-client.log"
+
+# Protocol Extensions Configuration
+# Extensions that the JDC supports (will accept if requested by downstream clients)
+# Comment/uncomment to enable/disable specific extensions:
+supported_extensions = [
+    # 0x0002,  # Worker-Specific Hashrate Tracking
+]
+
+# Extensions that the JDC requires (downstream clients must support these to connect)
+# Use with caution - requiring extensions may prevent some clients from connecting
+required_extensions = [
+    # Example: require Worker-Specific Hashrate Tracking
+    # 0x0002,
+]
+
+# Monitoring HTTP server address for exposing channel data (optional)
+monitoring_address = "0.0.0.0:9091"
+
+# List of upstreams (JDS) used as backup endpoints
+# In case of shares refused by the JDS, the fallback system will propose the same job to the next upstream in this list
+[[upstreams]]
+authority_pubkey = "9auqWEzQDVyd2oe1JVGFLMLHZtCo2FFqZwtKA5gd9xbuEu7PH72"
+pool_address = "10.5.0.34"
+pool_port = 34252
+jds_address = "10.5.0.21"
+jds_port = 34264
+
+# Local Sv2 Template Provider config
+[template_provider_type.Sv2Tp]
+address = "10.5.0.31:8440"

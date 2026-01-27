@@ -15,19 +15,23 @@ networks:
           gateway: 10.5.0.1
 
 services:
-  common-template-provider-builder:
+  # ============================================================================
+  # BUILDER SERVICES
+  # ============================================================================
+  
+  bitcoin-core-builder:
     build:
-      dockerfile: ./template-provider.dockerfile
-    container_name: common-template-provider-builder
-    image: template-provider-builder-image
-    command: echo "common-template-provider build completed"
+      dockerfile: ./bitcoin-core.dockerfile
+    container_name: bitcoin-core-builder
+    image: bitcoin-core-builder-image
+    command: echo "Bitcoin Core build completed"
 
-  sv2-roles-builder:
+  sv2-tp-builder:
     build:
-      dockerfile: ./sv2-roles.dockerfile
-    container_name: sv2-roles-builder
-    image: sv2-roles-builder-image
-    command: echo "SRI build completed"
+      dockerfile: ./sv2-tp.dockerfile
+    container_name: sv2-tp-builder
+    image: sv2-tp-builder-image
+    command: echo "sv2-tp build completed"
 
   sv2-custom-proxy-builder:
     build:
@@ -43,13 +47,6 @@ services:
     image: sv1-custom-proxy-builder-image
     command: echo "sv1-custom-proxy build completed"
 
-  log-server-builder:
-    build:
-      dockerfile: ./log-server/Dockerfile
-    container_name: log-server-builder
-    image: log-server-builder-image
-    command: echo "log-server-builder build completed"
-
   pools-latency-calculator-builder:
     build:
       dockerfile: ./pools-latency-calculator/Dockerfile
@@ -57,30 +54,49 @@ services:
     image: pools-latency-calculator-builder-image
     command: echo "pools-latency-calculator build completed"
 
-  template-provider-pool-side:
+  log-server-builder:
+    build:
+      dockerfile: ./log-server/Dockerfile
+    container_name: log-server-builder
+    image: log-server-builder-image
+    command: echo "log-server-builder build completed"
+
+  # ============================================================================
+  # BITCOIN CORE NODES (10.5.0.2-10.5.0.4)
+  # ============================================================================
+
+  bitcoin-core-pool-side:
     labels:
       logging: "config-c"
-    image: template-provider-builder-image
-    entrypoint: ["/bin/sh", "-c", "./scripts/update-mainnet-chainstate.sh ${NETWORK} && /bitcoin/bin/bitcoind -sv2 -sv2port=8442 -sv2interval=${SV2_INTERVAL} -sv2feedelta=0 -debug=sv2 -loglevel=sv2:debug -sv2bind=0.0.0.0  -${NETWORK}"]
-    ports:
-      - "8442:8442"
-      - "18333:48333"
-      - "8332:8332"
-      - "18332:18332"
-    container_name: sv2-tp-pool-side
+    image: bitcoin-core-builder-image
+    entrypoint:
+      - /bin/sh
+      - -c
+      - |
+        /scripts/update-mainnet-chainstate.sh ${NETWORK}
+        if [ -z "${NETWORK}" ]; then
+          exec bitcoin -m node -ipcbind=unix
+        else
+          exec bitcoin -m node -ipcbind=unix -${NETWORK}
+        fi
     depends_on:
-      - common-template-provider-builder
+      - bitcoin-core-builder
+    ports:
+      - "18332:18332"
+    container_name: bitcoin-core-pool-side
     volumes:
       - bitcoin_pool_side_data:/root/.bitcoin
-      - shared-mainnet-snapshot-volume:/shared_volume  # Shared volume for mainnet snapshot
-      - ./custom-configs/sri-roles/bitcoin-tp-pool.conf:/root/.bitcoin/bitcoin.conf
+      - shared-mainnet-snapshot-volume:/shared_volume
+      - ./custom-configs/sri-apps/bitcoin-tp-pool.conf:/root/.bitcoin/bitcoin.conf
       - ./containers-scripts:/scripts
     restart: unless-stopped
     networks:
       sv2-net:
         ipv4_address: 10.5.0.2
+    environment:
+      - NETWORK=${NETWORK}
     healthcheck:
-      test: [ "CMD", "./scripts/healthcheck.sh", "http://127.0.0.1:18332" ]
+      test: ["CMD", "/scripts/healthcheck.sh", "http://127.0.0.1:18332"]
       interval: 2m
       timeout: 30s
       retries: 100
@@ -89,137 +105,165 @@ services:
   sv1-node-pool-side:
     labels:
       logging: "config-c"
-    image: template-provider-builder-image
-    entrypoint: ["/bin/sh", "-c", "./scripts/update-mainnet-chainstate.sh ${NETWORK} && /bitcoin/bin/bitcoind -${NETWORK}"]
+    image: bitcoin-core-builder-image
+    entrypoint:
+      - /bin/sh
+      - -c
+      - |
+        /scripts/update-mainnet-chainstate.sh ${NETWORK}
+        if [ -z "${NETWORK}" ]; then
+          exec bitcoin -m node -ipcbind=unix
+        else
+          exec bitcoin -m node -ipcbind=unix -${NETWORK}
+        fi
+    depends_on:
+      - bitcoin-core-builder
     ports:
       - "38333:18333"
       - "28332:18332"
       - "18443:18443"
     container_name: sv1-node-pool-side
-    depends_on:
-      - common-template-provider-builder
     volumes:
       - bitcoin_sv1_pool_side_data:/root/.bitcoin
-      - shared-mainnet-snapshot-volume:/shared_volume  # Shared volume for mainnet snapshot
-      - ./custom-configs/sri-roles/bitcoin-sv1-node-pool.conf:/root/.bitcoin/bitcoin.conf
+      - shared-mainnet-snapshot-volume:/shared_volume
+      - ./custom-configs/sri-apps/bitcoin-sv1-node-pool.conf:/root/.bitcoin/bitcoin.conf
       - ./containers-scripts:/scripts
     restart: unless-stopped
     networks:
       sv2-net:
-        ipv4_address: 10.5.0.16
+        ipv4_address: 10.5.0.3
     environment:
       - NETWORK=${NETWORK}
     healthcheck:
-      test: [ "CMD", "./scripts/healthcheck.sh", "http://127.0.0.1:18332" ]
+      test: ["CMD", "/scripts/healthcheck.sh", "http://127.0.0.1:18332"]
       interval: 2m
       timeout: 30s
       retries: 100
       start_period: 1m
 
-  pool:
-    image: sv2-roles-builder-image
+  # ============================================================================
+  # SV2 TEMPLATE PROVIDERS (10.5.0.10)
+  # ============================================================================
+
+  sv2-tp-pool-side:
     labels:
       logging: "config-c"
-    command:
-      [
-        "./pool_sv2",
-        "-c",
-        "pool/config-examples/pool-config-c-docker-example.toml",
-      ]
+    image: sv2-tp-builder-image
+    container_name: sv2-tp-pool-side
+    ports:
+      - "8441:8441"
+    environment:
+      - RUST_LOG=${LOG_LEVEL}
+      - NETWORK=${NETWORK}
+    volumes:
+      - bitcoin_pool_side_data:/root/.bitcoin
+    depends_on:
+      bitcoin-core-pool-side:
+        condition: service_healthy
+        restart: true
+      sv2-tp-builder:
+        condition: service_started
+    restart: unless-stopped
+    networks:
+      sv2-net:
+        ipv4_address: 10.5.0.10
+    command: >
+      sh -c '
+        if [ -z "${NETWORK}" ] || [ "${NETWORK}" = "mainnet" ]; then
+          sv2-tp -ipcconnect=unix -sv2bind=0.0.0.0:8441 -sv2interval=${TP_MIN_INTERVAL} -debug=sv2 -loglevel=sv2:trace
+        else
+          sv2-tp -chain=${NETWORK} -ipcconnect=unix -sv2bind=0.0.0.0:8441 -sv2interval=${TP_MIN_INTERVAL} -debug=sv2 -loglevel=sv2:trace
+        fi
+      '
+
+  # ============================================================================
+  # SV2 CORE SERVICES (10.5.0.20-10.5.0.21)
+  # ============================================================================
+
+  pool:
+    image: stratumv2/pool_sv2:v0.2.0
+    labels:
+      logging: "config-c"
+    env_file:
+      - .env
+    entrypoint: >
+      sh -c '
+        (apk add --no-cache curl iproute2 iptables 2>/dev/null || apt-get update -qq && apt-get install -y -qq curl iproute2 iptables 2>/dev/null || true) &&
+        /app/monitor_and_apply_latency.sh 10.5.0.31 2 &
+        envsubst < /app/pool-config.toml.template > /app/pool-config.toml &&
+        exec /app/pool_sv2 -c /app/pool-config.toml
+      '
     ports:
       - "34254:34254"
     environment:
       - RUST_LOG=${LOG_LEVEL}
+      - TP_POOL_ADDRESS=10.5.0.30:8439
     container_name: sv2-pool
     depends_on:
-      - sv2-roles-builder
-      - sv2-tp-pool-proxy
+      sv2-tp-pool-sniffer:
+        condition: service_started
     volumes:
-      - ./custom-configs/sri-roles/config-c:/usr/local/bin/pool/config-examples/
+      - ./custom-configs/sri-apps/pool-config.toml.template:/app/pool-config.toml.template:ro
+      - ./pools-latency-calculator/monitor_and_apply_latency.sh:/app/monitor_and_apply_latency.sh:ro
     restart: unless-stopped
     networks:
       sv2-net:
-        ipv4_address: 10.5.0.4
+        ipv4_address: 10.5.0.20
     cap_add:
       - NET_ADMIN
 
   translator:
-    image: sv2-roles-builder-image
+    image: stratumv2/translator_sv2:v0.2.0
     labels:
       logging: "config-c"
-    command:
-      [
-        "/bin/sh",
-        "-c",
-        "./monitor_and_apply_latency.sh 10.5.0.23 2 & exec ./translator_sv2 -c translator/config-examples/tproxy-config-c-docker-example.toml",
-      ]
+    env_file:
+      - .env
+    entrypoint: >
+      sh -c '
+        envsubst < /app/proxy-config.toml.template > /app/proxy-config.toml &&
+        exec /app/translator_sv2 -c /app/proxy-config.toml
+      '
     ports:
       - "34256:34256"
     environment:
       - RUST_LOG=${LOG_LEVEL}
+      - TRANSLATOR_UPSTREAM_ADDRESS=10.5.0.31
+      - TRANSLATOR_UPSTREAM_PORT=34251
     container_name: sv2-translator
     depends_on:
-      - sv2-pool-translator-proxy
+      - sv2-pool-translator-sniffer
     volumes:
-      - ./custom-configs/sri-roles/config-c:/usr/local/bin/translator/config-examples/
+      - ./custom-configs/sri-apps/translator-proxy-config.toml.template:/app/proxy-config.toml.template:ro
     restart: unless-stopped
     networks:
       sv2-net:
-        ipv4_address: 10.5.0.7
+        ipv4_address: 10.5.0.21
     cap_add:
       - NET_ADMIN
 
-  sv2-pool-translator-proxy:
-    image: sv2-custom-proxy-builder-image
-    labels:
-      logging: "config-c"
-    command:
-      [
-        "/bin/sh",
-        "-c",
-        "./monitor_and_apply_latency.sh 10.5.0.4 2 -proxy-type=pool-translator & exec ./sv2-custom-proxy",
-      ]
-    ports:
-      - "34253:34254"
-      - "34251:34251"
-      - "3456:3456"
-    environment:
-      - SERVER=10.5.0.4:34254
-      - CLIENT=10.5.0.17:34251
-      - PROM_ADDRESS=10.5.0.17:3456
-      - PROXY_TYPE=pool-translator
-      - RUST_LOG=${LOG_LEVEL}
-    container_name: sv2-pool-translator-proxy
-    depends_on:
-      - sv2-custom-proxy-builder
-      - pool
-    restart: unless-stopped
-    networks:
-      sv2-net:
-        ipv4_address: 10.5.0.17
-    cap_add:
-      - NET_ADMIN
+  # ============================================================================
+  # SV2 PROXIES FOR MONITORING (10.5.0.30-10.5.0.32)
+  # ============================================================================
 
-  sv2-tp-pool-proxy:
+  sv2-tp-pool-sniffer:
     image: sv2-custom-proxy-builder-image
     labels:
       logging: "config-c"
     command: ["./sv2-custom-proxy"]
     ports:
-      - "8441:8441"
-      - "5678:5678"
+      - "8439:8439"
+      - "5677:5677"
     environment:
-      - SERVER=10.5.0.2:8442
-      - CLIENT=10.5.0.20:8441
-      - PROM_ADDRESS=10.5.0.20:5678
+      - SERVER=10.5.0.10:8441
+      - CLIENT=10.5.0.30:8439
+      - PROM_ADDRESS=10.5.0.30:5677
       - PROXY_TYPE=tp-pool
       - NETWORK=${NETWORK}
       - RUST_LOG=${LOG_LEVEL}
-    container_name: sv2-tp-pool-proxy
+    container_name: sv2-tp-pool-sniffer
     depends_on:
-      template-provider-pool-side: 
-        condition: service_healthy
-        restart: true
+      sv2-tp-pool-side:
+        condition: service_started
       sv2-custom-proxy-builder:
         condition: service_started
       prometheus:
@@ -227,7 +271,38 @@ services:
     restart: unless-stopped
     networks:
       sv2-net:
-        ipv4_address: 10.5.0.20
+        ipv4_address: 10.5.0.30
+
+  sv2-pool-translator-sniffer:
+    image: sv2-custom-proxy-builder-image
+    labels:
+      logging: "config-c"
+    command:
+      [
+        "/bin/sh",
+        "-c",
+        "./monitor_and_apply_latency.sh 10.5.0.20 2 & exec ./sv2-custom-proxy",
+      ]
+    ports:
+      - "34253:34254"
+      - "34251:34251"
+      - "3456:3456"
+    environment:
+      - SERVER=10.5.0.20:34254
+      - CLIENT=10.5.0.31:34251
+      - PROM_ADDRESS=10.5.0.31:3456
+      - PROXY_TYPE=pool-translator
+      - RUST_LOG=${LOG_LEVEL}
+    container_name: sv2-pool-translator-sniffer
+    depends_on:
+      - sv2-custom-proxy-builder
+      - pool
+    restart: unless-stopped
+    networks:
+      sv2-net:
+        ipv4_address: 10.5.0.31
+    cap_add:
+      - NET_ADMIN
 
   sv2-translator-miner-proxy:
     image: sv1-custom-proxy-builder-image
@@ -239,8 +314,8 @@ services:
       - "5676:5676"
     environment:
       - SERVER=0.0.0.0:34255
-      - CLIENT=10.5.0.7:34256
-      - PROM_ADDRESS=10.5.0.23:5676
+      - CLIENT=10.5.0.21:34256
+      - PROM_ADDRESS=10.5.0.32:5676
       - PROXY_TYPE=translator-miner
       - RUST_LOG=${LOG_LEVEL}
     container_name: sv2-translator-miner-proxy
@@ -250,7 +325,11 @@ services:
     restart: unless-stopped
     networks:
       sv2-net:
-        ipv4_address: 10.5.0.23
+        ipv4_address: 10.5.0.32
+
+  # ============================================================================
+  # SV1 SERVICES (10.5.0.40-10.5.0.42)
+  # ============================================================================
 
   sv1-pool:
     container_name: sv1-pool
@@ -265,7 +344,7 @@ services:
     volumes:
       - "./testnet-DB:/public-pool/DB"
       - "./custom-configs/sv1-pool/.env:/public-pool/.env:ro"
-      - "./custom-configs/sv1-pool/rpc.js:/public-pool/node_modules/rpc-bitcoin/build/src/rpc.js" # to fix rpc-version field issue
+      - "./custom-configs/sv1-pool/rpc.js:/public-pool/node_modules/rpc-bitcoin/build/src/rpc.js"
     restart: unless-stopped
     environment:
       - NODE_ENV=production
@@ -273,7 +352,7 @@ services:
       - sv1-node-pool-proxy
     networks:
       sv2-net:
-        ipv4_address: 10.5.0.8
+        ipv4_address: 10.5.0.40
     cap_add:
       - NET_ADMIN
 
@@ -285,15 +364,15 @@ services:
       [
         "/bin/sh",
         "-c",
-        "./monitor_and_apply_latency.sh 10.5.0.8 2 & exec ./sv1-custom-proxy",
+        "./monitor_and_apply_latency.sh 10.5.0.40 2 & exec ./sv1-custom-proxy",
       ]
     ports:
       - "3333:3333"
       - "2345:2345"
     environment:
-      - SERVER=10.5.0.8:3332
+      - SERVER=10.5.0.40:3332
       - CLIENT=0.0.0.0:3333
-      - PROM_ADDRESS=10.5.0.19:2345
+      - PROM_ADDRESS=10.5.0.41:2345
       - PROXY_TYPE=pool-miner
       - RUST_LOG=${LOG_LEVEL}
     container_name: sv1-pool-miner-proxy
@@ -303,7 +382,7 @@ services:
     restart: unless-stopped
     networks:
       sv2-net:
-        ipv4_address: 10.5.0.19
+        ipv4_address: 10.5.0.41
     cap_add:
       - NET_ADMIN
 
@@ -316,9 +395,9 @@ services:
       - "48330:48330"
       - "4567:4567"
     environment:
-      - SERVER=http://10.5.0.16:18332
+      - SERVER=http://10.5.0.3:18332
       - CLIENT=0.0.0.0:48330
-      - PROM_ADDRESS=10.5.0.21:4567
+      - PROM_ADDRESS=10.5.0.42:4567
       - PROXY_TYPE=node-pool
       - RUST_LOG=${LOG_LEVEL}
     container_name: sv1-node-pool-proxy
@@ -331,16 +410,11 @@ services:
     restart: unless-stopped
     networks:
       sv2-net:
-        ipv4_address: 10.5.0.21
+        ipv4_address: 10.5.0.42
 
-  monitor-traffic-tcpdump:
-    image: inzania/network-traffic-metrics:latest
-    network_mode: host
-    container_name: monitor-traffic-tcpdump
-    platform: linux/amd64
-    environment:
-      - "NTM_INTERFACE=any"
-      - "NTM_FILTERS=" 
+  # ============================================================================
+  # MONITORING SERVICES (10.5.0.50-10.5.0.56)
+  # ============================================================================
 
   prometheus:
     image: prom/prometheus:v2.36.2
@@ -361,7 +435,7 @@ services:
       - cadvisor
     networks:
       sv2-net:
-        ipv4_address: 10.5.0.9
+        ipv4_address: 10.5.0.50
     deploy:
       placement:
         constraints:
@@ -387,26 +461,29 @@ services:
     container_name: node-exporter
     networks:
       sv2-net:
-        ipv4_address: 10.5.0.10
+        ipv4_address: 10.5.0.51
     deploy:
       mode: global
       restart_policy:
         condition: on-failure
 
   cadvisor:
-    image: gcr.io/cadvisor/cadvisor
+    image: gcr.io/cadvisor/cadvisor:v0.55.1
+    privileged: true
     volumes:
       - /:/rootfs:ro
-      #- /var/run:/var/run:rw
-      - /var/run/docker.sock:/var/run/docker.sock:rw
+      - /var/run:/var/run:ro
       - /sys:/sys:ro
       - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
     ports:
       - "8080:8080"
     container_name: cadvisor
+    devices:
+      - /dev/kmsg:/dev/kmsg
     networks:
       sv2-net:
-        ipv4_address: 10.5.0.12
+        ipv4_address: 10.5.0.52
     deploy:
       mode: global
       restart_policy:
@@ -437,7 +514,7 @@ services:
       - ./grafana/config.monitoring
     networks:
       sv2-net:
-        ipv4_address: 10.5.0.13
+        ipv4_address: 10.5.0.53
     user: "472"
     deploy:
       placement:
@@ -457,7 +534,7 @@ services:
       - "8686:8686"
     networks:
       sv2-net:
-        ipv4_address: 10.5.0.14
+        ipv4_address: 10.5.0.54
 
   renderer:
     image: grafana/grafana-image-renderer:latest
@@ -468,7 +545,16 @@ services:
       - "8081:8081"
     networks:
       sv2-net:
-        ipv4_address: 10.5.0.15
+        ipv4_address: 10.5.0.55
+
+  monitor-traffic-tcpdump:
+    image: inzania/network-traffic-metrics:latest
+    network_mode: host
+    container_name: monitor-traffic-tcpdump
+    platform: linux/amd64
+    environment:
+      - "NTM_INTERFACE=any"
+      - "NTM_FILTERS=net 10.5.0.0/24 and ip" 
 
   pools-latency-calculator:
     image: pools-latency-calculator-builder-image
@@ -481,7 +567,11 @@ services:
     restart: unless-stopped
     networks:
       sv2-net:
-        ipv4_address: 10.5.0.18
+        ipv4_address: 10.5.0.56
+
+  # ============================================================================
+  # LOGGING SERVICES (10.5.0.60-10.5.0.62)
+  # ============================================================================
 
   loki:
     image: grafana/loki:2.9.8
@@ -491,7 +581,7 @@ services:
     restart: unless-stopped
     networks:
       sv2-net:
-        ipv4_address: 10.5.0.30
+        ipv4_address: 10.5.0.60
         aliases:
           - loki
     volumes:
@@ -511,7 +601,7 @@ services:
       - loki
     networks:
       sv2-net:
-        ipv4_address: 10.5.0.31
+        ipv4_address: 10.5.0.61
         aliases:
           - promtail
   
@@ -531,4 +621,4 @@ services:
     restart: unless-stopped
     networks:
       sv2-net:
-        ipv4_address: 10.5.0.32
+        ipv4_address: 10.5.0.62

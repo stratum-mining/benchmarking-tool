@@ -17,9 +17,8 @@ CHAINSTATE_DIR="/root/.bitcoin/chainstate"
 EXTRACTION_COMPLETION_FLAG="/root/.bitcoin/extraction_completion.flag"
 # Path for the integrity flag
 INTEGRITY_FLAG="$SNAPSHOT_DIR/integrity.flag"
-# Backup URL and interval settings
+# Backup URL settings
 BACKUP_BASE_URL="http://75.119.150.111/backup"
-DOWNLOAD_INTERVAL_DAYS=1  # 1 day = 24 hours
 # Maximum retries for downloading
 MAX_RETRIES=30
 RETRY_INTERVAL=60  # 1 minute retry interval
@@ -49,7 +48,7 @@ download_snapshot() {
     while [ $retry_count -lt $MAX_RETRIES ]; do
         echo "Attempt $((retry_count + 1)) of $MAX_RETRIES to download the snapshot..."
 
-        BACKUP_FILE_NAME="backup_mainnet_blocks_chainstate_$(date -u +"%Y-%m-%d_%H-UTC").tar.gz"
+        BACKUP_FILE_NAME="backup_mainnet_blocks_chainstate_2025-12-02_14-UTC.tar.gz"
         BACKUP_HASH_FILE_NAME="$BACKUP_FILE_NAME.sha256"
         BACKUP_URL="$BACKUP_BASE_URL/$BACKUP_FILE_NAME"
         BACKUP_HASH_URL="$BACKUP_URL.sha256"
@@ -99,43 +98,29 @@ extract_snapshot() {
     fi
 }
 
-# Check if the local chainstate directory is updated and integrity verified for this container
-if [ -d "$CHAINSTATE_DIR" ]; then
-    CHAINSTATE_MOD_TIME=$(stat -c %Y "$CHAINSTATE_DIR")
-    CURRENT_TIME=$(date +%s)
-    TIME_DIFF=$(( (CURRENT_TIME - CHAINSTATE_MOD_TIME) / 86400 ))
-
-    if [ "$TIME_DIFF" -lt "$DOWNLOAD_INTERVAL_DAYS" ] && [ -f "$EXTRACTION_COMPLETION_FLAG" ]; then
+# Check if the local chainstate directory is already extracted and verified for this container
+if [ -d "$CHAINSTATE_DIR" ] && [ -f "$EXTRACTION_COMPLETION_FLAG" ]; then
         FLAG_VALUE=$(cat "$EXTRACTION_COMPLETION_FLAG" | tr -d '\n')
         if [ "$FLAG_VALUE" = "true" ]; then
-            echo "Container chainstate is updated and extraction is complete. Exiting."
+        echo "Container chainstate is already extracted and verified. Exiting."
             exit 0
         else
             echo "EXTRACTION_COMPLETION_FLAG is not set to true. Proceeding with further checks."
         fi
-    fi
-
 else
-    echo "No local chainstate found. Proceeding with snapshot download check."
+    echo "No local chainstate found or extraction flag missing. Proceeding with snapshot check."
 fi
 
-# Check if a recent and verified snapshot already exists
+# Check if a verified snapshot already exists (regardless of age, since there's only one unique snapshot)
 LATEST_BACKUP_FILE=$(find "$SNAPSHOT_DIR" -maxdepth 1 -name "backup_mainnet_blocks_chainstate_*.tar.gz" -type f -printf "%T@ %p\n" | sort -n | tail -1 | cut -d' ' -f2)
 
-if [ -f "$LATEST_BACKUP_FILE" ]; then
-    BACKUP_MOD_TIME=$(stat -c %Y "$LATEST_BACKUP_FILE")
-    TIME_DIFF=$(( (CURRENT_TIME - BACKUP_MOD_TIME) / 86400 ))
-
-    if [ "$TIME_DIFF" -lt "$DOWNLOAD_INTERVAL_DAYS" ] && [ -f "$INTEGRITY_FLAG" ] && grep -q "true" "$INTEGRITY_FLAG"; then
-        echo "Recent snapshot with verified integrity found. Proceeding to extraction."
+if [ -f "$LATEST_BACKUP_FILE" ] && [ -f "$INTEGRITY_FLAG" ] && grep -q "true" "$INTEGRITY_FLAG"; then
+    echo "Verified snapshot found. Proceeding to extraction."
 
         # Set the extraction completion flag to false before extraction
         echo "false" > "$EXTRACTION_COMPLETION_FLAG"
         extract_snapshot
         exit 0
-    else
-        echo "No recent or verified snapshot found. Proceeding with download."
-    fi
 fi
 
 # Use flock for the lock file to prevent concurrent downloads

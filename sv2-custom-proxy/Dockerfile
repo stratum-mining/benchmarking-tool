@@ -1,14 +1,19 @@
 # Build stage
-FROM rust:1.82-alpine AS builder
+FROM rust:1.83-alpine AS builder
 
-WORKDIR /usr/src/sv2-custom-proxy
-COPY ./sv2-custom-proxy .
+WORKDIR /usr/src
+# Create a minimal workspace Cargo.toml for Docker build (only sv2-custom-proxy)
+RUN printf '[workspace]\nresolver="2"\nmembers = ["sv2-custom-proxy"]\n' > Cargo.toml
+# Copy Cargo.lock if it exists
+COPY Cargo.lock* ./
+# Copy the sv2-custom-proxy package
+COPY ./sv2-custom-proxy ./sv2-custom-proxy
 
 # Install necessary dependencies for building
-RUN apk add musl-dev pkgconfig libressl-dev
+RUN apk update && apk add --no-cache musl-dev pkgconf libressl-dev
 
-# Build the project in release mode
-RUN cargo build --release
+# Build the project in release mode from workspace root
+RUN cargo build --package sv2-custom-proxy --release
 
 # Final stage
 FROM alpine:latest
@@ -21,7 +26,7 @@ RUN apk update && apk add --no-cache \
         curl
 
 # Copy the binary from the builder stage
-COPY --from=builder /usr/src/sv2-custom-proxy/target/release/sv2-custom-proxy /usr/local/bin/sv2-custom-proxy
+COPY --from=builder /usr/src/target/release/sv2-custom-proxy /usr/local/bin/sv2-custom-proxy
 
 # Set the working directory
 WORKDIR /usr/local/bin/

@@ -70,38 +70,46 @@ scrape_configs:
     static_configs:
       - targets: ['sv1-node-pool-proxy:4567'] # The Network Traffic Metrics IP/port
 
-  - job_name: 'sv2-jdc-translator-proxy'
+  - job_name: 'sv2-jdc-translator-sniffer'
   
     # Override the global default and scrape targets from this job every 5 seconds.
     scrape_interval: 5s
 
     static_configs:
-      - targets: ['sv2-jdc-translator-proxy:3456'] # The Network Traffic Metrics IP/port
+      - targets: ['sv2-jdc-translator-sniffer:3458'] # The Network Traffic Metrics IP/port
 
-  - job_name: 'sv2-tp-jdc-proxy'
+  - job_name: 'sv2-tp-jdc-sniffer'
   
     # Override the global default and scrape targets from this job every 5 seconds.
     scrape_interval: 5s
 
     static_configs:
-      - targets: ['sv2-tp-jdc-proxy:5678'] # The Network Traffic Metrics IP/port
+      - targets: ['sv2-tp-jdc-sniffer:5678'] # The Network Traffic Metrics IP/port
 
-  - job_name: 'sv2-pool-translator-proxy'
+  - job_name: 'sv2-pool-jdc-sniffer'
   
     # Override the global default and scrape targets from this job every 5 seconds.
     scrape_interval: 5s
 
     static_configs:
-      - targets: ['sv2-pool-translator-proxy:3456'] # The Network Traffic Metrics IP/port
+      - targets: ['sv2-pool-jdc-sniffer:3457'] # The Network Traffic Metrics IP/port
 
 
-  - job_name: 'sv2-tp-pool-proxy'
+  - job_name: 'sv2-tp-pool-sniffer'
   
     # Override the global default and scrape targets from this job every 5 seconds.
     scrape_interval: 5s
 
     static_configs:
-      - targets: ['sv2-tp-pool-proxy:5678'] # The Network Traffic Metrics IP/port
+      - targets: ['sv2-tp-pool-sniffer:5677'] # The Network Traffic Metrics IP/port (config-c only)
+
+  - job_name: 'sv2-pool-translator-sniffer'
+  
+    # Override the global default and scrape targets from this job every 5 seconds.
+    scrape_interval: 5s
+
+    static_configs:
+      - targets: ['sv2-pool-translator-sniffer:3456'] # The Network Traffic Metrics IP/port (config-c only)
 
   - job_name: 'sv2-translator-miner-proxy'
   

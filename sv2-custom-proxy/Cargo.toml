@@ -1,17 +1,23 @@
 [package]
 name = "sv2-custom-proxy"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 
 [dependencies]
-demand-easy-sv2 = { version = "=0.6.0" }
+# SV2 protocol libraries - using stratum-apps which re-exports everything
+stratum-apps = { version = "0.1.0", features = ["network", "config", "with_buffer_pool", "core"] }
+
+# Async runtime
+tokio = { version = "1.36.0", features = ["full", "tracing"] }
+
+# Metrics
 prometheus = "0.13"
 warp = "0.3"
-tokio = { version = "1.36.0", features = ["full", "tracing"] }
-dotenv = "0.15.0"
+
+# Utilities
+log = "0.4.22"
+env_logger = "0.11.6"
 reqwest = { version = "0.11", default-features = false, features = ["json", "rustls-tls"] }
 serde_json = "1.0.120"
 hex = "0.4.3"
-log = "0.4.22"
-env_logger = "0.11.6"
-#serde = { version = "1.0.89", features = ["derive", "alloc"], default-features = false }
+dotenv = "0.15.0"

@@ -15,6 +15,53 @@ use tokio::net::{TcpListener, TcpStream};
 use tokio::time::{sleep, Duration};
 use warp::Filter;
 
+async fn fetch_latest_metric_from_sniffer(
+    sniffer_url: &str,
+    metric_name: &str,
+) -> Result<f64, String> {
+    let client = reqwest::Client::new();
+    log::info!(
+        "Fetching metric {} from sniffer: {}",
+        metric_name,
+        sniffer_url
+    );
+    let response = client
+        .get(sniffer_url)
+        .send()
+        .await
+        .map_err(|e| e.to_string())?;
+    let body = response.text().await.map_err(|e| e.to_string())?;
+
+    // Parse Prometheus text format
+    for line in body.lines() {
+        // Skip comments and help text
+        if line.starts_with('#') {
+            continue;
+        }
+
+        // Look for the metric line (e.g., "sv2_new_job_timestamp_jdc{id="latest"} 1768319956725")
+        if line.starts_with(metric_name) {
+            // Extract the timestamp value (last space-separated token)
+            if let Some(timestamp_str) = line.split_whitespace().last() {
+                match timestamp_str.parse::<f64>() {
+                    Ok(timestamp) => {
+                        log::info!("Found {} = {} from sniffer", metric_name, timestamp);
+                        return Ok(timestamp);
+                    }
+                    Err(e) => {
+                        log::warn!("Failed to parse timestamp from {}: {}", line, e);
+                    }
+                }
+            }
+        }
+    }
+
+    Err(format!(
+        "Metric {} not found in sniffer response",
+        metric_name
+    ))
+}
+
 #[allow(clippy::too_many_arguments)]
 async fn transfer(
     mut inbound: TcpStream,
@@ -100,7 +147,7 @@ async fn transfer(
                                     .expect("Time went backwards")
                                     .as_millis()
                                     as f64;
-                                let prometheus_url = "http://10.5.0.21:4567/metrics";
+                                let prometheus_url = "http://10.5.0.42:4567/metrics";
                                 let client = reqwest::Client::new();
                                 if let Ok(response) = client.get(prometheus_url).send().await {
                                     if let Ok(body) = response.text().await {
@@ -204,7 +251,7 @@ async fn handle_rpc_request(
                     .duration_since(std::time::UNIX_EPOCH)
                     .expect("Time went backwards")
                     .as_millis() as f64;
-                let prometheus_url = "http://10.5.0.19:2345/metrics";
+                let prometheus_url = "http://10.5.0.41:2345/metrics";
                 let client = reqwest::Client::new();
                 if let Ok(response) = client.get(prometheus_url).send().await {
                     if let Ok(body) = response.text().await {
@@ -360,6 +407,25 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let server = env::var("SERVER").expect("SERVER environment variable not set");
     let prometheus_exporter_address =
         env::var("PROM_ADDRESS").expect("PROM_ADDRESS environment variable not set");
+    // Prometheus address for querying SV2 metrics
+    // Hardcoded sniffer URLs - Use TP-side sniffers to measure full path from TP to Miner
+    // Try both and use whichever responds
+    let sniffer_urls = vec![
+        "http://10.5.0.31:5678/metrics", // config-a: sv2-tp-jdc-sniffer (TP → JDC)
+        "http://10.5.0.30:5677/metrics", // config-c: sv2-tp-pool-sniffer (TP → Pool)
+    ];
+    let mut sniffer_url = String::new();
+    for url in &sniffer_urls {
+        if reqwest::Client::new().get(*url).send().await.is_ok() {
+            sniffer_url = url.to_string();
+            log::info!("Using sniffer URL: {}", sniffer_url);
+            break;
+        }
+    }
+    if sniffer_url.is_empty() {
+        log::warn!("No sniffer URL responded, defaulting to config-a");
+        sniffer_url = sniffer_urls[0].to_string();
+    }
 
     tokio::spawn(async move {
         let metrics_route = warp::path("metrics").map(move || {
@@ -512,17 +578,18 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             register_gauge!("new_job_pool_new_template", "new job pool new template").unwrap(),
         );
 
-        let listener = tokio::net::TcpListener::bind("0.0.0.0:34255")
-            .await
-            .unwrap();
-        log::info!("SV2 proxy translation proxy started at 34255");
+        let server_address: SocketAddr = server.parse().expect("Invalid server address");
+        let listener = tokio::net::TcpListener::bind(server_address).await.unwrap();
+        log::info!("SV2 proxy translation proxy started at {}", server_address);
+        let translator_address = client.clone();
         loop {
             let (inbound, _) = listener.accept().await.unwrap();
-            let outbound = TcpStream::connect("10.5.0.7:34256").await.unwrap();
+            let outbound = TcpStream::connect(&translator_address).await.unwrap();
             let new_job_jdc = new_job_prev_hash_throught_sv2_jdc.clone();
             let new_job_pool = new_job_prev_hash_through_sv2_pool.clone();
             let new_job_time_sv2_jdc = new_job_time_sv2_jdc.clone();
             let new_job_time_sv2_pool = new_job_time_sv2_pool.clone();
+            let sniffer_url_clone = sniffer_url.clone();
             tokio::spawn(async move {
                 if let Err(e) = transfer_new_job(
                     inbound,
@@ -531,6 +598,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                     new_job_pool,
                     new_job_time_sv2_jdc,
                     new_job_time_sv2_pool,
+                    &sniffer_url_clone,
                 )
                 .await
                 {
@@ -543,6 +611,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
+#[allow(clippy::too_many_arguments)]
 async fn transfer_new_job(
     mut inbound: tokio::net::TcpStream,
     mut outbound: tokio::net::TcpStream,
@@ -550,6 +619,7 @@ async fn transfer_new_job(
     new_job_prev_hash_through_sv2_pool: Arc<Gauge>,
     new_job_time_sv2_jdc: Arc<Gauge>,
     new_job_time_sv2_pool: Arc<Gauge>,
+    sniffer_url: &str,
 ) -> std::io::Result<()> {
     let (mut ri, mut wi) = inbound.split();
 
@@ -602,51 +672,95 @@ async fn transfer_new_job(
                         .as_millis() as f64;
                     if json["method"] == "mining.notify" {
                         if let Some(params) = json["params"].as_array() {
-                            if let Some(_prevhash) = params.get(1) {
-                                let prometheus_url = "http://10.5.0.20:5678/metrics";
-                                let client = reqwest::Client::new();
-                                if let Ok(response) = client.get(prometheus_url).send().await {
-                                    if let Ok(body) = response.text().await {
-                                        for line in body.lines() {
-                                            if let Some(start_index) = line.find("prevhash=") {
-                                                let start = start_index + "prevhash=\"".len();
-                                                let _end = match line[start..].find('"') {
-                                                    Some(index) => start + index,
-                                                    None => {
-                                                        log::error!("Failed to find end quote for prevhash in line: {}", line);
-                                                        continue;
-                                                    }
-                                                };
-                                                if let Some((_, timestamp)) = line.rsplit_once(' ')
-                                                {
-                                                    let new_job_timestamp =
-                                                        timestamp.trim().parse::<f64>().unwrap();
-                                                    let delta =
-                                                        current_timestamp - new_job_timestamp;
-                                                    new_job_prev_hash_throught_sv2_jdc.set(delta);
-                                                    new_job_prev_hash_through_sv2_pool.set(delta);
-                                                } else {
-                                                    log::warn!("No timestamp value found.");
-                                                }
-                                            }
-                                            if line.contains("id=") {
-                                                if let Some((_, timestamp)) = line.rsplit_once(' ')
-                                                {
-                                                    let new_job_timestamp =
-                                                        timestamp.trim().parse::<f64>().unwrap();
-                                                    let delta =
-                                                        current_timestamp - new_job_timestamp;
-                                                    new_job_time_sv2_jdc.set(delta);
-                                                    new_job_time_sv2_pool.set(delta);
-                                                } else {
-                                                    log::warn!("No timestamp value found.");
-                                                }
-                                            }
+                            let has_prevhash = params.get(1).is_some();
+
+                            // Fetch job_id timestamp directly from sniffer for "new job from Pool/JDC" metric
+                            // Try config-c metric first (pool), then config-a (jdc)
+                            let mut found_timestamp = false;
+
+                            // Try sv2_new_job_timestamp_pool (config-c)
+                            match fetch_latest_metric_from_sniffer(
+                                sniffer_url,
+                                "sv2_new_job_timestamp_pool",
+                            )
+                            .await
+                            {
+                                Ok(new_job_timestamp) => {
+                                    let delta = current_timestamp - new_job_timestamp;
+                                    new_job_time_sv2_jdc.set(delta);
+                                    new_job_time_sv2_pool.set(delta);
+                                    log::info!("Computed new_job delta (pool): {} ms", delta);
+                                    found_timestamp = true;
+                                }
+                                Err(e) => {
+                                    log::debug!("No pool timestamp found: {}", e);
+                                }
+                            }
+
+                            // Try sv2_new_job_timestamp_jdc (config-a) if pool metric not found
+                            if !found_timestamp {
+                                log::info!("Querying sniffer for sv2_new_job_timestamp_jdc");
+                                match fetch_latest_metric_from_sniffer(
+                                    sniffer_url,
+                                    "sv2_new_job_timestamp_jdc",
+                                )
+                                .await
+                                {
+                                    Ok(new_job_timestamp) => {
+                                        let delta = current_timestamp - new_job_timestamp;
+                                        new_job_time_sv2_jdc.set(delta);
+                                        log::info!("Computed new_job delta (jdc): {} ms (current={}, sniffer={})", delta, current_timestamp, new_job_timestamp);
+                                    }
+                                    Err(e) => {
+                                        log::warn!("No jdc timestamp found in sniffer: {}", e);
+                                    }
+                                }
+                            }
+
+                            // Fetch prev_hash timestamp directly from sniffer for "after block found" metric
+                            if has_prevhash {
+                                let mut found_timestamp = false;
+
+                                // Try sv2_new_job_prev_hash_timestamp_pool (config-c)
+                                match fetch_latest_metric_from_sniffer(
+                                    sniffer_url,
+                                    "sv2_new_job_prev_hash_timestamp_pool",
+                                )
+                                .await
+                                {
+                                    Ok(new_job_timestamp) => {
+                                        let delta = current_timestamp - new_job_timestamp;
+                                        new_job_prev_hash_throught_sv2_jdc.set(delta);
+                                        new_job_prev_hash_through_sv2_pool.set(delta);
+                                        log::info!("Computed prev_hash delta (pool): {} ms", delta);
+                                        found_timestamp = true;
+                                    }
+                                    Err(e) => {
+                                        log::debug!("No pool prev_hash timestamp found: {}", e);
+                                    }
+                                }
+
+                                // Try sv2_new_job_prev_hash_timestamp_jdc (config-a) if pool metric not found
+                                if !found_timestamp {
+                                    match fetch_latest_metric_from_sniffer(
+                                        sniffer_url,
+                                        "sv2_new_job_prev_hash_timestamp_jdc",
+                                    )
+                                    .await
+                                    {
+                                        Ok(new_job_timestamp) => {
+                                            let delta = current_timestamp - new_job_timestamp;
+                                            new_job_prev_hash_throught_sv2_jdc.set(delta);
+                                            log::info!(
+                                                "Computed prev_hash delta (jdc): {} ms",
+                                                delta
+                                            );
+                                        }
+                                        Err(e) => {
+                                            log::debug!("No jdc prev_hash timestamp found: {}", e);
                                         }
                                     }
                                 }
-                            } else {
-                                log::warn!("Prevhash not found in params");
                             }
                         } else {
                             log::warn!("Params is not an array");

@@ -37,13 +37,13 @@
       "asDropdown": false,
       "icon": "external link",
       "includeVars": false,
-      "keepTime": false,
+      "keepTime": true,
       "tags": [],
       "targetBlank": false,
       "title": "Download Logs",
-      "tooltip": "",
+      "tooltip": "Download logs for the selected time range",
       "type": "link",
-      "url": "http://localhost:7420"
+      "url": "http://localhost:7420?from=${__from}&to=${__to}"
     }
   ],
   "liveNow": false,
@@ -53,7 +53,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 0
+        "y": 10
       },
       "id": 76,
       "title": "Shares, blocks and templates stats",
@@ -120,769 +120,37 @@
                 "value": 80
               }
             ]
-          }
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Acceptance rate %"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "percent"
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 10,
-        "w": 9,
-        "x": 0,
-        "y": 1
-      },
-      "id": 77,
-      "options": {
-        "legend": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "maxHeight": 600,
-          "mode": "multi",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "10.4.1",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "editorMode": "code",
-          "expr": "sv1_submitted_shares",
-          "hide": false,
-          "interval": "",
-          "intervalFactor": 1,
-          "legendFormat": "Submitted shares",
-          "metric": "container_network_receive_bytes_total",
-          "range": true,
-          "refId": "A",
-          "step": 10
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "editorMode": "code",
-          "expr": "sv1_valid_shares",
-          "hide": false,
-          "interval": "",
-          "intervalFactor": 1,
-          "legendFormat": "Valid shares",
-          "metric": "container_network_receive_bytes_total",
-          "range": true,
-          "refId": "B",
-          "step": 10
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "editorMode": "code",
-          "expr": "sv1_stale_shares",
-          "hide": false,
-          "interval": "",
-          "intervalFactor": 1,
-          "legendFormat": "Stale shares",
-          "metric": "container_network_receive_bytes_total",
-          "range": true,
-          "refId": "C",
-          "step": 10
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "disableTextWrap": false,
-          "editorMode": "code",
-          "exemplar": false,
-          "expr": "(sv1_valid_shares * 100) / sv1_submitted_shares",
-          "fullMetaSearch": false,
-          "hide": false,
-          "includeNullMetadata": true,
-          "instant": false,
-          "interval": "",
-          "intervalFactor": 1,
-          "legendFormat": "Acceptance rate %",
-          "metric": "container_network_receive_bytes_total",
-          "range": true,
-          "refId": "D",
-          "step": 10,
-          "useBackend": false
-        }
-      ],
-      "title": "SV1 shares",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "fieldMinMax": false,
-          "links": [],
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 10,
-        "w": 3,
-        "x": 9,
-        "y": 1
-      },
-      "id": 82,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "percentChangeColorMode": "standard",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "showPercentChange": false,
-        "text": {
-          "valueSize": 50
-        },
-        "textMode": "auto",
-        "wideLayout": true
-      },
-      "pluginVersion": "11.2.0",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "editorMode": "code",
-          "expr": "sv1_mined_blocks",
-          "hide": false,
-          "interval": "",
-          "intervalFactor": 1,
-          "legendFormat": "SV1 mined blocks",
-          "metric": "container_network_receive_bytes_total",
-          "range": true,
-          "refId": "A",
-          "step": 10
-        }
-      ],
-      "title": "SV1 mined blocks",
-      "type": "stat"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "left",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "opacity",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "smooth",
-            "lineStyle": {
-              "fill": "solid"
-            },
-            "lineWidth": 1,
-            "pointSize": 1,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": true,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "fieldMinMax": false,
-          "links": [],
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Acceptance rate %"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "percent"
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 10,
-        "w": 9,
-        "x": 12,
-        "y": 1
-      },
-      "id": 80,
-      "options": {
-        "legend": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "maxHeight": 600,
-          "mode": "multi",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "10.4.1",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "editorMode": "code",
-          "expr": "sv2_submitted_shares",
-          "hide": false,
-          "interval": "",
-          "intervalFactor": 1,
-          "legendFormat": "Submitted shares",
-          "metric": "container_network_receive_bytes_total",
-          "range": true,
-          "refId": "A",
-          "step": 10
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "editorMode": "code",
-          "expr": "sv2_valid_shares",
-          "hide": false,
-          "interval": "",
-          "intervalFactor": 1,
-          "legendFormat": "Valid shares",
-          "metric": "container_network_receive_bytes_total",
-          "range": true,
-          "refId": "B",
-          "step": 10
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "editorMode": "code",
-          "expr": "sv2_stale_shares",
-          "hide": false,
-          "interval": "",
-          "intervalFactor": 1,
-          "legendFormat": "Stale shares",
-          "metric": "container_network_receive_bytes_total",
-          "range": true,
-          "refId": "C",
-          "step": 10
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "disableTextWrap": false,
-          "editorMode": "code",
-          "exemplar": false,
-          "expr": "(sv2_valid_shares * 100) / sv2_submitted_shares",
-          "fullMetaSearch": false,
-          "hide": false,
-          "includeNullMetadata": true,
-          "instant": false,
-          "interval": "",
-          "intervalFactor": 1,
-          "legendFormat": "Acceptance rate %",
-          "metric": "container_network_receive_bytes_total",
-          "range": true,
-          "refId": "D",
-          "step": 10,
-          "useBackend": false
-        }
-      ],
-      "title": "SV2 shares",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "fieldMinMax": false,
-          "links": [],
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 10,
-        "w": 3,
-        "x": 21,
-        "y": 1
-      },
-      "id": 84,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "percentChangeColorMode": "standard",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "showPercentChange": false,
-        "text": {
-          "valueSize": 50
-        },
-        "textMode": "auto",
-        "wideLayout": true
-      },
-      "pluginVersion": "11.2.0",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "editorMode": "code",
-          "expr": "sv2_mined_blocks",
-          "hide": false,
-          "interval": "",
-          "intervalFactor": 1,
-          "legendFormat": "SV2 mined blocks",
-          "metric": "container_network_receive_bytes_total",
-          "range": true,
-          "refId": "A",
-          "step": 10
-        }
-      ],
-      "title": "SV2 mined blocks",
-      "type": "stat"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "left",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "opacity",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "smooth",
-            "lineStyle": {
-              "fill": "solid"
-            },
-            "lineWidth": 1,
-            "pointSize": 1,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": true,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "fieldMinMax": false,
-          "links": [],
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
           },
           "unit": "sats"
         },
         "overrides": [
           {
             "matcher": {
-              "id": "byName",
-              "options": "SV2 delta %"
+              "id": "byRegexp",
+              "options": ".*SV1.*"
             },
             "properties": [
               {
-                "id": "unit",
-                "value": "percent"
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 9,
-        "w": 12,
-        "x": 0,
-        "y": 11
-      },
-      "id": 98,
-      "interval": "15s",
-      "options": {
-        "legend": {
-          "calcs": [
-            "mean",
-            "lastNotNull"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "maxHeight": 600,
-          "mode": "multi",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "10.4.1",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "editorMode": "code",
-          "expr": "sv1_block_template_value",
-          "hide": false,
-          "interval": "",
-          "intervalFactor": 1,
-          "legendFormat": "SV1 - block template value",
-          "metric": "container_network_receive_bytes_total",
-          "range": true,
-          "refId": "A",
-          "step": 10
-        }
-      ],
-      "title": "SV1 - block templates value",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "left",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "opacity",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "smooth",
-            "lineStyle": {
-              "fill": "solid"
-            },
-            "lineWidth": 1,
-            "pointSize": 1,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": true,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "fieldMinMax": false,
-          "links": [],
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "red"
+                }
               }
             ]
           },
-          "unit": "sats"
-        },
-        "overrides": [
           {
             "matcher": {
-              "id": "byName",
-              "options": "SV2 delta %"
+              "id": "byRegexp",
+              "options": ".*SV2.*"
             },
             "properties": [
               {
-                "id": "unit",
-                "value": "percent"
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 9,
-        "w": 12,
-        "x": 12,
-        "y": 11
-      },
-      "id": 99,
-      "interval": "15s",
-      "options": {
-        "legend": {
-          "calcs": [
-            "mean",
-            "lastNotNull"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "maxHeight": 600,
-          "mode": "multi",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "10.4.1",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "editorMode": "code",
-          "expr": "sv2_block_template_value",
-          "hide": false,
-          "interval": "",
-          "intervalFactor": 1,
-          "legendFormat": "SV2 - block template value",
-          "metric": "container_network_receive_bytes_total",
-          "range": true,
-          "refId": "A",
-          "step": 10
-        }
-      ],
-      "title": "SV2 - block templates value",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "left",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "opacity",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "smooth",
-            "lineStyle": {
-              "fill": "solid"
-            },
-            "lineWidth": 1,
-            "pointSize": 1,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": true,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "fieldMinMax": false,
-          "links": [],
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "sats"
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "SV2 delta %"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "percent"
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "blue"
+                }
               }
             ]
           }
@@ -892,7 +160,7 @@
         "h": 9,
         "w": 24,
         "x": 0,
-        "y": 20
+        "y": 21
       },
       "id": 96,
       "interval": "15s",
@@ -948,188 +216,16 @@
         }
       ],
       "title": "SV1 vs SV2 - block templates value",
-      "transformations": [
-        {
-          "id": "calculateField",
-          "options": {
-            "alias": "SV2 delta",
-            "mode": "reduceRow",
-            "reduce": {
-              "include": [
-                "SV1 - block template value",
-                "SV2 - block template value"
-              ],
-              "reducer": "diff"
-            }
-          }
-        }
-      ],
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "default": true,
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "left",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "opacity",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "smooth",
-            "lineStyle": {
-              "fill": "solid"
-            },
-            "lineWidth": 1,
-            "pointSize": 1,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": true,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "fieldMinMax": false,
-          "links": [],
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "sats"
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "SV2 delta %"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "percent"
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 9,
-        "w": 24,
-        "x": 0,
-        "y": 29
-      },
-      "id": 97,
-      "interval": "15s",
-      "options": {
-        "legend": {
-          "calcs": [
-            "mean",
-            "lastNotNull"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "maxHeight": 600,
-          "mode": "multi",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "10.4.1",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "editorMode": "code",
-          "expr": "last_block_mined_value",
-          "hide": false,
-          "interval": "",
-          "intervalFactor": 1,
-          "legendFormat": "Network - block template value",
-          "metric": "container_network_receive_bytes_total",
-          "range": true,
-          "refId": "A",
-          "step": 10
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "editorMode": "code",
-          "expr": "last_sv2_template_value",
-          "hide": false,
-          "interval": "",
-          "intervalFactor": 1,
-          "legendFormat": "SV2 - block template value",
-          "metric": "container_network_receive_bytes_total",
-          "range": true,
-          "refId": "B",
-          "step": 10
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "editorMode": "code",
-          "expr": "(last_sv2_template_value - last_block_mined_value) / last_block_mined_value * 100",
-          "hide": false,
-          "interval": "",
-          "intervalFactor": 1,
-          "legendFormat": "SV2 delta %",
-          "metric": "container_network_receive_bytes_total",
-          "range": true,
-          "refId": "C",
-          "step": 10
-        }
-      ],
-      "title": "SV2 - block templates value - comparison with mined blocks on the network",
-      "type": "timeseries"
+      "transformations": [],
+      "type": "timeseries",
+      "description": "Block template value in satoshis for SV1 and SV2 protocols. Higher values indicate more valuable block templates."
     },
     {
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 38
+        "y": 54
       },
       "id": 71,
       "title": "Latency and time measurements",
@@ -1244,7 +340,8 @@
         }
       ],
       "title": "Average latency with major pools (RTT)",
-      "type": "timeseries"
+      "type": "timeseries",
+      "description": "Round-trip time (RTT) latency measurements to major Bitcoin mining pools. Lower values indicate better network connectivity."
     },
     {
       "datasource": {
@@ -1310,685 +407,44 @@
           },
           "unit": "ms"
         },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 7,
-        "w": 12,
-        "x": 0,
-        "y": 46
-      },
-      "id": 88,
-      "interval": "15s",
-      "options": {
-        "legend": {
-          "calcs": [
-            "mean",
-            "lastNotNull"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "maxHeight": 600,
-          "mode": "multi",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "10.4.1",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "editorMode": "code",
-          "expr": "sv1_new_job_latency",
-          "hide": false,
-          "interval": "",
-          "intervalFactor": 1,
-          "legendFormat": "SV1 - time to get a new job from Pool",
-          "metric": "container_network_receive_bytes_total",
-          "range": true,
-          "refId": "A",
-          "step": 10
-        }
-      ],
-      "title": "SV1 - time to get a new job from Pool",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "left",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "opacity",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": ".*SV1.*"
             },
-            "insertNulls": false,
-            "lineInterpolation": "smooth",
-            "lineStyle": {
-              "fill": "solid"
-            },
-            "lineWidth": 1,
-            "pointSize": 1,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": true,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "fieldMinMax": false,
-          "links": [],
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
+            "properties": [
               {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "red"
+                }
               }
             ]
-          },
-          "unit": "ms"
-        },
-        "overrides": []
       },
-      "gridPos": {
-        "h": 7,
-        "w": 12,
-        "x": 12,
-        "y": 46
-      },
-      "id": 89,
-      "interval": "15s",
-      "options": {
-        "legend": {
-          "calcs": [
-            "mean",
-            "lastNotNull"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "maxHeight": 600,
-          "mode": "multi",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "10.4.1",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "editorMode": "code",
-          "expr": "new_job_jdc_new_template",
-          "hide": false,
-          "interval": "",
-          "intervalFactor": 1,
-          "legendFormat": "SV2 - time to get a new job from JDC",
-          "metric": "container_network_receive_bytes_total",
-          "range": true,
-          "refId": "A",
-          "step": 10
-        }
-      ],
-      "title": "SV2 - time to get a new job from JDC",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "left",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "opacity",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": ".*SV2.*"
             },
-            "insertNulls": false,
-            "lineInterpolation": "smooth",
-            "lineStyle": {
-              "fill": "solid"
-            },
-            "lineWidth": 1,
-            "pointSize": 1,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": true,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "fieldMinMax": false,
-          "links": [],
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
+            "properties": [
               {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "blue"
+                }
               }
             ]
-          },
-          "unit": "ms"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 7,
-        "w": 12,
-        "x": 0,
-        "y": 53
-      },
-      "id": 90,
-      "interval": "15s",
-      "options": {
-        "legend": {
-          "calcs": [
-            "mean",
-            "lastNotNull"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "maxHeight": 600,
-          "mode": "multi",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "10.4.1",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "editorMode": "code",
-          "expr": "sv1_new_job_prev_hash_latency",
-          "hide": false,
-          "interval": "",
-          "intervalFactor": 1,
-          "legendFormat": "SV1 - time to get a new job (after a new block found) from Pool",
-          "metric": "container_network_receive_bytes_total",
-          "range": true,
-          "refId": "A",
-          "step": 10
-        }
-      ],
-      "title": "SV1 - time to get a new job (after a new block found) from Pool",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "left",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "opacity",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "smooth",
-            "lineStyle": {
-              "fill": "solid"
-            },
-            "lineWidth": 1,
-            "pointSize": 1,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": true,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "fieldMinMax": false,
-          "links": [],
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "ms"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 7,
-        "w": 12,
-        "x": 12,
-        "y": 53
-      },
-      "id": 92,
-      "interval": "15s",
-      "options": {
-        "legend": {
-          "calcs": [
-            "mean",
-            "lastNotNull"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "maxHeight": 600,
-          "mode": "multi",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "10.4.1",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "editorMode": "code",
-          "expr": "new_job_prev_hash_throught_sv2_jdc",
-          "hide": false,
-          "interval": "",
-          "intervalFactor": 1,
-          "legendFormat": "SV2 - time to get a new job (after a new block found) from JDC",
-          "metric": "container_network_receive_bytes_total",
-          "range": true,
-          "refId": "A",
-          "step": 10
-        }
-      ],
-      "title": "SV2 - time to get a new job (after a new block found) from JDC",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "left",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "opacity",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "smooth",
-            "lineStyle": {
-              "fill": "solid"
-            },
-            "lineWidth": 1,
-            "pointSize": 1,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": true,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "fieldMinMax": false,
-          "links": [],
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "ms"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 7,
-        "w": 12,
-        "x": 0,
-        "y": 60
-      },
-      "id": 85,
-      "interval": "15s",
-      "options": {
-        "legend": {
-          "calcs": [
-            "mean",
-            "lastNotNull"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "maxHeight": 600,
-          "mode": "multi",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "10.4.1",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "editorMode": "code",
-          "expr": "block_propagation_time_through_sv1_pool",
-          "hide": false,
-          "interval": "",
-          "intervalFactor": 1,
-          "legendFormat": "SV1 block propagation time",
-          "metric": "container_network_receive_bytes_total",
-          "range": true,
-          "refId": "A",
-          "step": 10
-        }
-      ],
-      "title": "SV1 block propagation time",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "left",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "opacity",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "smooth",
-            "lineStyle": {
-              "fill": "solid"
-            },
-            "lineWidth": 1,
-            "pointSize": 1,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": true,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "fieldMinMax": false,
-          "links": [],
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "ms"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 7,
-        "w": 12,
-        "x": 12,
-        "y": 60
-      },
-      "id": 86,
-      "interval": "15s",
-      "options": {
-        "legend": {
-          "calcs": [
-            "mean",
-            "lastNotNull"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "maxHeight": 600,
-          "mode": "multi",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "10.4.1",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "editorMode": "code",
-          "expr": "block_propagation_time_through_sv2_jdc",
-          "hide": false,
-          "interval": "",
-          "intervalFactor": 1,
-          "legendFormat": "SV2 block propagation time",
-          "metric": "container_network_receive_bytes_total",
-          "range": true,
-          "refId": "A",
-          "step": 10
-        }
-      ],
-      "title": "SV2 block propagation time ",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "left",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "opacity",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "smooth",
-            "lineStyle": {
-              "fill": "solid"
-            },
-            "lineWidth": 1,
-            "pointSize": 1,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": true,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "fieldMinMax": false,
-          "links": [],
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "ms"
-        },
-        "overrides": []
+          }
+        ]
       },
       "gridPos": {
         "h": 9,
         "w": 24,
         "x": 0,
-        "y": 67
+        "y": 46
       },
       "id": 93,
       "interval": "15s",
@@ -2044,23 +500,9 @@
         }
       ],
       "title": "SV1 vs SV2 - time to get a new job from Pool/JDC",
-      "transformations": [
-        {
-          "id": "calculateField",
-          "options": {
-            "alias": "SV2 delta",
-            "mode": "reduceRow",
-            "reduce": {
-              "include": [
-                "SV1 - time to get a new job from Pool",
-                "SV2 - time to get a new job from JDC"
-              ],
-              "reducer": "diff"
-            }
-          }
-        }
-      ],
-      "type": "timeseries"
+      "transformations": [],
+      "type": "timeseries",
+      "description": "Time taken to receive a new mining job from the pool (SV1) or job distribution coordinator (SV2). Measured in milliseconds."
     },
     {
       "datasource": {
@@ -2124,13 +566,44 @@
           },
           "unit": "ms"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": ".*SV1.*"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "red"
+                }
+              }
+            ]
+      },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": ".*SV2.*"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "blue"
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 9,
         "w": 24,
         "x": 0,
-        "y": 76
+        "y": 55
       },
       "id": 94,
       "interval": "15s",
@@ -2186,23 +659,9 @@
         }
       ],
       "title": "SV1 vs SV2 - time to get a new job (after a new block found) from Pool/JDC",
-      "transformations": [
-        {
-          "id": "calculateField",
-          "options": {
-            "alias": "SV2 delta",
-            "mode": "reduceRow",
-            "reduce": {
-              "include": [
-                "SV1 - time to get a new job (after a new block found) from Pool",
-                "SV2 - time to get a new job (after a new block found) from JDC"
-              ],
-              "reducer": "diff"
-            }
-          }
-        }
-      ],
-      "type": "timeseries"
+      "transformations": [],
+      "type": "timeseries",
+      "description": "Time taken to receive a new job after a block is found on the network. This measures how quickly the system adapts to new blocks. Measured in milliseconds."
     },
     {
       "datasource": {
@@ -2266,13 +725,44 @@
           },
           "unit": "ms"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": ".*SV1.*"
+          },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "red"
+          }
+        }
+            ]
+    },
+    {
+            "matcher": {
+              "id": "byRegexp",
+              "options": ".*SV2.*"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "blue"
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 9,
         "w": 24,
         "x": 0,
-        "y": 85
+        "y": 64
       },
       "id": 95,
       "interval": "15s",
@@ -2328,23 +818,9 @@
         }
       ],
       "title": "SV1 vs SV2 - block propagation time",
-      "transformations": [
-        {
-          "id": "calculateField",
-          "options": {
-            "alias": "SV2 delta",
-            "mode": "reduceRow",
-            "reduce": {
-              "include": [
-                "SV1 - block propagation time",
-                "SV2 - block propagation time"
-              ],
-              "reducer": "diff"
-            }
-          }
-        }
-      ],
-      "type": "timeseries"
+      "transformations": [],
+      "type": "timeseries",
+      "description": "Time elapsed from when a share is produced until the corresponding valid block is broadcasted by the Bitcoin node. Measured in milliseconds."
     },
     {
       "collapsed": false,
@@ -2352,11 +828,11 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 94
+        "y": 110
       },
       "id": 56,
       "panels": [],
-      "title": "Bandwidth Usage - Mining Farm Level",
+      "title": "Bandwidth Usage - Miner-Side",
       "type": "row"
     },
     {
@@ -2421,573 +897,120 @@
           },
           "unit": "binBps"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": ".*SV1.*bandwidth.*"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "red"
+        }
+      },
+              {
+                "id": "custom.axisPlacement",
+                "value": "left"
+          },
+              {
+                "id": "custom.axisLabel",
+                "value": "Bandwidth (bytes/sec)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": ".*SV2.*bandwidth.*"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "blue"
+                }
+              },
+              {
+                "id": "custom.axisPlacement",
+                "value": "left"
+              },
+              {
+                "id": "custom.axisLabel",
+                "value": "Bandwidth (bytes/sec)"
+              }
+            ]
+    },
+    {
+            "matcher": {
+              "id": "byRegexp",
+              "options": ".*SV1.*total bytes.*"
+      },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "orange"
+                }
+              },
+              {
+                "id": "custom.axisPlacement",
+                "value": "right"
+              },
+              {
+                "id": "custom.axisLabel",
+                "value": "Total Bytes"
+              },
+              {
+                "id": "unit",
+                "value": "decbytes"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": ".*SV2.*total bytes.*"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "cyan"
+                }
+              },
+              {
+                "id": "custom.axisPlacement",
+                "value": "right"
+              },
+              {
+                "id": "custom.axisLabel",
+                "value": "Total Bytes"
+          },
+              {
+                "id": "unit",
+                "value": "decbytes"
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 10,
         "w": 12,
         "x": 0,
-        "y": 95
-      },
-      "id": 65,
-      "interval": "15s",
-      "options": {
-        "legend": {
-          "calcs": [
-            "mean",
-            "lastNotNull"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "maxHeight": 600,
-          "mode": "multi",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "10.4.1",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.8\", src=\"10.5.0.19\"}[20s]))",
-          "hide": false,
-          "interval": "",
-          "intervalFactor": 1,
-          "legendFormat": "Mining Farm Network Interface",
-          "metric": "container_network_receive_bytes_total",
-          "range": true,
-          "refId": "A",
-          "step": 10
-        }
-      ],
-      "title": "SV1 - Network Tx (farm level)",
-      "transformations": [
-        {
-          "id": "calculateField",
-          "options": {
-            "alias": "Total (farm level)",
-            "mode": "reduceRow",
-            "reduce": {
-              "reducer": "sum"
-            },
-            "replaceFields": false
-          }
-        }
-      ],
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "left",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "opacity",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "smooth",
-            "lineStyle": {
-              "fill": "solid"
-            },
-            "lineWidth": 1,
-            "pointSize": 3,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": true,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "fieldMinMax": false,
-          "links": [],
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green"
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "binBps"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 10,
-        "w": 12,
-        "x": 12,
-        "y": 95
-      },
-      "id": 60,
-      "interval": "15s",
-      "options": {
-        "legend": {
-          "calcs": [
-            "mean",
-            "lastNotNull"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "maxHeight": 600,
-          "mode": "multi",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "10.4.1",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.17\", dst=\"10.5.0.6\"}[20s]))",
-          "hide": false,
-          "interval": "",
-          "intervalFactor": 1,
-          "legendFormat": "Translator",
-          "metric": "container_network_receive_bytes_total",
-          "range": true,
-          "refId": "A",
-          "step": 10
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.6\", dst=\"10.5.0.5\"}[20s]))",
-          "hide": false,
-          "interval": "",
-          "intervalFactor": 1,
-          "legendFormat": "Job Declarator Client (JDC)",
-          "metric": "container_network_receive_bytes_total",
-          "range": true,
-          "refId": "B",
-          "step": 10
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.3\", dst!=\"10.5.0.20\", dst!=\"192.168.65.1\", dst!=\"10.5.0.6\"}[20s]))",
-          "hide": false,
-          "interval": "",
-          "intervalFactor": 1,
-          "legendFormat": "Template Provider (TP)",
-          "metric": "container_network_receive_bytes_total",
-          "range": true,
-          "refId": "C",
-          "step": 10
-        }
-      ],
-      "title": "SV2 - Network Tx (farm level)",
-      "transformations": [
-        {
-          "id": "calculateField",
-          "options": {
-            "alias": "Total (farm level)",
-            "mode": "reduceRow",
-            "reduce": {
-              "include": [
-                "Job Declarator Client (JDC)",
-                "Template Provider (TP)",
-                "Translator"
-              ],
-              "reducer": "sum"
-            },
-            "replaceFields": false
-          }
-        }
-      ],
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "left",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "opacity",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "smooth",
-            "lineStyle": {
-              "fill": "solid"
-            },
-            "lineWidth": 1,
-            "pointSize": 3,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": true,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "fieldMinMax": false,
-          "links": [],
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green"
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "binBps"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 10,
-        "w": 12,
-        "x": 0,
-        "y": 105
-      },
-      "id": 64,
-      "interval": "15s",
-      "options": {
-        "legend": {
-          "calcs": [
-            "mean",
-            "lastNotNull"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "maxHeight": 600,
-          "mode": "multi",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "10.4.1",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.8\", dst=\"10.5.0.19\"}[20s]))",
-          "hide": false,
-          "interval": "",
-          "intervalFactor": 1,
-          "legendFormat": "Mining Farm Network Interface",
-          "metric": "container_network_receive_bytes_total",
-          "range": true,
-          "refId": "A",
-          "step": 10
-        }
-      ],
-      "title": "SV1 - Network Rx (farm level)",
-      "transformations": [
-        {
-          "id": "calculateField",
-          "options": {
-            "alias": "Total (farm level)",
-            "mode": "reduceRow",
-            "reduce": {
-              "reducer": "sum"
-            }
-          }
-        }
-      ],
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "left",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "opacity",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "smooth",
-            "lineStyle": {
-              "fill": "solid"
-            },
-            "lineWidth": 1,
-            "pointSize": 3,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": true,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "fieldMinMax": false,
-          "links": [],
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green"
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "binBps"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 10,
-        "w": 12,
-        "x": 12,
-        "y": 105
-      },
-      "id": 59,
-      "interval": "15s",
-      "options": {
-        "legend": {
-          "calcs": [
-            "mean",
-            "lastNotNull"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "maxHeight": 600,
-          "mode": "multi",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "10.4.1",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.17\", src=\"10.5.0.6\"}[20s]))",
-          "hide": false,
-          "interval": "",
-          "intervalFactor": 1,
-          "legendFormat": "Translator",
-          "metric": "container_network_receive_bytes_total",
-          "range": true,
-          "refId": "A",
-          "step": 10
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.6\", src=\"10.5.0.5\"}[20s]))",
-          "hide": false,
-          "instant": false,
-          "legendFormat": "Job Declarator Client (JDC)",
-          "range": true,
-          "refId": "B"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.3\", src!=\"10.5.0.20\", src!=\"192.168.65.1\", src!=\"10.5.0.6\"}[20s]))",
-          "hide": false,
-          "instant": false,
-          "legendFormat": "Template Provider (TP)",
-          "range": true,
-          "refId": "C"
-        }
-      ],
-      "title": "SV2 - Network Rx (farm level)",
-      "transformations": [
-        {
-          "id": "calculateField",
-          "options": {
-            "alias": "Total (farm level)",
-            "mode": "reduceRow",
-            "reduce": {
-              "reducer": "sum"
-            }
-          }
-        }
-      ],
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "left",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "opacity",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "smooth",
-            "lineStyle": {
-              "fill": "solid"
-            },
-            "lineWidth": 1,
-            "pointSize": 3,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": true,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "fieldMinMax": false,
-          "links": [],
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green"
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "binBps"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 10,
-        "w": 24,
-        "x": 0,
-        "y": 115
+        "y": 111
       },
       "id": 69,
       "interval": "15s",
       "options": {
         "legend": {
           "calcs": [
-            "mean",
             "lastNotNull"
           ],
           "displayMode": "table",
@@ -3008,10 +1031,10 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.8\", src=\"10.5.0.19\"}[20s]))",
+          "expr": "sum(rate(ntm_bytes_total{src=\"10.5.0.41\", dst=\"10.5.0.40\",proto=\"tcp\"}[5m]))",
           "hide": false,
           "instant": false,
-          "legendFormat": "SV1 (farm net interface)",
+          "legendFormat": "SV1 (miner to pool) (bandwidth)",
           "range": true,
           "refId": "A"
         },
@@ -3021,35 +1044,50 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.17\", dst=\"10.5.0.6\"}[20s])) + sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.6\", dst=\"10.5.0.5\"}[20s])) + sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.3\", dst!=\"10.5.0.20\", dst!=\"192.168.65.1\", dst!=\"10.5.0.6\"}[20s]))",
+          "expr": "sum(ntm_bytes_total{src=\"10.5.0.41\", dst=\"10.5.0.40\",proto=\"tcp\"})",
+          "hide": false,
+          "instant": false,
+          "legendFormat": "SV1 (miner to pool) (total bytes)",
+          "range": true,
+          "refId": "A_total"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "sum(rate(ntm_bytes_total{src=\"10.5.0.22\", dst=\"10.5.0.34\",proto=\"tcp\"}[5m])) + sum(rate(ntm_bytes_total{src=\"10.5.0.22\", dst=\"10.5.0.21\",proto=\"tcp\"}[5m]))",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
-          "legendFormat": "SV2 (translator + jdc + tp)",
+          "legendFormat": "SV2 (jdc to pool + jdc to jds) (bandwidth)",
           "metric": "container_network_receive_bytes_total",
           "range": true,
           "refId": "B",
           "step": 10
-        }
-      ],
-      "title": "SV1 vs SV2 - Network Tx (farm level)",
-      "transformations": [
+        },
         {
-          "id": "calculateField",
-          "options": {
-            "alias": "SV2 delta",
-            "mode": "reduceRow",
-            "reduce": {
-              "include": [
-                "SV1 (farm net interface)",
-                "SV2 (translator + jdc + tp)"
-              ],
-              "reducer": "diff"
-            }
-          }
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "sum(ntm_bytes_total{src=\"10.5.0.22\", dst=\"10.5.0.34\",proto=\"tcp\"})",
+          "hide": false,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "SV2 (jdc to pool + jdc to jds) (total bytes)",
+          "metric": "container_network_receive_bytes_total",
+          "range": true,
+          "refId": "B_total",
+          "step": 10
         }
       ],
-      "type": "timeseries"
+      "title": "SV1 vs SV2 - Network Tx (miner-side)",
+      "transformations": [],
+      "type": "timeseries",
+      "description": "Network transmission (outgoing) bandwidth and total bytes transmitted from the miner side for SV1 and SV2 protocols. Bandwidth (rate) is shown on the left Y-axis, total bytes on the right Y-axis."
     },
     {
       "datasource": {
@@ -3113,20 +1151,120 @@
           },
           "unit": "binBps"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": ".*SV1.*bandwidth.*"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "red"
+        }
+      },
+              {
+                "id": "custom.axisPlacement",
+                "value": "left"
+          },
+              {
+                "id": "custom.axisLabel",
+                "value": "Bandwidth (bytes/sec)"
+        }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": ".*SV2.*bandwidth.*"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "blue"
+                }
+              },
+              {
+                "id": "custom.axisPlacement",
+                "value": "left"
+              },
+              {
+                "id": "custom.axisLabel",
+                "value": "Bandwidth (bytes/sec)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": ".*SV1.*total bytes.*"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "orange"
+                }
+              },
+              {
+                "id": "custom.axisPlacement",
+                "value": "right"
+              },
+        {
+                "id": "custom.axisLabel",
+                "value": "Total Bytes"
+        },
+        {
+                "id": "unit",
+                "value": "decbytes"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": ".*SV2.*total bytes.*"
+            },
+            "properties": [
+        {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "cyan"
+                }
+              },
+              {
+                "id": "custom.axisPlacement",
+                "value": "right"
+              },
+              {
+                "id": "custom.axisLabel",
+                "value": "Total Bytes"
+            },
+              {
+                "id": "unit",
+                "value": "decbytes"
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 10,
-        "w": 24,
-        "x": 0,
-        "y": 125
+        "w": 12,
+        "x": 12,
+        "y": 111
       },
       "id": 70,
       "interval": "15s",
       "options": {
         "legend": {
           "calcs": [
-            "mean",
             "lastNotNull"
           ],
           "displayMode": "table",
@@ -3147,10 +1285,10 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.8\", dst=\"10.5.0.19\"}[20s]))",
+          "expr": "sum(rate(ntm_bytes_total{src=\"10.5.0.40\", dst=\"10.5.0.41\",proto=\"tcp\"}[5m]))",
           "hide": false,
           "instant": false,
-          "legendFormat": "SV1 (farm net interface)",
+          "legendFormat": "SV1 (pool to miner) (bandwidth)",
           "range": true,
           "refId": "A"
         },
@@ -3160,35 +1298,50 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.17\", src=\"10.5.0.6\"}[20s])) + sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.6\", src=\"10.5.0.5\"}[20s])) + sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.3\", src!=\"10.5.0.20\", src!=\"192.168.65.1\", src!=\"10.5.0.6\"}[20s]))",
+          "expr": "sum(ntm_bytes_total{src=\"10.5.0.40\", dst=\"10.5.0.41\",proto=\"tcp\"})",
+          "hide": false,
+          "instant": false,
+          "legendFormat": "SV1 (pool to miner) (total bytes)",
+          "range": true,
+          "refId": "A_total"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "sum(rate(ntm_bytes_total{src=\"10.5.0.34\", dst=\"10.5.0.22\",proto=\"tcp\"}[5m])) + sum(rate(ntm_bytes_total{src=\"10.5.0.21\", dst=\"10.5.0.22\",proto=\"tcp\"}[5m]))",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
-          "legendFormat": "SV2 (translator + jdc + tp)",
+          "legendFormat": "SV2 (pool to jdc + jds to jdc) (bandwidth)",
           "metric": "container_network_receive_bytes_total",
           "range": true,
           "refId": "B",
           "step": 10
-        }
-      ],
-      "title": "SV1 vs SV2 - Network Rx (farm level)",
-      "transformations": [
+        },
         {
-          "id": "calculateField",
-          "options": {
-            "alias": "SV2 delta",
-            "mode": "reduceRow",
-            "reduce": {
-              "include": [
-                "SV1 (farm net interface)",
-                "SV2 (translator + jdc + tp)"
-              ],
-              "reducer": "diff"
-            }
-          }
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "sum(ntm_bytes_total{src=\"10.5.0.34\", dst=\"10.5.0.22\",proto=\"tcp\"})",
+          "hide": false,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "SV2 (pool to jdc + jds to jdc) (total bytes)",
+          "metric": "container_network_receive_bytes_total",
+          "range": true,
+          "refId": "B_total",
+          "step": 10
         }
       ],
-      "type": "timeseries"
+      "title": "SV1 vs SV2 - Network Rx (miner-side)",
+      "transformations": [],
+      "type": "timeseries",
+      "description": "Network reception (incoming) bandwidth and total bytes received on the miner side for SV1 and SV2 protocols. Bandwidth (rate) is shown on the left Y-axis, total bytes on the right Y-axis."
     },
     {
       "collapsed": false,
@@ -3196,11 +1349,11 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 135
+        "y": 151
       },
       "id": 55,
       "panels": [],
-      "title": "Bandwidth Usage - Pool Level",
+      "title": "Bandwidth Usage - pool-side",
       "type": "row"
     },
     {
@@ -3265,593 +1418,120 @@
           },
           "unit": "binBps"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": ".*SV1.*bandwidth.*"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "red"
+        }
+      },
+              {
+                "id": "custom.axisPlacement",
+                "value": "left"
+          },
+              {
+                "id": "custom.axisLabel",
+                "value": "Bandwidth (bytes/sec)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": ".*SV2.*bandwidth.*"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "blue"
+                }
+              },
+              {
+                "id": "custom.axisPlacement",
+                "value": "left"
+              },
+              {
+                "id": "custom.axisLabel",
+                "value": "Bandwidth (bytes/sec)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": ".*SV1.*total bytes.*"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "orange"
+                }
+              },
+              {
+                "id": "custom.axisPlacement",
+                "value": "right"
+              },
+              {
+                "id": "custom.axisLabel",
+                "value": "Total Bytes"
+              },
+              {
+                "id": "unit",
+                "value": "decbytes"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": ".*SV2.*total bytes.*"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "cyan"
+            }
+          },
+              {
+                "id": "custom.axisPlacement",
+                "value": "right"
+              },
+              {
+                "id": "custom.axisLabel",
+                "value": "Total Bytes"
+              },
+              {
+                "id": "unit",
+                "value": "decbytes"
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 10,
         "w": 12,
         "x": 0,
-        "y": 136
-      },
-      "id": 63,
-      "interval": "15s",
-      "options": {
-        "legend": {
-          "calcs": [
-            "mean",
-            "lastNotNull"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "maxHeight": 600,
-          "mode": "multi",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "10.4.1",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.8\", dst=\"10.5.0.19\"}[20s]))",
-          "hide": false,
-          "interval": "",
-          "intervalFactor": 1,
-          "legendFormat": "Pool",
-          "metric": "container_network_receive_bytes_total",
-          "range": true,
-          "refId": "A",
-          "step": 10
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.16\", dst!=\"10.5.0.21\", dst!=\"192.168.65.1\", dst!=\"192.168.65.7\", dst!=\"10.5.0.8\"}[20s]))",
-          "hide": false,
-          "instant": false,
-          "legendFormat": "Bitcoin Node",
-          "range": true,
-          "refId": "B"
-        }
-      ],
-      "title": "SV1 - Network Tx (pool level)",
-      "transformations": [
-        {
-          "id": "calculateField",
-          "options": {
-            "alias": "Total (pool level)",
-            "mode": "reduceRow",
-            "reduce": {
-              "reducer": "sum"
-            },
-            "replaceFields": false
-          }
-        }
-      ],
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "left",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "opacity",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "smooth",
-            "lineStyle": {
-              "fill": "solid"
-            },
-            "lineWidth": 1,
-            "pointSize": 3,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": true,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "fieldMinMax": false,
-          "links": [],
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green"
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "binBps"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 10,
-        "w": 12,
-        "x": 12,
-        "y": 136
-      },
-      "id": 57,
-      "interval": "15s",
-      "options": {
-        "legend": {
-          "calcs": [
-            "mean",
-            "lastNotNull"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "maxHeight": 600,
-          "mode": "multi",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "10.4.1",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.4\", dst=\"10.5.0.6\"}[20s]))",
-          "hide": false,
-          "interval": "",
-          "intervalFactor": 1,
-          "legendFormat": "Pool",
-          "metric": "container_network_receive_bytes_total",
-          "range": true,
-          "refId": "A",
-          "step": 10
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.5\", dst=\"10.5.0.6\"}[20s]))",
-          "hide": false,
-          "interval": "",
-          "intervalFactor": 1,
-          "legendFormat": "Job Declarator Server (JDS)",
-          "metric": "container_network_receive_bytes_total",
-          "range": true,
-          "refId": "B",
-          "step": 10
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.2\", dst!=\"192.168.65.1\", dst!=\"192.168.65.7\", dst!=\"10.5.0.4\", dst!=\"10.5.0.5\"}[20s]))",
-          "hide": false,
-          "interval": "",
-          "intervalFactor": 1,
-          "legendFormat": "Template Provider (TP)",
-          "metric": "container_network_receive_bytes_total",
-          "range": true,
-          "refId": "C",
-          "step": 10
-        }
-      ],
-      "title": "SV2 - Network Tx (pool level)",
-      "transformations": [
-        {
-          "id": "calculateField",
-          "options": {
-            "alias": "Total (pool level)",
-            "mode": "reduceRow",
-            "reduce": {
-              "reducer": "sum"
-            }
-          }
-        }
-      ],
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "left",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "opacity",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "smooth",
-            "lineStyle": {
-              "fill": "solid"
-            },
-            "lineWidth": 1,
-            "pointSize": 3,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": true,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "fieldMinMax": false,
-          "links": [],
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green"
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "binBps"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 10,
-        "w": 12,
-        "x": 0,
-        "y": 146
-      },
-      "id": 66,
-      "interval": "15s",
-      "options": {
-        "legend": {
-          "calcs": [
-            "mean",
-            "lastNotNull"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "maxHeight": 600,
-          "mode": "multi",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "10.4.1",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.8\", src=\"10.5.0.19\"}[20s]))",
-          "hide": false,
-          "interval": "",
-          "intervalFactor": 1,
-          "legendFormat": "Pool",
-          "metric": "container_network_receive_bytes_total",
-          "range": true,
-          "refId": "A",
-          "step": 10
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.16\", src!=\"10.5.0.21\", src!=\"192.168.65.1\", src!=\"192.168.65.7\", src!=\"10.5.0.8\"}[20s]))",
-          "hide": false,
-          "instant": false,
-          "legendFormat": "Bitcoin Node",
-          "range": true,
-          "refId": "B"
-        }
-      ],
-      "title": "SV1 - Network Rx (pool level) ",
-      "transformations": [
-        {
-          "id": "calculateField",
-          "options": {
-            "alias": "Total (pool level)",
-            "mode": "reduceRow",
-            "reduce": {
-              "reducer": "sum"
-            }
-          }
-        }
-      ],
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "left",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "opacity",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "smooth",
-            "lineStyle": {
-              "fill": "solid"
-            },
-            "lineWidth": 1,
-            "pointSize": 3,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": true,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "fieldMinMax": false,
-          "links": [],
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green"
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "binBps"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 10,
-        "w": 12,
-        "x": 12,
-        "y": 146
-      },
-      "id": 62,
-      "interval": "15s",
-      "options": {
-        "legend": {
-          "calcs": [
-            "mean",
-            "lastNotNull"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "maxHeight": 600,
-          "mode": "multi",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "10.4.1",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.4\", src=\"10.5.0.6\"}[20s]))",
-          "hide": false,
-          "interval": "",
-          "intervalFactor": 1,
-          "legendFormat": "Pool",
-          "metric": "container_network_receive_bytes_total",
-          "range": true,
-          "refId": "A",
-          "step": 10
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.5\", src=\"10.5.0.6\"}[20s]))",
-          "hide": false,
-          "instant": false,
-          "legendFormat": "Job Declarator Server (JDS)",
-          "range": true,
-          "refId": "B"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.2\", src!=\"192.168.65.1\", src!=\"192.168.65.7\", src!=\"10.5.0.4\", src!=\"10.5.0.5\"}[20s]))",
-          "hide": false,
-          "instant": false,
-          "legendFormat": "Template Provider (TP)",
-          "range": true,
-          "refId": "C"
-        }
-      ],
-      "title": "SV2 - Network Rx (pool level)",
-      "transformations": [
-        {
-          "id": "calculateField",
-          "options": {
-            "alias": "Total (pool level)",
-            "mode": "reduceRow",
-            "reduce": {
-              "reducer": "sum"
-            }
-          }
-        }
-      ],
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "left",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "opacity",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "smooth",
-            "lineStyle": {
-              "fill": "solid"
-            },
-            "lineWidth": 1,
-            "pointSize": 3,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": true,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "fieldMinMax": false,
-          "links": [],
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green"
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "binBps"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 10,
-        "w": 24,
-        "x": 0,
-        "y": 156
+        "y": 152
       },
       "id": 67,
       "interval": "15s",
       "options": {
         "legend": {
           "calcs": [
-            "mean",
             "lastNotNull"
           ],
           "displayMode": "table",
@@ -3872,10 +1552,10 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.8\", dst=\"10.5.0.19\"}[20s])) + sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.16\", dst!=\"10.5.0.21\", dst!=\"192.168.65.1\", dst!=\"192.168.65.7\", dst!=\"10.5.0.8\"}[20s]))",
+          "expr": "sum(rate(ntm_bytes_total{src=\"10.5.0.40\", dst=\"10.5.0.41\",proto=\"tcp\"}[5m]))",
           "hide": false,
           "instant": false,
-          "legendFormat": "SV1 (pool + bitcoin node)",
+          "legendFormat": "SV1 (pool to miner) (bandwidth)",
           "range": true,
           "refId": "A"
         },
@@ -3885,35 +1565,50 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.4\", dst=\"10.5.0.6\"}[20s])) + sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.5\", dst=\"10.5.0.6\"}[20s]))\n+ sum by (id, name) (rate(ntm_bytes_total{src=\"10.5.0.2\", dst!=\"192.168.65.1\", dst!=\"192.168.65.7\", dst!=\"10.5.0.4\", dst!=\"10.5.0.5\"}[20s]))",
+          "expr": "sum(ntm_bytes_total{src=\"10.5.0.40\", dst=\"10.5.0.41\",proto=\"tcp\"})",
+          "hide": false,
+          "instant": false,
+          "legendFormat": "SV1 (pool to miner) (total bytes)",
+          "range": true,
+          "refId": "A_total"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "sum(rate(ntm_bytes_total{src=\"10.5.0.20\", dst=\"10.5.0.34\",proto=\"tcp\"}[5m])) + sum(rate(ntm_bytes_total{src=\"10.5.0.21\", dst=\"10.5.0.22\",proto=\"tcp\"}[5m]))",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
-          "legendFormat": "SV2 (pool + jds + tp)",
+          "legendFormat": "SV2 (pool to jdc + jds to jdc) (bandwidth)",
           "metric": "container_network_receive_bytes_total",
           "range": true,
           "refId": "B",
           "step": 10
-        }
-      ],
-      "title": "SV1 vs SV2 - Network Tx (pool level)",
-      "transformations": [
+        },
         {
-          "id": "calculateField",
-          "options": {
-            "alias": "SV2 delta",
-            "mode": "reduceRow",
-            "reduce": {
-              "include": [
-                "SV1 (pool + bitcoin node)",
-                "SV2 (pool + jds + tp)"
-              ],
-              "reducer": "diff"
-            }
-          }
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "sum(ntm_bytes_total{src=\"10.5.0.20\", dst=\"10.5.0.34\",proto=\"tcp\"})",
+          "hide": false,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "SV2 (pool to jdc + jds to jdc) (total bytes)",
+          "metric": "container_network_receive_bytes_total",
+          "range": true,
+          "refId": "B_total",
+          "step": 10
         }
       ],
-      "type": "timeseries"
+      "title": "SV1 vs SV2 - Network Tx (pool-side)",
+      "transformations": [],
+      "type": "timeseries",
+      "description": "Network transmission (outgoing) bandwidth and total bytes transmitted from the pool side for SV1 and SV2 protocols. Bandwidth (rate) is shown on the left Y-axis, total bytes on the right Y-axis."
     },
     {
       "datasource": {
@@ -3977,20 +1672,120 @@
           },
           "unit": "binBps"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": ".*SV1.*bandwidth.*"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "red"
+                }
+              },
+              {
+                "id": "custom.axisPlacement",
+                "value": "left"
+        },
+        {
+                "id": "custom.axisLabel",
+                "value": "Bandwidth (bytes/sec)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": ".*SV2.*bandwidth.*"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "blue"
+                }
+              },
+              {
+                "id": "custom.axisPlacement",
+                "value": "left"
+              },
+              {
+                "id": "custom.axisLabel",
+                "value": "Bandwidth (bytes/sec)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": ".*SV1.*total bytes.*"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "orange"
+                }
+              },
+              {
+                "id": "custom.axisPlacement",
+                "value": "right"
+              },
+        {
+                "id": "custom.axisLabel",
+                "value": "Total Bytes"
+        },
+        {
+                "id": "unit",
+                "value": "decbytes"
+              }
+            ]
+        },
+        {
+            "matcher": {
+              "id": "byRegexp",
+              "options": ".*SV2.*total bytes.*"
+            },
+            "properties": [
+        {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "cyan"
+                }
+              },
+              {
+                "id": "custom.axisPlacement",
+                "value": "right"
+              },
+              {
+                "id": "custom.axisLabel",
+                "value": "Total Bytes"
+            },
+              {
+                "id": "unit",
+                "value": "decbytes"
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 10,
-        "w": 24,
-        "x": 0,
-        "y": 166
+        "w": 12,
+        "x": 12,
+        "y": 152
       },
       "id": 68,
       "interval": "15s",
       "options": {
         "legend": {
           "calcs": [
-            "mean",
             "lastNotNull"
           ],
           "displayMode": "table",
@@ -4011,10 +1806,10 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.8\", src=\"10.5.0.19\"}[20s])) + sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.16\", src!=\"10.5.0.21\", src!=\"192.168.65.1\", src!=\"192.168.65.7\", src!=\"10.5.0.8\"}[20s]))",
+          "expr": "sum(rate(ntm_bytes_total{src=\"10.5.0.41\", dst=\"10.5.0.40\",proto=\"tcp\"}[5m]))",
           "hide": false,
           "instant": false,
-          "legendFormat": "SV1 (pool + bitcoin node)",
+          "legendFormat": "SV1 (miner to pool) (bandwidth)",
           "range": true,
           "refId": "A"
         },
@@ -4024,35 +1819,50 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.4\", src=\"10.5.0.6\"}[20s])) + sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.5\", src=\"10.5.0.6\"}[20s])) + sum by (id, name) (rate(ntm_bytes_total{dst=\"10.5.0.2\", src!=\"192.168.65.1\", src!=\"192.168.65.7\", src!=\"10.5.0.4\", src!=\"10.5.0.5\"}[20s]))",
+          "expr": "sum(ntm_bytes_total{src=\"10.5.0.41\", dst=\"10.5.0.40\",proto=\"tcp\"})",
+          "hide": false,
+          "instant": false,
+          "legendFormat": "SV1 (miner to pool) (total bytes)",
+          "range": true,
+          "refId": "A_total"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "sum(rate(ntm_bytes_total{src=\"10.5.0.34\", dst=\"10.5.0.20\",proto=\"tcp\"}[5m])) + sum(rate(ntm_bytes_total{src=\"10.5.0.22\", dst=\"10.5.0.21\",proto=\"tcp\"}[5m]))",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
-          "legendFormat": "SV2 (pool + jds + tp)",
+          "legendFormat": "SV2 (jdc to pool + jdc to jds) (bandwidth)",
           "metric": "container_network_receive_bytes_total",
           "range": true,
           "refId": "B",
           "step": 10
-        }
-      ],
-      "title": "SV1 vs SV2 - Network Rx (pool level)",
-      "transformations": [
+        },
         {
-          "id": "calculateField",
-          "options": {
-            "alias": "SV2 delta",
-            "mode": "reduceRow",
-            "reduce": {
-              "include": [
-                "SV1 (pool + bitcoin node)",
-                "SV2 (pool + jds + tp)"
-              ],
-              "reducer": "diff"
-            }
-          }
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "sum(ntm_bytes_total{src=\"10.5.0.34\", dst=\"10.5.0.20\",proto=\"tcp\"})",
+          "hide": false,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "SV2 (jdc to pool + jdc to jds) (total bytes)",
+          "metric": "container_network_receive_bytes_total",
+          "range": true,
+          "refId": "B_total",
+          "step": 10
         }
       ],
-      "type": "timeseries"
+      "title": "SV1 vs SV2 - Network Rx (pool-side)",
+      "transformations": [],
+      "type": "timeseries",
+      "description": "Network reception (incoming) bandwidth and total bytes received on the pool side for SV1 and SV2 protocols. Bandwidth (rate) is shown on the left Y-axis, total bytes on the right Y-axis."
     },
     {
       "collapsed": false,
@@ -4060,11 +1870,11 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 176
+        "y": 192
       },
       "id": 50,
       "panels": [],
-      "title": "SV1 roles performances (per container)",
+      "title": "SV1 apps performances (per container)",
       "type": "row"
     },
     {
@@ -4135,7 +1945,7 @@
         "h": 10,
         "w": 6,
         "x": 0,
-        "y": 177
+        "y": 193
       },
       "id": 51,
       "options": {
@@ -4162,7 +1972,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum(rate(container_cpu_usage_seconds_total{name=~\"sv1-pool\"}[1m])) by (id, name) \n",
+          "expr": "sum(rate(container_cpu_usage_seconds_total{name=~\"sv1-pool\"}[1m])) by (name) \n",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
@@ -4178,7 +1988,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum(rate(container_cpu_usage_seconds_total{name=~\"sv1-node-pool-side\"}[1m])) by (id, name) \n",
+          "expr": "sum(rate(container_cpu_usage_seconds_total{name=~\"sv1-node-pool-side\"}[1m])) by (name) \n",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
@@ -4189,14 +1999,15 @@
           "step": 10
         }
       ],
-      "title": "Pool Roles (SV1) - CPU Usage ",
+      "title": "Pool apps (SV1) - CPU Usage ",
       "transformations": [
         {
           "id": "calculateField",
           "options": {}
         }
       ],
-      "type": "timeseries"
+      "type": "timeseries",
+      "description": "CPU usage percentage for all SV1 pool-related applications and services."
     },
     {
       "datasource": {
@@ -4266,7 +2077,7 @@
         "h": 10,
         "w": 6,
         "x": 6,
-        "y": 177
+        "y": 193
       },
       "id": 52,
       "options": {
@@ -4320,276 +2131,15 @@
           "step": 10
         }
       ],
-      "title": "Pool Roles (SV1) - Memory Usage",
+      "title": "Pool apps (SV1) - Memory Usage",
       "transformations": [
         {
           "id": "calculateField",
           "options": {}
         }
       ],
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "left",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "opacity",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "smooth",
-            "lineStyle": {
-              "fill": "solid"
-            },
-            "lineWidth": 1,
-            "pointSize": 3,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": true,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "fieldMinMax": false,
-          "links": [],
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green"
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "binBps"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 10,
-        "w": 6,
-        "x": 12,
-        "y": 177
-      },
-      "id": 53,
-      "options": {
-        "legend": {
-          "calcs": [
-            "mean",
-            "lastNotNull"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "maxHeight": 600,
-          "mode": "multi",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "10.4.1",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "editorMode": "code",
-          "expr": "sum by (id, name) (irate(container_network_transmit_bytes_total{name=~\"sv1-pool\"}[5m]))\n",
-          "hide": false,
-          "interval": "",
-          "intervalFactor": 1,
-          "legendFormat": "{{ name }}",
-          "metric": "container_network_receive_bytes_total",
-          "range": true,
-          "refId": "A",
-          "step": 10
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "editorMode": "code",
-          "expr": "sum by (id, name) (irate(container_network_transmit_bytes_total{name=~\"sv1-node-pool-side\"}[5m]))\n",
-          "hide": false,
-          "interval": "",
-          "intervalFactor": 1,
-          "legendFormat": "{{ name }}",
-          "metric": "container_network_receive_bytes_total",
-          "range": true,
-          "refId": "B",
-          "step": 10
-        }
-      ],
-      "title": "Pool Roles (SV1) - Network Tx",
-      "transformations": [
-        {
-          "id": "calculateField",
-          "options": {}
-        }
-      ],
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "left",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "opacity",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "smooth",
-            "lineStyle": {
-              "fill": "solid"
-            },
-            "lineWidth": 1,
-            "pointSize": 3,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": true,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "fieldMinMax": false,
-          "links": [],
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green"
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "binBps"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 10,
-        "w": 6,
-        "x": 18,
-        "y": 177
-      },
-      "id": 8,
-      "options": {
-        "legend": {
-          "calcs": [
-            "mean",
-            "lastNotNull"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "maxHeight": 600,
-          "mode": "multi",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "10.4.1",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "editorMode": "code",
-          "expr": "sum by (id, name) (irate(container_network_receive_bytes_total{name=~\"sv1-pool\"}[5m]))\n",
-          "hide": false,
-          "interval": "",
-          "intervalFactor": 1,
-          "legendFormat": "{{ name }}",
-          "metric": "container_network_receive_bytes_total",
-          "range": true,
-          "refId": "A",
-          "step": 10
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "editorMode": "code",
-          "expr": "sum by (id, name) (irate(container_network_receive_bytes_total{name=~\"sv1-node-pool-side\"}[5m]))\n",
-          "hide": false,
-          "interval": "",
-          "intervalFactor": 1,
-          "legendFormat": "{{ name }}",
-          "metric": "container_network_receive_bytes_total",
-          "range": true,
-          "refId": "B",
-          "step": 10
-        }
-      ],
-      "title": "Pool Roles (SV1) - Network Rx ",
-      "transformations": [
-        {
-          "id": "calculateField",
-          "options": {}
-        }
-      ],
-      "type": "timeseries"
+      "type": "timeseries",
+      "description": "Memory usage in bytes for all SV1 pool-related applications and services."
     },
     {
       "collapsed": false,
@@ -4601,7 +2151,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 187
+        "y": 203
       },
       "id": 19,
       "panels": [],
@@ -4614,7 +2164,7 @@
           "refId": "A"
         }
       ],
-      "title": "SV2 roles performances (per container)",
+      "title": "SV2 apps performances (per container)",
       "type": "row"
     },
     {
@@ -4685,7 +2235,7 @@
         "h": 10,
         "w": 6,
         "x": 0,
-        "y": 188
+        "y": 204
       },
       "id": 45,
       "options": {
@@ -4696,7 +2246,9 @@
           ],
           "displayMode": "table",
           "placement": "bottom",
-          "showLegend": true
+          "showLegend": true,
+          "sortBy": "name",
+          "sortDesc": false
         },
         "tooltip": {
           "maxHeight": 600,
@@ -4712,7 +2264,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum(rate(container_cpu_usage_seconds_total{name=~\"sv2-tp-pool-side|sv2-pool|sv2-jds\"}[1m])) by (id, name) \n",
+          "expr": "sum(rate(container_cpu_usage_seconds_total{name=~\"sv2-tp-pool-side|sv2-pool|sv2-jds|bitcoin-core-pool-side\"}[1m])) by (name)",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
@@ -4723,14 +2275,27 @@
           "step": 10
         }
       ],
-      "title": "Pool Roles (SV2) - CPU Usage ",
+      "title": "Pool apps (SV2) - CPU Usage ",
       "transformations": [
         {
           "id": "calculateField",
           "options": {}
+        },
+        {
+          "id": "sortBy",
+          "options": {
+            "fields": {},
+            "sort": [
+              {
+                "field": "name",
+                "desc": false
+              }
+            ]
+          }
         }
       ],
-      "type": "timeseries"
+      "type": "timeseries",
+      "description": "CPU usage percentage for all SV2 pool-related applications and services."
     },
     {
       "datasource": {
@@ -4800,7 +2365,7 @@
         "h": 10,
         "w": 6,
         "x": 6,
-        "y": 188
+        "y": 204
       },
       "id": 44,
       "options": {
@@ -4811,7 +2376,9 @@
           ],
           "displayMode": "table",
           "placement": "bottom",
-          "showLegend": true
+          "showLegend": true,
+          "sortBy": "name",
+          "sortDesc": false
         },
         "tooltip": {
           "maxHeight": 600,
@@ -4827,7 +2394,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "container_memory_usage_bytes{name=~\"sv2-tp-pool-side|sv2-pool|sv2-jds\"}\n",
+          "expr": "container_memory_usage_bytes{name=~\"sv2-tp-pool-side|sv2-pool|sv2-jds|bitcoin-core-pool-side\"}",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
@@ -4838,244 +2405,27 @@
           "step": 10
         }
       ],
-      "title": "Pool Roles (SV2) - Memory Usage ",
+      "title": "Pool apps (SV2) - Memory Usage ",
       "transformations": [
         {
           "id": "calculateField",
           "options": {}
-        }
-      ],
-      "type": "timeseries"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "left",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "opacity",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "smooth",
-            "lineStyle": {
-              "fill": "solid"
-            },
-            "lineWidth": 1,
-            "pointSize": 3,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": true,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "fieldMinMax": false,
-          "links": [],
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
+          "id": "sortBy",
+          "options": {
+            "fields": {},
+            "sort": [
               {
-                "color": "green"
-              },
-              {
-                "color": "red",
-                "value": 80
+                "field": "name",
+                "desc": false
               }
             ]
-          },
-          "unit": "binBps"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 10,
-        "w": 6,
-        "x": 12,
-        "y": 188
-      },
-      "id": 43,
-      "options": {
-        "legend": {
-          "calcs": [
-            "mean",
-            "lastNotNull"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "maxHeight": 600,
-          "mode": "multi",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "10.4.1",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "editorMode": "code",
-          "expr": "sum by (id, name) (irate(container_network_transmit_bytes_total{name=~\"sv2-tp-pool-side|sv2-pool|sv2-jds\"}[10s]))\n",
-          "hide": false,
-          "interval": "",
-          "intervalFactor": 1,
-          "legendFormat": "{{ name }}",
-          "metric": "container_network_receive_bytes_total",
-          "range": true,
-          "refId": "A",
-          "step": 10
+          }
         }
       ],
-      "title": "Pool Roles (SV2) - Network Tx ",
-      "transformations": [
-        {
-          "id": "calculateField",
-          "options": {}
-        }
-      ],
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "left",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "opacity",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "smooth",
-            "lineStyle": {
-              "fill": "solid"
-            },
-            "lineWidth": 1,
-            "pointSize": 3,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": true,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "fieldMinMax": false,
-          "links": [],
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green"
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "binBps"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 10,
-        "w": 6,
-        "x": 18,
-        "y": 188
-      },
-      "id": 58,
-      "options": {
-        "legend": {
-          "calcs": [
-            "mean",
-            "lastNotNull"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "maxHeight": 600,
-          "mode": "multi",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "10.4.1",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "editorMode": "code",
-          "expr": "sum by (id, name) (irate(container_network_receive_bytes_total{name=~\"sv2-tp-pool-side|sv2-pool|sv2-jds\"}[10s]))\n",
-          "hide": false,
-          "interval": "",
-          "intervalFactor": 1,
-          "legendFormat": "{{ name }}",
-          "metric": "container_network_receive_bytes_total",
-          "range": true,
-          "refId": "A",
-          "step": 10
-        }
-      ],
-      "title": "Pool Roles (SV2) - Network Rx ",
-      "transformations": [
-        {
-          "id": "calculateField",
-          "options": {}
-        }
-      ],
-      "type": "timeseries"
+      "type": "timeseries",
+      "description": "Memory usage in bytes for all SV2 pool-related applications and services."
     },
     {
       "datasource": {
@@ -5145,7 +2495,7 @@
         "h": 10,
         "w": 6,
         "x": 0,
-        "y": 198
+        "y": 214
       },
       "id": 46,
       "options": {
@@ -5156,7 +2506,9 @@
           ],
           "displayMode": "table",
           "placement": "bottom",
-          "showLegend": true
+          "showLegend": true,
+          "sortBy": "name",
+          "sortDesc": false
         },
         "tooltip": {
           "maxHeight": 600,
@@ -5172,7 +2524,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum(rate(container_cpu_usage_seconds_total{name=~\"sv2-tp-miner-side|sv2-jdc|sv2-translator\"}[1m])) by (id, name) \n",
+          "expr": "sum(rate(container_cpu_usage_seconds_total{name=~\"sv2-tp-miner-side|sv2-jdc|sv2-translator|bitcoin-core-miner-side\"}[1m])) by (name)",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
@@ -5183,14 +2535,27 @@
           "step": 10
         }
       ],
-      "title": "Miner Roles (SV2) - CPU Usage",
+      "title": "Miner apps (SV2) - CPU Usage",
       "transformations": [
         {
           "id": "calculateField",
           "options": {}
+    },
+    {
+          "id": "sortBy",
+          "options": {
+            "fields": {},
+            "sort": [
+              {
+                "field": "name",
+                "desc": false
+              }
+            ]
+          }
         }
       ],
-      "type": "timeseries"
+      "type": "timeseries",
+      "description": "CPU usage percentage for SV2 miner-side applications and services."
     },
     {
       "datasource": {
@@ -5260,7 +2625,7 @@
         "h": 10,
         "w": 6,
         "x": 6,
-        "y": 198
+        "y": 214
       },
       "id": 47,
       "options": {
@@ -5271,7 +2636,9 @@
           ],
           "displayMode": "table",
           "placement": "bottom",
-          "showLegend": true
+          "showLegend": true,
+          "sortBy": "name",
+          "sortDesc": false
         },
         "tooltip": {
           "maxHeight": 600,
@@ -5287,255 +2654,70 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "container_memory_usage_bytes{name=~\"sv2-tp-miner-side|sv2-jdc|sv2-translator\"}\n",
+          "expr": "container_memory_usage_bytes{name=\"bitcoin-core-miner-side\"}",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
           "legendFormat": "{{ name }}",
           "metric": "container_network_receive_bytes_total",
           "range": true,
-          "refId": "A",
-          "step": 10
-        }
-      ],
-      "title": "Miner Roles (SV2) - Memory Usage",
-      "transformations": [
-        {
-          "id": "calculateField",
-          "options": {}
-        }
-      ],
-      "type": "timeseries"
+          "refId": "A"
     },
     {
       "datasource": {
         "type": "prometheus",
         "uid": "PBFA97CFB590B2093"
       },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "left",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "opacity",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "smooth",
-            "lineStyle": {
-              "fill": "solid"
-            },
-            "lineWidth": 1,
-            "pointSize": 3,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": true,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "fieldMinMax": false,
-          "links": [],
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green"
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "binBps"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 10,
-        "w": 6,
-        "x": 12,
-        "y": 198
-      },
-      "id": 48,
-      "options": {
-        "legend": {
-          "calcs": [
-            "mean",
-            "lastNotNull"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "maxHeight": 600,
-          "mode": "multi",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "10.4.1",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
           "editorMode": "code",
-          "expr": "sum by (id, name) (irate(container_network_transmit_bytes_total{name=~\"sv2-tp-miner-side|sv2-jdc|sv2-translator\"}[10s]))\n",
+          "expr": "container_memory_usage_bytes{name=\"sv2-jdc\"}",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
           "legendFormat": "{{ name }}",
           "metric": "container_network_receive_bytes_total",
           "range": true,
-          "refId": "A",
-          "step": 10
-        }
-      ],
-      "title": "Miner Roles (SV2) - Network Tx",
-      "transformations": [
-        {
-          "id": "calculateField",
-          "options": {}
-        }
-      ],
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "left",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "opacity",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "smooth",
-            "lineStyle": {
-              "fill": "solid"
-            },
-            "lineWidth": 1,
-            "pointSize": 3,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": true,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "fieldMinMax": false,
-          "links": [],
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green"
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "binBps"
+          "refId": "B"
         },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 10,
-        "w": 6,
-        "x": 18,
-        "y": 198
-      },
-      "id": 49,
-      "options": {
-        "legend": {
-          "calcs": [
-            "mean",
-            "lastNotNull"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "maxHeight": 600,
-          "mode": "multi",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "10.4.1",
-      "targets": [
         {
           "datasource": {
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum by (id, name) (irate(container_network_receive_bytes_total{name=~\"sv2-tp-miner-side|sv2-jdc|sv2-translator\"}[10s]))\n",
+          "expr": "container_memory_usage_bytes{name=\"sv2-tp-miner-side\"}",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
           "legendFormat": "{{ name }}",
           "metric": "container_network_receive_bytes_total",
           "range": true,
-          "refId": "A",
-          "step": 10
+          "refId": "C"
+      },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "container_memory_usage_bytes{name=\"sv2-translator\"}",
+          "hide": false,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "{{ name }}",
+          "metric": "container_network_receive_bytes_total",
+          "range": true,
+          "refId": "D"
         }
       ],
-      "title": "Miner Roles (SV2) - Network Rx",
+      "title": "Miner apps (SV2) - Memory Usage",
       "transformations": [
         {
           "id": "calculateField",
           "options": {}
         }
       ],
-      "type": "timeseries"
+      "type": "timeseries",
+      "description": "Memory usage in bytes for SV2 miner-side applications and services."
     },
     {
       "collapsed": false,
@@ -5547,7 +2729,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 208
+        "y": 224
       },
       "id": 17,
       "panels": [],
@@ -5604,7 +2786,7 @@
         "h": 7,
         "w": 3,
         "x": 0,
-        "y": 209
+        "y": 225
       },
       "id": 15,
       "maxDataPoints": 100,
@@ -5639,7 +2821,8 @@
         }
       ],
       "title": "Uptime",
-      "type": "stat"
+      "type": "stat",
+      "description": "System uptime showing how long the host system has been running continuously."
     },
     {
       "datasource": {
@@ -5682,7 +2865,7 @@
         "h": 7,
         "w": 3,
         "x": 3,
-        "y": 209
+        "y": 225
       },
       "id": 35,
       "maxDataPoints": 100,
@@ -5717,7 +2900,8 @@
         }
       ],
       "title": "CPU Cores",
-      "type": "stat"
+      "type": "stat",
+      "description": "Number of CPU cores available on the host system."
     },
     {
       "datasource": {
@@ -5767,7 +2951,7 @@
         "h": 7,
         "w": 3,
         "x": 6,
-        "y": 209
+        "y": 225
       },
       "id": 6,
       "maxDataPoints": 100,
@@ -5805,7 +2989,8 @@
         }
       ],
       "title": "CPU usage",
-      "type": "gauge"
+      "type": "gauge",
+      "description": "Overall CPU usage percentage for the host system."
     },
     {
       "datasource": {
@@ -5848,7 +3033,7 @@
         "h": 7,
         "w": 3,
         "x": 9,
-        "y": 209
+        "y": 225
       },
       "id": 37,
       "maxDataPoints": 100,
@@ -5883,7 +3068,8 @@
         }
       ],
       "title": "Host Memory",
-      "type": "stat"
+      "type": "stat",
+      "description": "Total memory capacity of the host system."
     },
     {
       "datasource": {
@@ -5932,7 +3118,7 @@
         "h": 7,
         "w": 3,
         "x": 12,
-        "y": 209
+        "y": 225
       },
       "id": 4,
       "maxDataPoints": 100,
@@ -5967,7 +3153,8 @@
         }
       ],
       "title": "Memory usage",
-      "type": "gauge"
+      "type": "gauge",
+      "description": "Current memory usage on the host system."
     },
     {
       "datasource": {
@@ -6017,7 +3204,7 @@
         "h": 7,
         "w": 3,
         "x": 15,
-        "y": 209
+        "y": 225
       },
       "id": 7,
       "maxDataPoints": 100,
@@ -6052,7 +3239,8 @@
         }
       ],
       "title": "Filesystem usage",
-      "type": "gauge"
+      "type": "gauge",
+      "description": "Disk space usage for mounted filesystems on the host system."
     },
     {
       "datasource": {
@@ -6149,7 +3337,7 @@
         "h": 7,
         "w": 6,
         "x": 18,
-        "y": 209
+        "y": 225
       },
       "id": 27,
       "options": {
@@ -6193,7 +3381,502 @@
         }
       ],
       "title": "Node Mermory",
-      "type": "timeseries"
+      "type": "timeseries",
+      "description": "Memory usage for Bitcoin node processes. Note: 'Mermory' is a typo in the original panel title."
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "left",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 20,
+            "gradientMode": "opacity",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "smooth",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "fieldMinMax": false,
+          "links": [],
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 80
+              },
+              {
+                "color": "green",
+                "value": 90
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "SV1 - Submitted shares"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "orange"
+                }
+              },
+              {
+                "id": "custom.axisPlacement",
+                "value": "right"
+              },
+              {
+                "id": "custom.axisLabel",
+                "value": "Shares Count"
+              },
+              {
+                "id": "unit",
+                "value": "short"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "SV1 - Stale shares"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "orange"
+                }
+              },
+              {
+                "id": "custom.axisPlacement",
+                "value": "right"
+              },
+              {
+                "id": "custom.axisLabel",
+                "value": "Shares Count"
+              },
+              {
+                "id": "unit",
+                "value": "short"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "SV1 - Acceptance rate %"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "red"
+                }
+              },
+              {
+                "id": "custom.axisPlacement",
+                "value": "left"
+              },
+              {
+                "id": "custom.axisLabel",
+                "value": "Acceptance Rate (%)"
+              },
+              {
+                "id": "unit",
+                "value": "percent"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "SV2 - Submitted shares"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "cyan"
+                }
+              },
+              {
+                "id": "custom.axisPlacement",
+                "value": "right"
+              },
+              {
+                "id": "custom.axisLabel",
+                "value": "Shares Count"
+              },
+              {
+                "id": "unit",
+                "value": "short"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "SV2 - Stale shares"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "cyan"
+                }
+              },
+              {
+                "id": "custom.axisPlacement",
+                "value": "right"
+              },
+              {
+                "id": "custom.axisLabel",
+                "value": "Shares Count"
+              },
+              {
+                "id": "unit",
+                "value": "short"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "SV2 - Acceptance rate %"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "blue"
+                }
+              },
+              {
+                "id": "custom.axisPlacement",
+                "value": "left"
+              },
+              {
+                "id": "custom.axisLabel",
+                "value": "Acceptance Rate (%)"
+              },
+              {
+                "id": "unit",
+                "value": "percent"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 24,
+        "x": 0,
+        "y": 11
+      },
+      "id": 98,
+      "interval": "15s",
+      "options": {
+        "legend": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "maxHeight": 600,
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "pluginVersion": "10.4.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "sv1_submitted_shares",
+          "hide": false,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "SV1 - Submitted shares",
+          "metric": "container_network_receive_bytes_total",
+          "range": true,
+          "refId": "A",
+          "step": 10
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "sv1_stale_shares",
+          "hide": true,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "SV1 - Stale shares",
+          "metric": "container_network_receive_bytes_total",
+          "range": true,
+          "refId": "C",
+          "step": 10
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "exemplar": false,
+          "expr": "((sv1_submitted_shares - sv1_stale_shares) * 100) / sv1_submitted_shares",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "SV1 - Acceptance rate %",
+          "metric": "container_network_receive_bytes_total",
+          "range": true,
+          "refId": "D",
+          "step": 10,
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "sv2_submitted_shares",
+          "hide": false,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "SV2 - Submitted shares",
+          "metric": "container_network_receive_bytes_total",
+          "range": true,
+          "refId": "E",
+          "step": 10
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "sv2_stale_shares",
+          "hide": true,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "SV2 - Stale shares",
+          "metric": "container_network_receive_bytes_total",
+          "range": true,
+          "refId": "G",
+          "step": 10
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "exemplar": false,
+          "expr": "((sv2_submitted_shares - sv2_stale_shares) * 100) / sv2_submitted_shares",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "SV2 - Acceptance rate %",
+          "metric": "container_network_receive_bytes_total",
+          "range": true,
+          "refId": "H",
+          "step": 10,
+          "useBackend": false
+        }
+      ],
+      "title": "SV1 vs SV2 - shares",
+      "transformations": [],
+      "type": "timeseries",
+      "description": "Submitted shares and acceptance rate for both SV1 and SV2 protocols. Submitted shares are shown on the right Y-axis, acceptance rate on the left Y-axis."
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": ".*SV1.*"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "red"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": ".*SV2.*"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "blue"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 12,
+        "x": 0,
+        "y": 1
+      },
+      "id": 99,
+      "interval": "15s",
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "10.4.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "sv1_mined_blocks",
+          "hide": false,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "SV1 - mined blocks",
+          "metric": "container_network_receive_bytes_total",
+          "range": false,
+          "refId": "A",
+          "step": 10,
+          "instant": true
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "sv2_mined_blocks",
+          "hide": false,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "SV2 - mined blocks",
+          "metric": "container_network_receive_bytes_total",
+          "range": false,
+          "refId": "B",
+          "step": 10,
+          "instant": true
+        }
+      ],
+      "title": "SV1 vs SV2 - mined blocks",
+      "transformations": [],
+      "type": "stat",
+      "description": "Number of blocks successfully mined by SV1 and SV2 protocols over time."
     }
   ],
   "refresh": "5s",

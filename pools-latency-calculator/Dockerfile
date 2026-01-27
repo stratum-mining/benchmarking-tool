@@ -1,10 +1,10 @@
 # Build stage
-FROM rust:1.82-alpine AS builder
+FROM rust:1.83-alpine AS builder
 
 WORKDIR /usr/src/pools-latency-calculator
 
 # Install necessary dependencies for building
-RUN apk add --no-cache musl-dev pkgconfig libressl-dev
+RUN apk update && apk add --no-cache musl-dev pkgconf libressl-dev
 
 # Copy the source code into the container
 COPY pools-latency-calculator/ .
